@@ -1,0 +1,23 @@
+<section class="panel">
+  <p class="meta">Найдено: {{ total }}</p>
+  {% if articles %}
+  <ul class="feed">
+    {% for article, source in articles %}
+    <li>
+      <a href="/articles/{{ article.id }}">{{ article.title or "Без заголовка" }}</a>
+      <p class="meta">
+        {{ source.name }}
+        {% if source.region %} · {{ source.region }}{% endif %}
+        {% if article.published_at %} · {{ article.published_at.strftime("%Y-%m-%d %H:%M UTC") }}{% endif %}
+        {% if article.category %} · {{ article.category }}{% endif %}
+        {% if article.sentiment %} · {{ article.sentiment }}{% endif %}
+        {% if article.fake_score is not none %} · fake {{ "%.2f"|format(article.fake_score) }}{% endif %}
+      </p>
+      {% if article.summary %}<p>{{ article.summary }}</p>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>По этому фильтру статей нет.</p>
+  {% endif %}
+</section>

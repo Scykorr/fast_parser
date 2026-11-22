@@ -26,6 +26,11 @@ def make_engine(url: str) -> Engine:
             cursor = dbapi_conn.cursor()
             cursor.execute("PRAGMA foreign_keys=ON")
             cursor.close()
+            dbapi_conn.create_function(
+                "py_lower",
+                1,
+                lambda value: value.casefold() if isinstance(value, str) else value,
+            )
 
     return engine
 

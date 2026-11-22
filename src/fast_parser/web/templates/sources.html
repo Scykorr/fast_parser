@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Источники — fast_parser{% endblock %}
+{% block body %}
+<section class="panel">
+  <h1>Источники</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Источник</th>
+        <th>Тип</th>
+        <th>Регион</th>
+        <th>Ленты</th>
+        <th>Последний сбор</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      {% set source = row.source %}
+      <tr>
+        <td>
+          <strong>{{ source.name }}</strong>
+          <div class="meta">{{ source.id }}{% if source.telegram_username %} · {{ source.telegram_username }}{% endif %}</div>
+        </td>
+        <td>{{ source.type }}</td>
+        <td>{% if source.region_code %}{{ source.region_code }} {{ source.region }}{% else %}федеральный{% endif %}</td>
+        <td>
+          {% if row.feeds %}
+            {% for feed in row.feeds %}
+            <div>
+              {% if feed.enabled %}в сборе{% else %}выключена{% endif %}
+              · {{ feed.check_status or "—" }}
+              <div class="meta">{{ feed.url }}</div>
+            </div>
+            {% endfor %}
+          {% else %}
+            нет RSS
+          {% endif %}
+        </td>
+        <td>
+          {% for feed in row.feeds %}
+          <div>
+            {{ feed.last_status or "ещё не опрашивалась" }}
+            {% if feed.last_http_status %} · HTTP {{ feed.last_http_status }}{% endif %}
+            {% if feed.last_success_at %} · {{ feed.last_success_at.strftime("%Y-%m-%d %H:%M UTC") }}{% endif %}
+            {% if feed.consecutive_failures %} · ошибок подряд: {{ feed.consecutive_failures }}{% endif %}
+            {% if feed.last_error %}<div class="error">{{ feed.last_error }}</div>{% endif %}
+          </div>
+          {% endfor %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

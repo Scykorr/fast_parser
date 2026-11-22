@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Регионы — fast_parser{% endblock %}
+{% block body %}
+<section class="panel">
+  <h1>Покрытие субъектов</h1>
+  <p>Закрыто {{ covered }} из {{ total }}. В перечне все 89 кодов ФНС, даже если источника ещё нет.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Код</th>
+        <th>Субъект</th>
+        <th>Округ</th>
+        <th>Источники</th>
+        <th>RSS</th>
+        <th>Telegram</th>
+        <th>Статьи</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr class="{{ 'missing' if not item.covered else '' }}">
+        <td>{{ item.region_code }}</td>
+        <td>{{ item.region or "—" }}</td>
+        <td>{{ item.federal_district or "—" }}</td>
+        <td>{{ item.sources }}</td>
+        <td>{{ item.rss_enabled }}</td>
+        <td>{{ item.telegram }}</td>
+        <td>{{ item.articles }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

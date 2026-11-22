@@ -64,6 +64,13 @@ class LoopSettings(BaseModel):
     interval_seconds: int = 900
 
 
+class WebSettings(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    host: str = "127.0.0.1"
+    port: int = 8080
+
+
 class LoggingSettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
@@ -81,6 +88,7 @@ class AppSettings(BaseModel):
     dates: DateSettings = Field(default_factory=DateSettings)
     pipeline: PipelineSettings = Field(default_factory=PipelineSettings)
     loop: LoopSettings = Field(default_factory=LoopSettings)
+    web: WebSettings = Field(default_factory=WebSettings)
     logging: LoggingSettings = Field(default_factory=LoggingSettings)
     sources_path: Path = Path("config/sources.yaml")
     regional_sources_path: Path | None = None
