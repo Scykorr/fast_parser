@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Анонсы</title>
+    <item>
+      <title>Только заголовок и анонс</title>
+      <link>https://example.com/news/2</link>
+      <pubDate>2026-11-22T18:00:00+03:00</pubDate>
+      <description>Коротко о событии.</description>
+    </item>
+    <item>
+      <title>Без даты</title>
+      <link>https://example.com/news/3</link>
+      <description>Дата в ленте не указана.</description>
+    </item>
+  </channel>
+</rss>

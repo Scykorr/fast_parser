@@ -1,0 +1,55 @@
+# Локальный сборщик. Сервис не крутится круглосуточно: при каждом запуске
+# дочитывает то, что сейчас отдают ленты, и отбрасывает уже сохранённое.
+
+sources_file: sources.yaml
+# Отдельный снимок: все 89 субъектов. Пустой путь отключает региональный каталог.
+regional_sources_file: sources_regional.yaml
+
+database:
+  # Меняется на PostgreSQL без правки кода: postgresql+psycopg://user:pass@localhost/fast_parser
+  url: sqlite:///data/fast_parser.db
+
+http:
+  # Часть госсайтов отсекает небраузерные клиенты. Строка обычного браузера,
+  # её можно заменить на свою.
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+  accept: "application/rss+xml, application/atom+xml, application/xml, text/xml;q=0.9, text/html;q=0.8, */*;q=0.7"
+  accept_language: "ru-RU,ru;q=0.9,en;q=0.5"
+  timeout_seconds: 25
+  fulltext_timeout_seconds: 25
+  max_concurrency: 4
+  per_host_concurrency: 2
+  retries: 2
+  backoff_seconds: 1.0
+  backoff_multiplier: 2.0
+  trust_env: true
+
+collector:
+  # Если в ленте только короткий анонс, догружаем страницу и вытаскиваем текст.
+  fetch_fulltext: true
+  fulltext_min_chars: 500
+  max_feed_bytes: 5000000
+  max_article_bytes: 2000000
+  # Живые, но не новостные ленты. Курсы ЦБ остаются в каталоге, в статьи не пишутся.
+  skip_feed_urls:
+    - https://www.cbr.ru/rss/RssCurrency
+  skip_source_ids: []
+
+dates:
+  # В лентах без часового пояса время считаем московским и храним в UTC.
+  naive_timezone: Europe/Moscow
+
+pipeline:
+  # Этап 1 только сохраняет текст. Классификация, тональность и fake_score
+  # подключаются следующими этапами через те же имена процессоров.
+  enabled: false
+  processors:
+    - category
+    - sentiment
+    - fake_score
+
+loop:
+  interval_seconds: 900
+
+logging:
+  level: INFO

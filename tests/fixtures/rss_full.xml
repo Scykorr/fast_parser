@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Тестовая лента</title>
+    <language>ru</language>
+    <item>
+      <title>Полный материал</title>
+      <link>https://example.com/news/1?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="false">guid-1</guid>
+      <pubDate>Sun, 22 Nov 2026 18:56:00 +0300</pubDate>
+      <dc:creator>Иван Иванов</dc:creator>
+      <category>Политика</category>
+      <description>Короткий анонс.</description>
+      <content:encoded><![CDATA[<p>Это полный текст статьи.</p><p>Второй абзац про бюджет.</p>]]></content:encoded>
+    </item>
+  </channel>
+</rss>
