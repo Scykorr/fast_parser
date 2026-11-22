@@ -40,7 +40,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "process":
             from fast_parser.process import process_pending
 
-            result = process_pending(settings, limit=args.limit)
+            result = process_pending(settings, limit=args.limit, all_articles=args.all)
             print(
                 "Разметка завершена\n"
                 f"  просмотрено {result.seen}, с рубрикой {result.with_category}, "
@@ -48,6 +48,14 @@ def main(argv: list[str] | None = None) -> int:
             )
             if not _ml_installed():
                 print("  модель тональности не установлена: pip install -e \".[ml]\"")
+            return 0
+        if args.command == "eval":
+            from fast_parser.evaluate import format_report, load_labels, score_dataset
+
+            rows = load_labels(args.set)
+            keyword, _ = score_dataset(settings, rows, use_embeddings=False)
+            ml_category, sentiment = score_dataset(settings, rows, use_embeddings=True)
+            print(format_report(keyword, ml_category if _ml_installed() else None, sentiment))
             return 0
     except FileNotFoundError as exc:
         print(str(exc), file=sys.stderr)
@@ -206,6 +214,9 @@ def _parser() -> argparse.ArgumentParser:
     web.add_argument("--port", type=int, default=None, help="Порт, по умолчанию 8080")
     process = sub.add_parser("process", help="Разметить статьи без рубрики или тональности")
     process.add_argument("--limit", type=int, default=None, help="Сколько статей взять за запуск")
+    process.add_argument("--all", action="store_true", help="Пересчитать даже уже размеченные статьи")
+    evaluate = sub.add_parser("eval", help="Посчитать accuracy и macro-F1 на ручной выборке")
+    evaluate.add_argument("--set", type=Path, default=Path("eval/labels.jsonl"), help="Файл jsonl с полями category и sentiment")
     return parser
 
 

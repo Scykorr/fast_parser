@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 
 from fast_parser.config import AppSettings
 from fast_parser.pipeline.base import ArticleView, ProcessorResult
@@ -18,7 +19,22 @@ from fast_parser.pipeline.taxonomy import CategorySpec, load_taxonomy
 
 log = logging.getLogger(__name__)
 
-_LEXICAL_FLOOR = 0.34
+_LEXICAL_FLOOR = 0.5
+_EMBED_MARGIN = 0.045
+_EMBED_MIN = 0.38
+
+_HARM = (
+    "погиб", "пострад", "уби", "ранен", "пожар", "дтп", "взрыв", "авари",
+    "атак", "дрон", "задержа", "осужд", "приговор", "штраф", "мошен",
+    "жертв", "покончил", "сбил", "пропал", "долг", "не выпла", "теракт",
+    "террор", "преступн", "уголовн",
+)
+_GOOD = (
+    "открыл", "открыли", "побед", "выигр", "награ", "поздрав", "юбиле",
+    "спас", "рекорд", "праздн", "выделил", "восстанов", "победил",
+    "заняли перв", "лучший", "списан", "вышел", "бенефис", "отметят",
+    "контроль над",
+)
 
 
 class CategoryProcessor:
@@ -50,13 +66,15 @@ class CategoryProcessor:
         embedded = self._embed(articles)
         results: list[ProcessorResult] = []
         for article, words, vectors in zip(articles, lexical, embedded):
-            blended = _blend(words, vectors)
-            title, score = _best(blended)
+            title, score = _choose_category(words, vectors)
             if score < self.settings.pipeline.min_confidence:
                 guessed, _, llm_score = self._llm.classify(article.title, article.text)
                 if guessed and llm_score >= score:
                     title, score = guessed, llm_score
-            if title is None or score < _LEXICAL_FLOOR:
+            if title is None or score < _LEXICAL_FLOOR and vectors is None:
+                results.append(ProcessorResult(handled=False))
+                continue
+            if title is None:
                 results.append(ProcessorResult(handled=False))
                 continue
             results.append(
@@ -113,7 +131,8 @@ class SentimentProcessor:
         results: list[ProcessorResult] = []
         threshold = self.settings.pipeline.min_confidence
         for article, (label, score) in zip(articles, predicted):
-            if score < threshold:
+            label, score = _calibrate_news_tone(article.title, article.text, label, score)
+            if score < threshold and label == "neutral":
                 _, llm_label, llm_score = self._llm.classify(article.title, article.text)
                 if llm_label and llm_score >= score:
                     label, score = llm_label, llm_score
@@ -123,11 +142,20 @@ class SentimentProcessor:
         return results
 
 
-def _blend(lexical: dict[str, float], embedded: dict[str, float] | None) -> dict[str, float]:
-    if not embedded:
-        return lexical
-    keys = set(lexical) | set(embedded)
-    return {key: 0.45 * lexical.get(key, 0.0) + 0.55 * embedded.get(key, 0.0) for key in keys}
+def _choose_category(
+    lexical: dict[str, float],
+    embedded: dict[str, float] | None,
+) -> tuple[str | None, float]:
+    lexical_title, lexical_score = _best(lexical)
+    if lexical_score >= _LEXICAL_FLOOR and lexical_title:
+        return lexical_title, lexical_score
+    if embedded:
+        ranked = sorted(embedded.items(), key=lambda item: item[1], reverse=True)
+        top_title, top_score = ranked[0]
+        second = ranked[1][1] if len(ranked) > 1 else 0.0
+        if top_score >= _EMBED_MIN and top_score - second >= _EMBED_MARGIN:
+            return top_title, top_score
+    return None, lexical_score
 
 
 def _best(scores: dict[str, float]) -> tuple[str | None, float]:
@@ -137,6 +165,27 @@ def _best(scores: dict[str, float]) -> tuple[str | None, float]:
     if score <= 0:
         return None, 0.0
     return title, score
+
+
+def _calibrate_news_tone(title: str, text: str, label: str, score: float) -> tuple[str, float]:
+    """A news wire is often scored neutral even when the headline is a loss or a celebration."""
+    headline = title.casefold()
+    lead = f"{headline} {(text or '')[:180].casefold()}"
+    harm = _has_any(_strip_fire_crews(headline), _HARM) or _has_any(_strip_fire_crews(lead), _HARM)
+    good = _has_any(headline, _GOOD)
+    if harm and not good and label != "negative":
+        return "negative", max(score, 0.7)
+    if good and not harm and label == "neutral":
+        return "positive", max(score, 0.66)
+    return label, score
+
+
+def _strip_fire_crews(text: str) -> str:
+    return re.sub(r"пожарн\w*", " ", text)
+
+
+def _has_any(text: str, words: tuple[str, ...]) -> bool:
+    return any(word in text for word in words)
 
 
 def _tests_skip_models() -> bool:
