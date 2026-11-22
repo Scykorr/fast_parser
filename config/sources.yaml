@@ -1,0 +1,652 @@
+# Стартовый набор государственных и подконтрольных госкомпаниям российских СМИ / органов власти
+# Проверка: 2026-11-22, curl с бокса (User-Agent Chrome 122). Время в Europe/Berlin.
+# DNS многих .ru/.gov.ru с бокса указывает на 198.18.0.1 (прокси Pingora):
+#   часть лент проходит (ТАСС, РИА, РГ, ЦБ, Звезда, RT, ПГ, Минэнерго, Минтруд, Генпрокуратура),
+#   часть падает с TLS unexpected EOF или HTTP 500. С российского IP на ноутбуке это может работать.
+# check ленты: ok | blocked_from_box_verified | empty | antibot | unverified
+# telegram включены только каналы с официальным описанием/превью; неофициальные отсеяны.
+# Поля rss: url, title, items, latest, fulltext, check
+
+generated_at: "2026-11-22 19:15 Europe/Berlin"
+verification_agent: curl+Chrome-UA from shared box; blocked gov sites cross-checked via alternate fetch
+sources:
+  - id: tass
+    name: ТАСС
+    type: федеральное_агентство
+    site: https://tass.ru
+    status: ok
+    rss:
+      - url: https://tass.ru/rss/v2.xml
+        title: ТАСС
+        items: 100
+        latest: "2026-11-22 18:56 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 59
+    telegram:
+      username: "@tass_agency"
+      title: ТАСС
+      check: ok
+      latest: "2026-11-22 18:57 Europe/Berlin"
+      messages_on_preview: 20
+    notes: "Государственное информагентство. Параметры ?section=politics/economy и пути /politika/rss не дают отдельных лент: либо тот же общий XML, либо антибот. Официальный Telegram — @tass_agency (@tass без публичного превью)."
+
+  - id: ria
+    name: РИА Новости
+    type: федеральное_агентство
+    site: https://ria.ru
+    status: ok
+    rss:
+      - url: https://ria.ru/export/rss2/index.xml
+        title: РИА Новости
+        items: 20
+        latest: "2026-11-22 18:57 Europe/Berlin"
+        fulltext: только заголовок
+        check: ok
+        http_code: 200
+        note: короткая лента (топ)
+      - url: https://ria.ru/export/rss2/archive/index.xml
+        title: РИА Новости
+        items: 91
+        latest: "2026-11-22 18:58 Europe/Berlin"
+        fulltext: только заголовок
+        check: ok
+        http_code: 200
+        note: архивная/полная лента
+    telegram:
+      username: "@rian_ru"
+      title: РИА Новости
+      check: ok
+      latest: "2026-11-22 19:00 Europe/Berlin"
+      messages_on_preview: 18
+    notes: "Медиагруппа «Россия сегодня». Тематические пути /export/rss2/{politics,world,economy,...}/index.xml сейчас отдают 404. В лентах почти нет description — парсеру нужна догрузка страницы."
+
+  - id: ria_sport
+    name: РИА Новости Спорт
+    type: федеральное_агентство
+    site: https://rsport.ria.ru
+    status: ok
+    rss:
+      - url: https://rsport.ria.ru/export/rss2/index.xml
+        title: РИА Новости Спорт
+        items: 20
+        latest: "2026-11-22 19:02 Europe/Berlin"
+        fulltext: только заголовок
+        check: ok
+        http_code: 200
+    telegram: null
+    notes: Спортивное издание медиагруппы «Россия сегодня». Отдельный официальный Telegram в этой проверке не искали точечно.
+
+  - id: radio_sputnik
+    name: Радио Sputnik
+    type: тв
+    site: https://radiosputnik.ria.ru
+    status: ok
+    rss:
+      - url: https://radiosputnik.ria.ru/export/rss2/index.xml
+        title: Радио Sputnik
+        items: 20
+        latest: "2026-11-22 17:58 Europe/Berlin"
+        fulltext: только заголовок
+        check: ok
+        http_code: 200
+    telegram: null
+    notes: Радиостанция медиагруппы «Россия сегодня».
+
+  - id: sputnik_ru
+    name: Sputnik (sputniknews.ru)
+    type: федеральное_агентство
+    site: https://sputniknews.ru
+    status: empty_feed
+    rss:
+      - url: https://sputniknews.ru/export/rss2/archive/index.xml
+        items: 0
+        check: empty
+        http_code: 200
+        note: валидный RSS 2.0, канал пустой
+      - url: https://sputniknews.ru/export/rss2/index.xml
+        items: 0
+        check: empty
+        http_code: 200
+        note: валидный RSS 2.0, канал пустой
+    telegram: null
+    notes: Официальный домен Sputnik отвечает 200 и отдаёт пустой XML. С бокса записей нет; с российского IP имеет смысл перепроверить.
+
+  - id: tv1
+    name: Первый канал
+    type: тв
+    site: https://www.1tv.ru
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@news_1tv"
+      title: Первый канал. Новости
+      check: ok
+      latest: "2026-11-22 17:04 Europe/Berlin"
+      messages_on_preview: 20
+    notes: Контрольный пакет у Росимущества. Проверенные URL /news/rss, /news/feed, /rss, /export/rss.xml не являются рабочей RSS (HTML или 404). Публичной ленты не найдено.
+
+  - id: vesti
+    name: Вести (ВГТРК)
+    type: тв
+    site: https://www.vesti.ru
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vestiru24"
+      title: ВЕСТИ
+      check: ok
+      latest: "2026-11-22 18:57 Europe/Berlin"
+      messages_on_preview: 20
+      aliases:
+        - "@vestiru"
+      note: "Официальный канал ВГТРК (vesti.ru, info@vesti.ru, запись в реестре РКН). @vestiru — тот же канал."
+    notes: "Старый https://www.vesti.ru/vesti.rss даёт 404. Публичной RSS нет: профессиональная лента ИС «Вести» распространяется по подписке. Неофициальные/устаревшие @vesti и @russia24tv в конфиг не включены."
+
+  - id: russia1
+    name: Россия 1
+    type: тв
+    site: https://russia.tv
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@tvrussia1"
+      title: Телеканал РОССИЯ 1
+      check: ok
+      latest: "2026-11-22 17:09 Europe/Berlin"
+      messages_on_preview: 11
+    notes: Телеканал ВГТРК. Рабочая публичная RSS не найдена (russia.tv с бокса недоступен).
+
+  - id: smotrim
+    name: Смотрим (ВГТРК)
+    type: тв
+    site: https://smotrim.ru
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@smotrim_ru"
+      title: СМОТРИМ
+      check: ok
+      latest: "2026-11-22 14:29 Europe/Berlin"
+      messages_on_preview: 12
+    notes: "Цифровая платформа ВГТРК (info@smotrim.ru, запись в РКН). URL /rss и /rss/news — 404."
+
+  - id: zvezda
+    name: Телеканал «Звезда»
+    type: тв
+    site: https://tvzvezda.ru
+    status: ok
+    rss:
+      - url: https://tvzvezda.ru/export/rss.xml
+        title: АО «ТРК ВС РФ «ЗВЕЗДА»
+        items: 25
+        latest: "2026-11-22 18:44 Europe/Berlin"
+        fulltext: полный текст
+        check: ok
+        http_code: 200
+        median_desc_chars: 1325
+    telegram:
+      username: "@zvezdanews"
+      title: "Zvezdanews | «Звезда»"
+      check: ok
+      latest: "2026-11-22 18:11 Europe/Berlin"
+      messages_on_preview: 15
+    notes: Телеканал Минобороны России. Одна из немногих лент с полным текстом в RSS.
+
+  - id: rt_russian
+    name: RT на русском
+    type: тв
+    site: https://russian.rt.com
+    status: ok
+    rss:
+      - url: https://russian.rt.com/rss
+        title: RT на русском
+        items: 50
+        latest: "2026-11-22 18:59 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 134
+      - url: https://russian.rt.com/rss/news
+        title: RT на русском - Новости
+        items: 50
+        latest: "2026-11-22 18:59 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 121
+        note: отдельная новостная подлента, не дубль байт-в-байт
+    telegram:
+      username: "@RTnaRusskom"
+      title: RT на русском
+      check: stale
+      latest: "2022-05-15 01:12 Europe/Berlin"
+      messages_on_preview: 11
+      note: "Официальные контакты telegram@rttv.ru, ссылка на russian.rt.com; последняя публикация в превью — май 2022. Для мониторинга использовать RSS."
+    notes: "Государственный международный телеканал. Английская лента https://www.rt.com/rss/ тоже живая (100 записей, полный текст), в стартовый русскоязычный набор не включена."
+
+  - id: ntv
+    name: НТВ
+    type: тв
+    site: https://www.ntv.ru
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@ntvnews"
+      title: НТВ
+      check: ok
+      latest: "2026-11-22 18:49 Europe/Berlin"
+      messages_on_preview: 19
+    notes: Газпром-Медиа (госконтроль через «Газпром»). URL /rss и /novosti/rss — 404.
+
+  - id: rg
+    name: Российская газета
+    type: газета
+    site: https://rg.ru
+    status: ok
+    rss:
+      - url: https://rg.ru/xml/index.xml
+        title: Российская газета
+        items: 100
+        latest: "2026-11-22 19:02 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 200
+        note: www.rg.ru/xml/index.xml редиректит сюда же
+    telegram:
+      username: "@rgrunews"
+      title: "Российская Газета | Новости"
+      check: ok
+      latest: "2026-11-22 19:00 Europe/Berlin"
+      messages_on_preview: 14
+    notes: Официальное издание Правительства РФ. Тематические /xml/politika.xml, /xml/ekonomika.xml, /tema/gos/rss.xml — 404. Отдельных подлент не найдено.
+
+  - id: pnp
+    name: Парламентская газета
+    type: газета
+    site: https://www.pnp.ru
+    status: ok
+    rss:
+      - url: https://www.pnp.ru/rss/
+        title: Парламентская газета
+        items: 50
+        latest: "2026-11-22 17:35 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 168
+    telegram:
+      username: "@pnprus"
+      title: Парламентская газета
+      check: ok
+      latest: "2026-11-22 18:04 Europe/Berlin"
+      messages_on_preview: 20
+    notes: Официальное издание Федерального Собрания РФ.
+
+  - id: redstar
+    name: Красная звезда
+    type: газета
+    site: https://redstar.ru
+    status: blocked_from_box
+    rss:
+      - url: http://redstar.ru/feed/
+        title: Красная звезда
+        items: 20
+        latest: "2026-11-22 18:11 Europe/Berlin"
+        fulltext: анонс (WordPress)
+        check: blocked_from_box_verified
+        note: "С бокса HTTPS обрывается на TLS. Лента подтверждена альтернативным запросом: WordPress RSS, свежая запись 22.11.2026, не менее 20 item."
+    telegram: null
+    notes: Газета Вооружённых сил РФ. С российского IP, скорее всего, откроется напрямую. Официальный Telegram не найден.
+
+  - id: kremlin
+    name: Президент России (Кремль)
+    type: орган_власти
+    site: http://kremlin.ru
+    status: blocked_from_box
+    rss:
+      - url: http://kremlin.ru/events/all/feed
+        title: "Сайт Президента России: Все материалы"
+        latest: "2026-11-21 13:30 Europe/Berlin"
+        fulltext: полный текст
+        check: blocked_from_box_verified
+      - url: http://kremlin.ru/events/president/news/feed
+        title: "Деятельность Президента: Новости"
+        latest: "2026-11-20 20:05 Europe/Berlin"
+        fulltext: полный текст
+        check: blocked_from_box_verified
+      - url: http://kremlin.ru/acts/news/feed
+        title: Документы
+        latest: "2026-11-20 09:36 Europe/Berlin"
+        fulltext: полный текст
+        check: blocked_from_box_verified
+      - url: http://kremlin.ru/events/president/letters/feed
+        title: Телеграммы
+        latest: "2026-11-21 13:30 Europe/Berlin"
+        fulltext: полный текст
+        check: blocked_from_box_verified
+    telegram:
+      username: "@news_kremlin"
+      title: Кремль. Новости
+      check: ok
+      latest: "2026-11-20 17:32 Europe/Berlin"
+      messages_on_preview: 19
+    notes: "С бокса домен режется прокси (198.18.0.1): HTTPS — TLS unexpected EOF, HTTP — 500 Pingora. Ленты живые и проверены альтернативным запросом (полный HTML-текст в item). @kremlin (без news_) — посторонний канал, не использовать."
+
+  - id: government
+    name: Правительство России
+    type: орган_власти
+    site: http://government.ru
+    status: blocked_from_box
+    rss:
+      - url: http://government.ru/news/rss/
+        title: Новости
+        items: 20
+        latest: "2026-11-21 13:30 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: blocked_from_box_verified
+      - url: http://government.ru/docs/rss/
+        title: Документы
+        items: 20
+        latest: "2026-11-20 08:00 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: blocked_from_box_verified
+      - url: http://government.ru/orders/rss/
+        title: Поручения и их выполнение
+        items: 20
+        latest: "2026-11-18 13:30 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: blocked_from_box_verified
+      - url: http://government.ru/dep_news/rss/
+        title: По министерствам и ведомствам
+        items: 20
+        latest: "2026-11-20 08:00 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: blocked_from_box_verified
+    telegram:
+      username: "@government_rus"
+      title: Правительство России
+      check: ok
+      latest: "2026-11-22 17:01 Europe/Berlin"
+      messages_on_preview: 7
+      note: "В описании — официальный канал Правительства РФ. @governmentru («Новости Правительства РФ») в описании прямо указан как неофициальный — не использовать."
+    notes: С бокса те же TLS/500, что у kremlin.ru. Все четыре официальные подленты подтверждены альтернативным запросом (примерно по 20 свежих item).
+
+  - id: mid
+    name: МИД России
+    type: орган_власти
+    site: https://www.mid.ru
+    status: telegram_ok_rss_blocked
+    rss:
+      - url: https://mid.ru/ru/rss.php
+        items: 0
+        check: antibot
+        http_code: 200
+        note: Документированный официальный URL. С бокса — HTML-челлендж (F5/TSPD), не XML. WebFetch — 403.
+    telegram:
+      username: "@MID_Russia"
+      title: МИД России
+      check: ok
+      latest: "2026-11-22 19:02 Europe/Berlin"
+      messages_on_preview: 4
+    notes: RSS нужно перепроверить с российского IP / без антибота. Пока рабочий канал поступления — Telegram.
+
+  - id: mil
+    name: Минобороны России
+    type: орган_власти
+    site: https://mil.ru
+    status: telegram_ok_rss_unverified
+    rss:
+      - url: https://function.mil.ru/rss_feeds/reference_to_general.htm?contenttype=xml
+        items: 0
+        check: unverified
+        http_code: 0
+        note: Широко цитируемый официальный URL. С бокса HTTPS TLS EOF, HTTP 500; альтернативный запрос тоже 500. Не подтверждён в этом прогоне.
+    telegram:
+      username: "@mod_russia"
+      title: Минобороны России
+      check: ok
+      latest: "2026-11-22 18:49 Europe/Berlin"
+      messages_on_preview: 10
+    notes: "Для новостей ведомства сейчас надёжнее @mod_russia и телеканал «Звезда». RSS перепроверить с российского IP."
+
+  - id: cbr
+    name: Банк России
+    type: орган_власти
+    site: https://www.cbr.ru
+    status: ok
+    rss:
+      - url: https://www.cbr.ru/rss/RssNews
+        title: Новое на сайте
+        items: 100
+        latest: "2026-11-22 09:05 Europe/Berlin"
+        fulltext: только заголовок
+        check: ok
+        http_code: 200
+      - url: https://www.cbr.ru/rss/eventrss
+        title: События и комментарии
+        items: 100
+        latest: "2026-11-20 12:40 Europe/Berlin"
+        fulltext: только заголовок
+        check: ok
+        http_code: 200
+      - url: https://www.cbr.ru/rss/RssPress
+        title: Пресс-релизы
+        items: 8
+        latest: "2026-11-13 16:37 Europe/Berlin"
+        fulltext: полный текст
+        check: ok
+        http_code: 200
+        median_desc_chars: 2386
+      - url: https://www.cbr.ru/rss/RssCurrency
+        title: Курсы валют
+        items: 1
+        latest: "2026-11-20 22:00 Europe/Berlin"
+        fulltext: полный текст
+        check: ok
+        http_code: 200
+        note: не новости, ежедневные курсы; в новостной пайплайн можно не брать
+    telegram:
+      username: "@centralbank_russia"
+      title: Банк России
+      check: ok
+      latest: "2026-11-22 10:00 Europe/Berlin"
+      messages_on_preview: 20
+    notes: "Список лент официальный: https://www.cbr.ru/development/RSS/. Есть также служебные и английские ленты, в стартовый набор не включены."
+
+  - id: duma
+    name: Государственная Дума
+    type: орган_власти
+    site: http://duma.gov.ru
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@duma_gov_ru"
+      title: Государственная Дума
+      check: ok
+      latest: "2026-11-21 09:48 Europe/Berlin"
+      messages_on_preview: 20
+    notes: "На http://duma.gov.ru/subscribe/ обещаны RSS, но http://duma.gov.ru/news/rss/ даёт 404, точный рабочий URL в проверке не найден. @gosduma — посторонний канал (KetchupShows), не использовать."
+
+  - id: council
+    name: Совет Федерации
+    type: орган_власти
+    site: https://council.gov.ru
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@sovfedofficial"
+      title: Совет Федерации
+      check: ok
+      latest: "2026-11-22 08:01 Europe/Berlin"
+      messages_on_preview: 9
+    notes: Проверенные пути /events/news/rss/ и /press-center/news/rss/ с бокса не открылись (TLS/500). Официальный URL RSS не подтверждён — перепроверить с российского IP.
+
+  - id: genproc
+    name: Генеральная прокуратура РФ
+    type: орган_власти
+    site: https://epp.genproc.gov.ru
+    status: ok
+    rss:
+      - url: https://epp.genproc.gov.ru/rss
+        title: Все новости
+        items: 20
+        latest: "2026-11-21 12:00 Europe/Berlin"
+        fulltext: только заголовок
+        check: ok
+        http_code: 200
+    telegram:
+      username: "@genprocrf"
+      title: Генпрокуратура России
+      check: ok
+      latest: "2026-11-20 14:31 Europe/Berlin"
+      messages_on_preview: 8
+    notes: Рабочая лента на epp.genproc.gov.ru. Старые пути www.genproc.gov.ru/smi/news/rss/ с бокса не открылись.
+
+  - id: sledcom
+    name: Следственный комитет РФ
+    type: орган_власти
+    site: https://sledcom.ru
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@sledcom_press"
+      title: Следком
+      check: ok
+      latest: "2026-11-22 16:35 Europe/Berlin"
+      messages_on_preview: 13
+    notes: "https://sledcom.ru/rss и /news/rss с бокса отвечают 503. Рабочий канал — Telegram."
+
+  - id: mvd
+    name: МВД России
+    type: орган_власти
+    site: https://мвд.рф
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@mediamvd"
+      title: МВД МЕДИА
+      check: ok
+      latest: "2026-11-22 14:01 Europe/Berlin"
+      messages_on_preview: 12
+    notes: Официальный URL RSS не подтверждён (запросы к mvd.ru/news/rss/ с бокса — TLS error). Для старта — Telegram.
+
+  - id: mchs
+    name: МЧС России
+    type: орган_власти
+    site: https://www.mchs.gov.ru
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@mchs_official"
+      title: МЧС России
+      check: ok
+      latest: "2026-11-10 15:51 Europe/Berlin"
+      messages_on_preview: 5
+      note: Официальный канал; в превью последняя запись 10 ноября 2026 — реже остальных.
+    notes: Официальный URL RSS не подтверждён (TLS с бокса). Telegram официальный.
+
+  - id: minfin
+    name: Минфин России
+    type: орган_власти
+    site: https://minfin.gov.ru
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@minfin"
+      title: Минфин России
+      check: ok
+      latest: "2026-11-22 10:03 Europe/Berlin"
+      messages_on_preview: 20
+    notes: Проверенные пути /rss и /ru/press-center/rss отвечают 503. Официальный Telegram активен.
+
+  - id: minzdrav
+    name: Минздрав России
+    type: орган_власти
+    site: https://minzdrav.gov.ru
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@minzdrav_ru"
+      title: Минздрав России
+      check: ok
+      latest: "2026-11-22 18:00 Europe/Berlin"
+      messages_on_preview: 13
+    notes: Публичная RSS с бокса не открылась (TLS). Официальный Telegram активен.
+
+  - id: minenergo
+    name: Минэнерго России
+    type: орган_власти
+    site: https://minenergo.gov.ru
+    status: ok
+    rss:
+      - url: https://minenergo.gov.ru/rss
+        title: Министерство энергетики Российской Федерации
+        items: 25
+        latest: "2026-11-20 21:16 Europe/Berlin"
+        fulltext: полный текст
+        check: ok
+        http_code: 200
+        median_desc_chars: 1467
+    telegram:
+      username: "@minenergo_official"
+      title: Минэнерго России
+      check: ok
+      latest: "2026-11-22 15:50 Europe/Berlin"
+      messages_on_preview: 14
+    notes: И RSS, и официальный Telegram работают с бокса.
+
+  - id: mintrud
+    name: Минтруд России
+    type: орган_власти
+    site: https://mintrud.gov.ru
+    status: ok
+    rss:
+      - url: https://mintrud.gov.ru/rss
+        title: "Минтруд России: Новости. Официальная позиция"
+        items: 50
+        latest: "2026-11-20 18:00 Europe/Berlin"
+        fulltext: развёрнутый анонс
+        check: ok
+        http_code: 200
+        median_desc_chars: 402
+    telegram: null
+    notes: Рабочая RSS с бокса. Официальный Telegram в этой проверке не подтверждён.
+
+  - id: moscow
+    name: Правительство Москвы (mos.ru)
+    type: региональное
+    site: https://www.mos.ru
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@mosrutop"
+      title: Город Москва
+      check: ok
+      latest: "2026-11-22 16:03 Europe/Berlin"
+      messages_on_preview: 9
+      note: Официальный канал сайта Мэра Москвы mos.ru, запись в перечне РКН.
+    notes: "Проверенные /rss и /news/rss/ с бокса не дали рабочую ленту (TLS или 404). @mos_ru — перепостный/неофициальный агрегатор, не использовать."
+
+  - id: crimea
+    name: Правительство Республики Крым
+    type: региональное
+    site: https://rk.gov.ru
+    status: telegram_ok_rss_empty
+    rss:
+      - url: https://rk.gov.ru/rss
+        title: Правительство Республики Крым
+        items: 0
+        check: empty
+        http_code: 200
+        note: Валидный RSS, канал пустой на момент проверки
+    telegram:
+      username: "@rk_gov"
+      title: "Республика Крым | Официально"
+      check: ok
+      latest: "2026-11-22 14:14 Europe/Berlin"
+      messages_on_preview: 17
+      note: В описании — официальный канал Правительства Республики Крым.
+    notes: RSS-заглушка есть, новостей в ней нет. Для старта — Telegram.
