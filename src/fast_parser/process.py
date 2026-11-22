@@ -21,14 +21,17 @@ class ProcessStats:
     completed: int = 0
 
 
-def process_pending(settings: AppSettings, *, limit: int | None = None) -> ProcessStats:
+def process_pending(
+    settings: AppSettings,
+    *,
+    limit: int | None = None,
+    all_articles: bool = False,
+) -> ProcessStats:
     session = open_session(settings)
     try:
-        stmt = (
-            select(Article)
-            .where(or_(Article.category.is_(None), Article.sentiment.is_(None)))
-            .order_by(Article.id)
-        )
+        stmt = select(Article).order_by(Article.id)
+        if not all_articles:
+            stmt = stmt.where(or_(Article.category.is_(None), Article.sentiment.is_(None)))
         if limit is not None:
             stmt = stmt.limit(limit)
         articles = list(session.scalars(stmt))
@@ -37,6 +40,12 @@ def process_pending(settings: AppSettings, *, limit: int | None = None) -> Proce
         stats = ProcessStats()
         for start in range(0, len(articles), batch_size):
             chunk = articles[start : start + batch_size]
+            if all_articles:
+                for article in chunk:
+                    article.category = None
+                    article.sentiment = None
+                    article.sentiment_score = None
+                    article.pipeline_status = "pending"
             pipeline.apply_many(chunk)
             session.commit()
             stats.seen += len(chunk)

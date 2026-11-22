@@ -3,7 +3,8 @@ from pathlib import Path
 import httpx
 import pytest
 
-from fast_parser.config import AppSettings, LlmSettings
+from fast_parser.config import AppSettings, LlmSettings, load_settings
+from fast_parser.evaluate import load_labels, score_dataset
 from fast_parser.pipeline.base import ArticleView
 from fast_parser.pipeline.classify import CategoryProcessor, SentimentProcessor
 from fast_parser.pipeline.keywords import lexical_scores
@@ -154,6 +155,18 @@ sources:
         assert article.pipeline_status == "pending"
     finally:
         session.close()
+
+
+def test_hand_labelled_set_is_scored_without_models():
+    rows = load_labels(ROOT / "eval" / "labels.jsonl")
+    assert len(rows) >= 150
+    settings = load_settings(ROOT / "config" / "settings.yaml")
+    settings.pipeline.category.use_embeddings = False
+    settings.pipeline.llm.enabled = False
+    keyword, sentiment = score_dataset(settings, rows, use_embeddings=False)
+    assert sentiment is None
+    assert keyword.labelled == len(rows)
+    assert keyword.accuracy > 0.3
 
 
 @pytest.mark.slow
