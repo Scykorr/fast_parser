@@ -35,6 +35,8 @@ def main(argv: list[str] | None = None) -> int:
             count = export_jsonl(settings, args.out)
             print(f"Записано статей: {count} → {args.out}")
             return 0
+        if args.command == "web":
+            return run_web(settings, host=args.host, port=args.port)
     except FileNotFoundError as exc:
         print(str(exc), file=sys.stderr)
         return 2
@@ -68,6 +70,18 @@ def run_loop(settings: AppSettings, interval: int) -> int:
             except KeyboardInterrupt:
                 print("\nОстановлено")
                 return 130
+
+
+def run_web(settings: AppSettings, *, host: str | None, port: int | None) -> int:
+    import uvicorn
+
+    from fast_parser.web.app import create_app
+
+    bind_host = host or settings.web.host
+    bind_port = port if port is not None else settings.web.port
+    print(f"Веб-интерфейс: http://{bind_host}:{bind_port}")
+    uvicorn.run(create_app(settings), host=bind_host, port=bind_port, log_level="info")
+    return 0
 
 
 def export_jsonl(settings: AppSettings, path: Path) -> int:
@@ -175,4 +189,7 @@ def _parser() -> argparse.ArgumentParser:
     sub.add_parser("stats", help="Сводка по локальной базе")
     export = sub.add_parser("export", help="Выгрузить статьи в JSONL (текст и метаданные для будущего RAG)")
     export.add_argument("--out", type=Path, required=True, help="Файл .jsonl")
+    web = sub.add_parser("web", help="Локальный веб-интерфейс и JSON API")
+    web.add_argument("--host", default=None, help="Адрес, по умолчанию 127.0.0.1")
+    web.add_argument("--port", type=int, default=None, help="Порт, по умолчанию 8080")
     return parser

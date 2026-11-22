@@ -14,8 +14,11 @@ dependencies = [
     "feedparser>=6.0.11",
     "httpx>=0.27",
     "pydantic>=2.6",
+    "fastapi>=0.115",
+    "jinja2>=3.1",
     "pyyaml>=6.0",
     "sqlalchemy>=2.0",
+    "uvicorn>=0.32",
     "trafilatura>=1.12",
     "tzdata>=2024.1",
 ]
@@ -31,6 +34,9 @@ where = ["src"]
 
 [tool.setuptools.dynamic]
 version = { attr = "fast_parser.__version__" }
+
+[tool.setuptools.package-data]
+fast_parser = ["web/templates/*.html", "web/static/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

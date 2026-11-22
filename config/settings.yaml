@@ -51,5 +51,9 @@ pipeline:
 loop:
   interval_seconds: 900
 
+web:
+  host: 127.0.0.1
+  port: 8080
+
 logging:
   level: INFO

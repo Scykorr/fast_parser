@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ article.title }} — fast_parser{% endblock %}
+{% block body %}
+<article class="panel story">
+  <p class="meta"><a href="/">← Лента</a></p>
+  <h1>{{ article.title or "Без заголовка" }}</h1>
+  <p class="meta">
+    {{ source.name }} ({{ source.type }})
+    {% if source.region %} · {{ source.region_code }} {{ source.region }}, {{ source.federal_district }}{% endif %}
+    {% if article.published_at %} · {{ article.published_at.strftime("%Y-%m-%d %H:%M UTC") }}{% endif %}
+  </p>
+  <p class="meta">
+    Категория: {{ article.category or "—" }}
+    · Тональность: {{ article.sentiment or "—" }}
+    {% if article.sentiment_score is not none %} ({{ "%.2f"|format(article.sentiment_score) }}){% endif %}
+    · fake_score: {{ "%.2f"|format(article.fake_score) if article.fake_score is not none else "—" }}
+  </p>
+  {% if article.authors %}<p class="meta">Авторы: {{ article.authors | join(", ") }}</p>{% endif %}
+  <p><a href="{{ article.canonical_url }}">Оригинал</a> · текст: {{ article.content_origin }}</p>
+  <div class="body-text">{{ article.text }}</div>
+</article>
+{% endblock %}

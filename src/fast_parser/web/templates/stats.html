@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Сводка — fast_parser{% endblock %}
+{% block body %}
+<section class="panel">
+  <h1>Сводка</h1>
+  <p class="figures">
+    <span><strong>{{ stats.articles }}</strong> статей</span>
+    <span><strong>{{ stats.sources }}</strong> источников</span>
+    <span><strong>{{ stats.feeds_enabled }}</strong> лент в сборе</span>
+  </p>
+  <h2>По дням</h2>
+  {% if stats.per_day %}
+  <table>
+    <thead><tr><th>День (Москва)</th><th>Статьи</th></tr></thead>
+    <tbody>
+      {% for row in stats.per_day %}
+      <tr><td>{{ row.label }}</td><td>{{ row.count }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<p>Пока нет статей с датой.</p>{% endif %}
+  <h2>По источникам</h2>
+  {% if stats.per_source %}
+  <table>
+    <thead><tr><th>Источник</th><th>Статьи</th></tr></thead>
+    <tbody>
+      {% for row in stats.per_source %}
+      <tr><td>{{ row.label }}</td><td>{{ row.count }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<p>Статей ещё нет.</p>{% endif %}
+  <h2>По регионам</h2>
+  {% if stats.per_region %}
+  <table>
+    <thead><tr><th>Регион</th><th>Статьи</th></tr></thead>
+    <tbody>
+      {% for row in stats.per_region %}
+      <tr><td>{{ row.label }}</td><td>{{ row.count }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<p>Региональных статей ещё нет.</p>{% endif %}
+</section>
+{% endblock %}
