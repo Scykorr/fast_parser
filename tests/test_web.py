@@ -186,6 +186,31 @@ def test_sources_regions_stats_and_pages(tmp_path):
     assert "/api/collect" in schema.json()["paths"]
 
 
+def test_header_and_russian_sentiment_facet(tmp_path):
+    from datetime import datetime, timezone
+
+    from fast_parser.db import init_db
+    from fast_parser.models import FeedState
+
+    client = _client(tmp_path)
+    factory = init_db(f"sqlite:///{(tmp_path / 'parser.sqlite').as_posix()}")
+    session = factory()
+    state = session.query(FeedState).one()
+    state.last_success_at = datetime(2026, 11, 22, 15, 30, tzinfo=timezone.utc)
+    session.commit()
+    session.close()
+    page = client.get("/")
+    assert page.status_code == 200
+    assert "Сайт показывает собранное" in page.text
+    assert "run.bat" in page.text
+    assert "Сбор идёт только по кнопке" not in page.text
+    assert "Последний проход: 22.11.2026 18:30 МСК" in page.text
+    assert "Положительные" in page.text
+    assert "Нейтральные" in page.text
+    assert "Отрицательные" in page.text
+    assert 'name="sentiment" value="positive"' in page.text
+
+
 def test_empty_numeric_fields_still_filter_the_feed(tmp_path):
     client = _client(tmp_path)
     params = {

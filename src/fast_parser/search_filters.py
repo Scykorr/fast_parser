@@ -461,10 +461,40 @@ def facet_counts(session: Session, filters: ArticleFilters) -> dict[str, list[di
             )
         rows.sort(key=lambda item: (-item["count"], item["label"]))
         found[name] = rows
+    found["sentiment"] = _sentiment_labels(found.get("sentiment") or [], filters)
     found["channel"] = _channel_facet(session, filters)
     found["weekday"] = _clock_facet(session, filters, "weekday")
     found["tag"] = _tag_facet(session, filters)
     return found
+
+
+_SENTIMENT_TITLES = (
+    ("positive", "Положительные"),
+    ("neutral", "Нейтральные"),
+    ("negative", "Отрицательные"),
+)
+
+
+def _sentiment_labels(rows: list[dict], filters: ArticleFilters) -> list[dict]:
+    by_value = {row["value"]: row for row in rows}
+    labeled = []
+    for value, title in _SENTIMENT_TITLES:
+        current = by_value.pop(value, None)
+        labeled.append(
+            {
+                "value": value,
+                "label": title,
+                "count": 0 if current is None else current["count"],
+                "included": value in filters.sentiments,
+                "excluded": value in filters.sentiments_not,
+                "always": True,
+            }
+        )
+    for row in by_value.values():
+        labeled.append(row)
+    if not any(item["count"] or item["included"] or item["excluded"] for item in labeled):
+        return []
+    return labeled
 
 
 def _channel_facet(session: Session, filters: ArticleFilters) -> list[dict]:

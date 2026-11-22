@@ -23,7 +23,7 @@
         <button type="submit">Собрать сейчас</button>
       </form>
     </div>
-    <p id="collect-status" class="collect-status">Версия {{ version }}. Сбор идёт только по кнопке, сервис сам по себе не крутится.</p>
+    <p id="collect-status" class="collect-status">Версия {{ version }}. Сайт показывает собранное. Сбор: run.bat / fast-parser run или кнопка.{% if last_collect %} Последний проход: {{ last_collect }}.{% endif %}</p>
   </header>
   <main>
     {% block body %}{% endblock %}

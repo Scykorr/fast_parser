@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.exceptions import RequestValidationError
@@ -204,31 +205,33 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
         }
         context["problems"] = _query_problems(request)
         template = "browser.html" if request.headers.get("HX-Request") else "feed.html"
-        return TEMPLATES.TemplateResponse(request, template, context)
+        return _page(request, template, context, session)
 
     @app.get("/articles/{article_id}", response_class=HTMLResponse)
     def article_page(article_id: int, request: Request, session: Session = Depends(db_session)):
         found = article_with_source(session, article_id)
         if found is None:
             raise HTTPException(status_code=404, detail="Статья не найдена")
-        return TEMPLATES.TemplateResponse(
+        return _page(
             request,
             "article.html",
             {"request": request, "article": found[0], "source": found[1], "version": __version__},
+            session,
         )
 
     @app.get("/sources", response_class=HTMLResponse)
     def sources_page(request: Request, session: Session = Depends(db_session)):
-        return TEMPLATES.TemplateResponse(
+        return _page(
             request,
             "sources.html",
             {"request": request, "rows": source_statuses(session), "version": __version__},
+            session,
         )
 
     @app.get("/regions", response_class=HTMLResponse)
     def regions_page(request: Request, session: Session = Depends(db_session)):
         items = region_coverage(session)
-        return TEMPLATES.TemplateResponse(
+        return _page(
             request,
             "regions.html",
             {
@@ -238,14 +241,16 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
                 "total": len(items),
                 "version": __version__,
             },
+            session,
         )
 
     @app.get("/stats", response_class=HTMLResponse)
     def stats_page(request: Request, session: Session = Depends(db_session)):
-        return TEMPLATES.TemplateResponse(
+        return _page(
             request,
             "stats.html",
             {"request": request, "stats": dashboard(session), "version": __version__},
+            session,
         )
 
     @app.post("/searches")
@@ -292,13 +297,14 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
         )
 
     @app.post("/collect")
-    def collect_page(request: Request):
+    def collect_page(request: Request, session: Session = Depends(db_session)):
         result = _collect_result()
         if request.headers.get("HX-Request"):
-            return TEMPLATES.TemplateResponse(
+            return _page(
                 request,
                 "collect_status.html",
-                {"request": request, "result": result},
+                {"request": request, "result": result, "version": __version__},
+                session,
             )
         query = f"/?collected=1&new={result.items_new}&errors={result.feeds_error}"
         return RedirectResponse(query, status_code=303)
@@ -360,6 +366,30 @@ def _escape(value: str) -> str:
         .replace(">", "&gt;")
         .replace('"', "&quot;")
     )
+
+
+def _page(request: Request, template: str, context: dict, session: Session):
+    context = dict(context)
+    context.setdefault("version", __version__)
+    context["last_collect"] = _last_collect(session)
+    return TEMPLATES.TemplateResponse(request, template, context)
+
+
+def _last_collect(session: Session) -> str | None:
+    from sqlalchemy import func
+
+    from fast_parser.models import FeedState, TelegramCursor
+
+    moments = [
+        session.scalar(select(func.max(FeedState.last_success_at))),
+        session.scalar(select(func.max(TelegramCursor.updated_at))),
+    ]
+    latest = max((item for item in moments if item is not None), default=None)
+    if latest is None:
+        return None
+    if latest.tzinfo is None:
+        latest = latest.replace(tzinfo=timezone.utc)
+    return latest.astimezone(ZoneInfo("Europe/Moscow")).strftime("%d.%m.%Y %H:%M МСК")
 
 
 def _saved(session: Session) -> list:
