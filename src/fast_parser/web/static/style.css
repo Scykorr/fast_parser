@@ -89,12 +89,36 @@ h2 { font-size: 1.15rem; margin: 1.2rem 0 0.4rem; }
   align-items: end;
 }
 
+.facet-primary {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+}
+
+.facet-sentiment {
+  border-color: var(--accent);
+  background: #fff7f4;
+}
+
 .facets {
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 0.7rem;
 }
+
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 1.1rem;
+  align-items: center;
+  margin: 0.2rem 0 0.8rem;
+}
+
+.pager-size a, .pager-pages a { margin-right: 0.45rem; }
+
+.pager strong { margin-right: 0.45rem; }
 
 .facet {
   margin: 0;

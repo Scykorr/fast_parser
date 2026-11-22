@@ -1,7 +1,7 @@
 <section class="panel">
   <h1>Лента</h1>
-  <form class="filters" method="get" action="/" autocomplete="off"
-        hx-get="/" hx-target="#browser" hx-swap="innerHTML" hx-push-url="true" hx-trigger="change, submit">
+  <form class="filters" method="get" action="/#feed" autocomplete="off" novalidate
+        hx-get="/" hx-target="#browser" hx-swap="innerHTML show:#feed" hx-push-url="true" hx-trigger="change, submit">
     <label>Период
       <select name="period">
         <option value="">Свой диапазон</option>
@@ -46,11 +46,18 @@
         <option value="no" {% if filters.official is sameas false %}selected{% endif %}>нет</option>
       </select>
     </label>
+    <input type="hidden" name="limit" value="{{ pager.limit }}">
     <button type="submit">Показать</button>
+    <p class="hint" id="found">Найдено: {{ total }}</p>
+    {% for problem in problems or [] %}
+    <p class="error">{{ problem }}</p>
+    {% endfor %}
+    <div class="facet-primary">
+      {% with key='sentiment', title='Тональность', rows=facets.sentiment %}{% include "facet.html" %}{% endwith %}
+      {% with key='category', title='Рубрика', rows=facets.category %}{% include "facet.html" %}{% endwith %}
+    </div>
     <div class="facets">
       {% for key, title in [
-        ("category", "Рубрика"),
-        ("sentiment", "Тональность"),
         ("source_type", "Тип источника"),
         ("federal_district", "Округ"),
         ("channel", "Канал"),
@@ -68,7 +75,7 @@
       {% if rows %}
       <fieldset class="facet">
         <legend>{{ title }}</legend>
-        {% for item in rows if item.count or item.included or item.excluded %}
+        {% for item in rows if item.count or item.included or item.excluded or item.always %}
         <div class="facet-row">
           <label>
             <input type="checkbox" name="{{ {

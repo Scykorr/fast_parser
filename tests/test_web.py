@@ -186,6 +186,108 @@ def test_sources_regions_stats_and_pages(tmp_path):
     assert "/api/collect" in schema.json()["paths"]
 
 
+def test_header_and_russian_sentiment_facet(tmp_path):
+    from datetime import datetime, timezone
+
+    from fast_parser.db import init_db
+    from fast_parser.models import FeedState
+
+    client = _client(tmp_path)
+    factory = init_db(f"sqlite:///{(tmp_path / 'parser.sqlite').as_posix()}")
+    session = factory()
+    state = session.query(FeedState).one()
+    state.last_success_at = datetime(2026, 11, 22, 15, 30, tzinfo=timezone.utc)
+    session.commit()
+    session.close()
+    page = client.get("/")
+    assert page.status_code == 200
+    assert "Сайт показывает собранное" in page.text
+    assert "run.bat" in page.text
+    assert "Сбор идёт только по кнопке" not in page.text
+    assert "Последний проход: 22.11.2026 18:30 МСК" in page.text
+    assert "Положительные" in page.text
+    assert "Нейтральные" in page.text
+    assert "Отрицательные" in page.text
+    assert 'name="sentiment" value="positive"' in page.text
+
+
+def test_pages_keep_the_region_filter(tmp_path):
+    from datetime import datetime, timedelta, timezone
+
+    from fast_parser.db import init_db
+    from fast_parser.models import Article
+    from fast_parser.timeutil import utcnow
+
+    client = _client(tmp_path)
+    factory = init_db(f"sqlite:///{(tmp_path / 'parser.sqlite').as_posix()}")
+    session = factory()
+    now = utcnow()
+    for index in range(25):
+        session.add(
+            Article(
+                source_id="south",
+                url=f"https://south.example/extra/{index}",
+                canonical_url=f"https://south.example/extra/{index}",
+                content_hash=f"extra-{index}",
+                title=f"Дополнительная {index}",
+                text="Текст региональной заметки достаточной длины.",
+                published_at=datetime.now(timezone.utc) - timedelta(minutes=index),
+                fetched_at=now,
+                updated_at=now,
+                language="ru",
+            )
+        )
+    session.commit()
+    session.close()
+    page = client.get("/", params={"region_code": "01", "limit": "20", "page": "2"})
+    assert page.status_code == 200
+    assert page.text.count('class="pager"') == 2
+    assert "На странице" in page.text
+    assert ">20<" in page.text or ">20</strong>" in page.text
+    assert "Следующая" in page.text or "Предыдущая" in page.text
+    assert "region_code=01" in page.text
+    assert "limit=20" in page.text
+    assert 'href="/?region_code=01&amp;limit=20#feed"' in page.text
+    assert "Предыдущая" in page.text
+    assert "Дополнительная" in page.text
+    first = client.get("/", params={"region_code": "01", "limit": "20"})
+    assert "Метро" not in first.text
+
+
+def test_empty_numeric_fields_still_filter_the_feed(tmp_path):
+    client = _client(tmp_path)
+    params = {
+        "region_code": "01",
+        "period": "",
+        "date_from": "",
+        "date_to": "",
+        "sentiment_min": "",
+        "sentiment_max": "",
+        "category_confidence_min": "",
+        "category_confidence_max": "",
+        "fake_score_min": "",
+        "fake_score_max": "",
+        "text_len_min": "",
+        "text_len_max": "",
+        "min_cluster_sources": "",
+        "official": "",
+    }
+    page = client.get("/", params=params)
+    assert page.status_code == 200
+    assert "Бюджет Адыгеи" in page.text
+    assert "Метро" not in page.text
+    assert "Найдено: 1" in page.text
+    assert "novalidate" in page.text
+    partial = client.get("/", params=params, headers={"HX-Request": "true"})
+    assert partial.status_code == 200
+    assert "Показать" in partial.text
+    assert "Бюджет Адыгеи" in partial.text
+    assert "<html" not in partial.text.lower()
+    broken = client.get("/", params={"sentiment_min": "нет"})
+    assert broken.status_code == 200
+    assert "числом" in broken.text
+
+
 def test_saved_search_and_exports(tmp_path):
     client = _client(tmp_path)
     saved = client.post("/searches", data={"name": "бюджет", "q": "бюджет"}, follow_redirects=False)

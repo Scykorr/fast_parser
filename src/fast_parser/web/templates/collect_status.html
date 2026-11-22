@@ -1,1 +1,2 @@
-Собрано: новых {{ result.items_new }}, дублей {{ result.items_duplicate }}, ошибок лент {{ result.feeds_error }}.
+Версия {{ version }}. Сайт показывает собранное. Сбор: run.bat / fast-parser run или кнопка.
+{% if last_collect %}Последний проход: {{ last_collect }}. {% endif %}Собрано: новых {{ result.items_new }}, дублей {{ result.items_duplicate }}, ошибок лент {{ result.feeds_error }}.

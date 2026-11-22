@@ -1,5 +1,5 @@
-<section class="panel">
-  <p class="meta">Найдено: {{ total }}</p>
+<section class="panel" id="feed-results">
+  {% include "pager.html" %}
   {% if articles %}
   <ul class="feed">
     {% for article, source in articles %}
@@ -21,4 +21,5 @@
   {% else %}
   <p>По этому фильтру статей нет.</p>
   {% endif %}
+  {% include "pager.html" %}
 </section>

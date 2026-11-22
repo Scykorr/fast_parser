@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+from datetime import date, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from sqlalchemy import select
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -52,6 +55,23 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
     )
     app.state.settings = settings
     app.mount("/static", StaticFiles(directory=str(_ROOT / "static")), name="static")
+
+    @app.exception_handler(RequestValidationError)
+    async def show_validation_error(request: Request, exc: RequestValidationError):
+        lines = []
+        for item in exc.errors():
+            place = " ".join(str(part) for part in item.get("loc", []) if part != "query")
+            lines.append(f"{place}: {item.get('msg')}" if place else str(item.get("msg")))
+        text = "Фильтр не применился. " + " ".join(lines)
+        accepts = request.headers.get("accept", "")
+        if request.headers.get("HX-Request") or "text/html" in accepts:
+            page = (
+                "<!DOCTYPE html><html lang=\"ru\"><meta charset=\"utf-8\">"
+                f"<title>Ошибка фильтра</title><p class=\"error\">{_escape(text)}</p>"
+                "<p><a href=\"/\">Вернуться к ленте</a></p></html>"
+            )
+            return HTMLResponse(page, status_code=422)
+        return JSONResponse(status_code=422, content={"detail": exc.errors()})
 
     def db_session():
         session = factory()
@@ -102,17 +122,17 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
         q: str | None = Query(default=None, description="Слова в заголовке и тексте: фраза, OR, -исключить"),
         title_q: str | None = Query(default=None, description="Слова только в заголовке"),
         body_q: str | None = Query(default=None, description="Слова только в тексте"),
-        fuzzy: bool = False,
-        sentiment_min: float | None = None,
-        sentiment_max: float | None = None,
-        category_confidence_min: float | None = None,
-        category_confidence_max: float | None = None,
-        fake_score_min: float | None = None,
-        fake_score_max: float | None = None,
+        fuzzy: str | None = None,
+        sentiment_min: str | None = None,
+        sentiment_max: str | None = None,
+        category_confidence_min: str | None = None,
+        category_confidence_max: str | None = None,
+        fake_score_min: str | None = None,
+        fake_score_max: str | None = None,
         has_fulltext: str | None = None,
-        text_len_min: int | None = None,
-        text_len_max: int | None = None,
-        min_cluster_sources: int | None = Query(default=None, description="Текст встретился минимум у стольких источников"),
+        text_len_min: str | None = None,
+        text_len_max: str | None = None,
+        min_cluster_sources: str | None = Query(default=None, description="Текст встретился минимум у стольких источников"),
         limit: int = Query(default=50, ge=1, le=200),
         offset: int = Query(default=0, ge=0),
     ) -> ArticleFilters:
@@ -172,6 +192,11 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
         filters: ArticleFilters = Depends(_filters),
         session: Session = Depends(db_session),
     ):
+        if filters.limit not in (20, 50, 100, 200):
+            filters.limit = 50
+        page = _positive_int(request.query_params.get("page"))
+        if page:
+            filters.offset = (page - 1) * filters.limit
         rows, total = search_articles(session, filters)
         context = {
             "request": request,
@@ -181,34 +206,38 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
             "snippets": snippets(session, rows, filters.text or filters.title_text or filters.body_text),
             "saved": _saved(session),
             "total": total,
+            "pager": _pager(request, filters, total),
             "version": __version__,
         }
-        template = "feed_list.html" if request.headers.get("HX-Request") else "feed.html"
-        return TEMPLATES.TemplateResponse(request, template, context)
+        context["problems"] = _query_problems(request)
+        template = "browser.html" if request.headers.get("HX-Request") else "feed.html"
+        return _page(request, template, context, session)
 
     @app.get("/articles/{article_id}", response_class=HTMLResponse)
     def article_page(article_id: int, request: Request, session: Session = Depends(db_session)):
         found = article_with_source(session, article_id)
         if found is None:
             raise HTTPException(status_code=404, detail="Статья не найдена")
-        return TEMPLATES.TemplateResponse(
+        return _page(
             request,
             "article.html",
             {"request": request, "article": found[0], "source": found[1], "version": __version__},
+            session,
         )
 
     @app.get("/sources", response_class=HTMLResponse)
     def sources_page(request: Request, session: Session = Depends(db_session)):
-        return TEMPLATES.TemplateResponse(
+        return _page(
             request,
             "sources.html",
             {"request": request, "rows": source_statuses(session), "version": __version__},
+            session,
         )
 
     @app.get("/regions", response_class=HTMLResponse)
     def regions_page(request: Request, session: Session = Depends(db_session)):
         items = region_coverage(session)
-        return TEMPLATES.TemplateResponse(
+        return _page(
             request,
             "regions.html",
             {
@@ -218,14 +247,16 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
                 "total": len(items),
                 "version": __version__,
             },
+            session,
         )
 
     @app.get("/stats", response_class=HTMLResponse)
     def stats_page(request: Request, session: Session = Depends(db_session)):
-        return TEMPLATES.TemplateResponse(
+        return _page(
             request,
             "stats.html",
             {"request": request, "stats": dashboard(session), "version": __version__},
+            session,
         )
 
     @app.post("/searches")
@@ -272,13 +303,14 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
         )
 
     @app.post("/collect")
-    def collect_page(request: Request):
+    def collect_page(request: Request, session: Session = Depends(db_session)):
         result = _collect_result()
         if request.headers.get("HX-Request"):
-            return TEMPLATES.TemplateResponse(
+            return _page(
                 request,
                 "collect_status.html",
-                {"request": request, "result": result},
+                {"request": request, "result": result, "version": __version__},
+                session,
             )
         query = f"/?collected=1&new={result.items_new}&errors={result.feeds_error}"
         return RedirectResponse(query, status_code=303)
@@ -299,6 +331,114 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
         )
 
     return app
+
+
+_NUMBER_FIELDS = (
+    "sentiment_min",
+    "sentiment_max",
+    "category_confidence_min",
+    "category_confidence_max",
+    "fake_score_min",
+    "fake_score_max",
+)
+_INTEGER_FIELDS = ("text_len_min", "text_len_max", "min_cluster_sources")
+
+
+def _query_problems(request: Request) -> list[str]:
+    problems = []
+    for key in _NUMBER_FIELDS + _INTEGER_FIELDS:
+        raw = request.query_params.get(key)
+        if raw is None or not str(raw).strip():
+            continue
+        try:
+            int(raw) if key in _INTEGER_FIELDS else float(raw)
+        except ValueError:
+            problems.append(f"«{key}» должно быть числом, сейчас там «{raw}».")
+    for key in ("date_from", "date_to"):
+        raw = request.query_params.get(key)
+        if raw is None or not str(raw).strip():
+            continue
+        try:
+            date.fromisoformat(str(raw)[:10])
+        except ValueError:
+            problems.append(f"«{key}» должно быть датой ГГГГ-ММ-ДД, сейчас там «{raw}».")
+    return problems
+
+
+def _escape(value: str) -> str:
+    return (
+        value.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+    )
+
+
+def _positive_int(value: str | None) -> int | None:
+    if value is None or not str(value).strip().isdigit():
+        return None
+    number = int(value)
+    return number if number > 0 else None
+
+
+def _pager(request: Request, filters: ArticleFilters, total: int) -> dict:
+    limit = filters.limit
+    pages = max(1, (total + limit - 1) // limit) if total else 1
+    page = min(filters.offset // limit + 1, pages)
+
+    def href(number: int, size: int = limit) -> str:
+        pairs = [
+            (key, value)
+            for key, value in request.query_params.multi_items()
+            if key not in {"page", "offset", "limit"}
+        ]
+        pairs.append(("limit", str(size)))
+        if number > 1:
+            pairs.append(("page", str(number)))
+        from urllib.parse import urlencode
+
+        return "/?" + urlencode(pairs) + "#feed"
+
+    nearby: list[int | None] = []
+    wanted = sorted({n for n in (1, pages, page - 2, page - 1, page, page + 1, page + 2) if 1 <= n <= pages})
+    previous = 0
+    for number in wanted:
+        if previous and number > previous + 1:
+            nearby.append(None)
+        nearby.append(number)
+        previous = number
+    return {
+        "page": page,
+        "pages": pages,
+        "limit": limit,
+        "sizes": (20, 50, 100, 200),
+        "href": href,
+        "nearby": nearby,
+    }
+
+
+def _page(request: Request, template: str, context: dict, session: Session):
+    context = dict(context)
+    context.setdefault("version", __version__)
+    context["last_collect"] = _last_collect(session)
+    return TEMPLATES.TemplateResponse(request, template, context)
+
+
+def _last_collect(session: Session) -> str | None:
+    from sqlalchemy import func
+
+    from fast_parser.models import FeedState, TelegramCursor
+
+    moments = [
+        session.scalar(select(func.max(FeedState.last_success_at))),
+        session.scalar(select(func.max(TelegramCursor.updated_at))),
+    ]
+    latest = max((item for item in moments if item is not None), default=None)
+    if latest is None:
+        return None
+    if latest.tzinfo is None:
+        latest = latest.replace(tzinfo=timezone.utc)
+    return latest.astimezone(ZoneInfo("Europe/Moscow")).strftime("%d.%m.%Y %H:%M МСК")
 
 
 def _saved(session: Session) -> list:
