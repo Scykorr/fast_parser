@@ -163,7 +163,11 @@ def test_hand_labelled_set_is_scored_without_models():
     settings = load_settings(ROOT / "config" / "settings.yaml")
     settings.pipeline.category.use_embeddings = False
     settings.pipeline.llm.enabled = False
-    keyword, sentiment = score_dataset(settings, rows, use_embeddings=False)
+    keyword, sentiment, held_out_category, held_out_sentiment = score_dataset(
+        settings, rows, use_embeddings=False
+    )
+    assert held_out_category is None
+    assert held_out_sentiment is None
     assert sentiment is None
     assert keyword.labelled == len(rows)
     assert keyword.accuracy > 0.3

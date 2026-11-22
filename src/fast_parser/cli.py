@@ -103,9 +103,22 @@ def main(argv: list[str] | None = None) -> int:
             from fast_parser.evaluate import format_report, load_labels, score_dataset
 
             rows = load_labels(args.set)
-            keyword, _ = score_dataset(settings, rows, use_embeddings=False)
-            ml_category, sentiment = score_dataset(settings, rows, use_embeddings=True)
-            print(format_report(keyword, ml_category if _ml_installed() else None, sentiment))
+            keyword, _, _, _ = score_dataset(settings, rows, use_embeddings=False)
+            settings.pipeline.category.use_head = False
+            settings.pipeline.sentiment.use_head = False
+            baseline, baseline_sentiment, _, _ = score_dataset(settings, rows, use_embeddings=True)
+            settings.pipeline.category.use_head = True
+            settings.pipeline.sentiment.use_head = True
+            _, _, held_out_category, held_out_sentiment = score_dataset(settings, rows, use_embeddings=True)
+            print(
+                format_report(
+                    keyword,
+                    baseline if _ml_installed() else None,
+                    baseline_sentiment,
+                    held_out_category,
+                    held_out_sentiment,
+                )
+            )
             return 0
     except FileNotFoundError as exc:
         print(str(exc), file=sys.stderr)
