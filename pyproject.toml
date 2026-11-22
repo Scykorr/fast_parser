@@ -34,6 +34,9 @@ ml = [
     "transformers>=4.40",
     "numpy>=1.26",
 ]
+telegram = [
+    "telethon>=1.36",
+]
 
 [project.scripts]
 fast-parser = "fast_parser.cli:main"

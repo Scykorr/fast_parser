@@ -42,6 +42,7 @@ _SOURCE_COLUMN_UPGRADES = (
     ("region_code", "VARCHAR(8)"),
     ("federal_district", "VARCHAR(64)"),
     ("nid", "INTEGER"),
+    ("role", "VARCHAR(16)"),
 )
 _ARTICLE_COLUMN_UPGRADES = (
     ("source_nid", "INTEGER"),

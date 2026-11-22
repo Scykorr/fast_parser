@@ -131,6 +131,7 @@ def sync_catalog(
 def _apply_source(row: Source, spec: SourceSpec, now) -> None:
     row.name = spec.name
     row.type = spec.type
+    row.role = spec.resolved_role()
     row.site = spec.site
     row.status = spec.status
     row.notes = spec.notes
@@ -149,6 +150,13 @@ def _apply_source(row: Source, spec: SourceSpec, now) -> None:
     row.telegram_title = telegram.title
     row.telegram_check = telegram.check
     row.telegram_meta = telegram.model_dump(exclude_none=True)
+
+
+def _article_extra(item) -> dict | None:
+    payload = dict(item.extra or {})
+    if item.categories:
+        payload["categories"] = list(item.categories)
+    return payload or None
 
 
 def _stamp_search_fields(article: Article, tags: list[str] | None) -> None:
@@ -260,7 +268,7 @@ def upsert_article(
             updated_at=now,
             content_origin=item.origin,
             pipeline_status="pending",
-            extra={"categories": item.categories} if item.categories else None,
+            extra=_article_extra(item),
         )
         _stamp_search_fields(article, item.categories)
         attach_lookup_ids(session, article)
@@ -304,7 +312,7 @@ def upsert_article(
     existing.sentiment = None
     existing.sentiment_score = None
     existing.fake_score = None
-    existing.extra = {"categories": item.categories} if item.categories else None
+    existing.extra = _article_extra(item)
     existing.category_id = None
     _stamp_search_fields(existing, item.categories)
     attach_lookup_ids(session, existing)

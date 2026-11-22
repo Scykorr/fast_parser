@@ -13,6 +13,7 @@ sources:
   - id: gov_adygea
     name: Глава Республики Адыгея Мурат Кумпилов
     type: орган_власти
+    role: authority
     site: https://www.adygheya.ru
     region: Республика Адыгея
     region_code: "01"
@@ -30,6 +31,7 @@ sources:
   - id: gov_bashkortostan
     name: Глава Башкортостана Радий Хабиров
     type: орган_власти
+    role: authority
     site: https://www.bashkortostan.ru
     region: Республика Башкортостан
     region_code: "02"
@@ -47,6 +49,7 @@ sources:
   - id: gov_buryatia
     name: Глава Бурятии Алексей Цыденов
     type: орган_власти
+    role: authority
     site: https://egov-buryatia.ru
     region: Республика Бурятия
     region_code: "03"
@@ -64,6 +67,7 @@ sources:
   - id: gov_altai_rep
     name: Глава Республики Алтай Андрей Турчак
     type: орган_власти
+    role: authority
     site: https://altai-republic.ru
     region: Республика Алтай
     region_code: "04"
@@ -81,6 +85,7 @@ sources:
   - id: gov_dagestan
     name: Глава Дагестана Сергей Меликов
     type: орган_власти
+    role: authority
     site: https://www.e-dag.ru
     region: Республика Дагестан
     region_code: "05"
@@ -98,6 +103,7 @@ sources:
   - id: gov_ingushetia
     name: Глава Ингушетии Махмуд-Али Калиматов
     type: орган_власти
+    role: authority
     site: https://ingushetia.ru
     region: Республика Ингушетия
     region_code: "06"
@@ -115,6 +121,7 @@ sources:
   - id: gov_kbr
     name: Глава Кабардино-Балкарии Казбек Коков
     type: орган_власти
+    role: authority
     site: https://pravitelstvo.kbr.ru
     region: Кабардино-Балкарская Республика
     region_code: "07"
@@ -132,6 +139,7 @@ sources:
   - id: gov_kalmykia
     name: Глава Калмыкии Бату Хасиков
     type: орган_власти
+    role: authority
     site: https://glava.region08.ru
     region: Республика Калмыкия
     region_code: "08"
@@ -149,6 +157,7 @@ sources:
   - id: gov_kchr
     name: Глава Карачаево-Черкесии Рашид Темрезов
     type: орган_власти
+    role: authority
     site: https://www.kchr.ru
     region: Карачаево-Черкесская Республика
     region_code: "09"
@@ -166,6 +175,7 @@ sources:
   - id: gov_karelia
     name: Глава Карелии Артур Парфенчиков
     type: орган_власти
+    role: authority
     site: https://gov.karelia.ru
     region: Республика Карелия
     region_code: "10"
@@ -183,6 +193,7 @@ sources:
   - id: gov_mariel
     name: Глава Марий Эл Юрий Зайцев
     type: орган_власти
+    role: authority
     site: https://mari-el.gov.ru
     region: Республика Марий Эл
     region_code: "12"
@@ -200,6 +211,7 @@ sources:
   - id: gov_mordovia
     name: Глава Мордовии Артём Здунов
     type: орган_власти
+    role: authority
     site: https://www.e-mordovia.ru
     region: Республика Мордовия
     region_code: "13"
@@ -217,6 +229,7 @@ sources:
   - id: gov_sakha
     name: Глава Якутии Айсен Николаев
     type: орган_власти
+    role: authority
     site: https://www.sakha.gov.ru
     region: Республика Саха (Якутия)
     region_code: "14"
@@ -234,6 +247,7 @@ sources:
   - id: gov_tatarstan
     name: Раис Татарстана Рустам Минниханов
     type: орган_власти
+    role: authority
     site: https://tatarstan.ru
     region: Республика Татарстан
     region_code: "16"
@@ -251,6 +265,7 @@ sources:
   - id: gov_tyva
     name: Глава Тывы Владислав Ховалыг
     type: орган_власти
+    role: authority
     site: https://rtyva.ru
     region: Республика Тыва
     region_code: "17"
@@ -268,6 +283,7 @@ sources:
   - id: gov_udmurtia
     name: Глава Удмуртии Александр Бречалов
     type: орган_власти
+    role: authority
     site: https://www.udmurt.ru
     region: Удмуртская Республика
     region_code: "18"
@@ -285,6 +301,7 @@ sources:
   - id: gov_khakasia
     name: Глава Хакасии Валентин Коновалов
     type: орган_власти
+    role: authority
     site: https://r-19.ru
     region: Республика Хакасия
     region_code: "19"
@@ -302,6 +319,7 @@ sources:
   - id: gov_chechnya
     name: Глава Чеченской Республики Рамзан Кадыров
     type: орган_власти
+    role: authority
     site: https://chechnya.gov.ru
     region: Чеченская Республика
     region_code: "20"
@@ -319,6 +337,7 @@ sources:
   - id: gov_chuvashia
     name: Глава Чувашии Олег Николаев
     type: орган_власти
+    role: authority
     site: https://cap.ru
     region: Чувашская Республика
     region_code: "21"
@@ -336,6 +355,7 @@ sources:
   - id: gov_altai_krai
     name: Губернатор Алтайского края Виктор Томенко
     type: орган_власти
+    role: authority
     site: https://www.alregn.ru
     region: Алтайский край
     region_code: "22"
@@ -353,6 +373,7 @@ sources:
   - id: gov_krasnodar
     name: Губернатор Краснодарского края Вениамин Кондратьев
     type: орган_власти
+    role: authority
     site: https://admkrai.krasnodar.ru
     region: Краснодарский край
     region_code: "23"
@@ -370,6 +391,7 @@ sources:
   - id: gov_krasnoyarsk
     name: Губернатор Красноярского края Михаил Котюков
     type: орган_власти
+    role: authority
     site: https://krskstate.ru
     region: Красноярский край
     region_code: "24"
@@ -387,6 +409,7 @@ sources:
   - id: gov_stavropol
     name: Губернатор Ставропольского края Владимир Владимиров
     type: орган_власти
+    role: authority
     site: https://www.stavregion.ru
     region: Ставропольский край
     region_code: "26"
@@ -404,6 +427,7 @@ sources:
   - id: gov_khabarovsk
     name: Губернатор Хабаровского края Дмитрий Демешин
     type: орган_власти
+    role: authority
     site: https://www.khabkrai.ru
     region: Хабаровский край
     region_code: "27"
@@ -421,6 +445,7 @@ sources:
   - id: gov_amur
     name: Губернатор Амурской области Василий Орлов
     type: орган_власти
+    role: authority
     site: https://amurobl.ru
     region: Амурская область
     region_code: "28"
@@ -438,6 +463,7 @@ sources:
   - id: gov_arkhangelsk
     name: Губернатор Архангельской области Александр Цыбульский
     type: орган_власти
+    role: authority
     site: https://dvinaland.ru
     region: Архангельская область
     region_code: "29"
@@ -455,6 +481,7 @@ sources:
   - id: gov_astrakhan
     name: Губернатор Астраханской области Игорь Бабушкин
     type: орган_власти
+    role: authority
     site: https://www.astrobl.ru
     region: Астраханская область
     region_code: "30"
@@ -472,6 +499,7 @@ sources:
   - id: gov_belgorod
     name: Губернатор Белгородской области Александр Шуваев
     type: орган_власти
+    role: authority
     site: https://belregion.ru
     region: Белгородская область
     region_code: "31"
@@ -489,6 +517,7 @@ sources:
   - id: gov_bryansk
     name: Губернатор Брянской области Александр Богомаз
     type: орган_власти
+    role: authority
     site: https://www.bryanskobl.ru
     region: Брянская область
     region_code: "32"
@@ -506,6 +535,7 @@ sources:
   - id: gov_vladimir
     name: Губернатор Владимирской области Александр Авдеев
     type: орган_власти
+    role: authority
     site: https://avo.ru
     region: Владимирская область
     region_code: "33"
@@ -523,6 +553,7 @@ sources:
   - id: gov_vologda
     name: Губернатор Вологодской области Георгий Филимонов
     type: орган_власти
+    role: authority
     site: https://vologda-oblast.ru
     region: Вологодская область
     region_code: "35"
@@ -540,6 +571,7 @@ sources:
   - id: gov_voronezh
     name: Губернатор Воронежской области Александр Гусев
     type: орган_власти
+    role: authority
     site: https://www.govvrn.ru
     region: Воронежская область
     region_code: "36"
@@ -557,6 +589,7 @@ sources:
   - id: gov_irkutsk
     name: Губернатор Иркутской области Игорь Кобзев
     type: орган_власти
+    role: authority
     site: https://irkobl.ru
     region: Иркутская область
     region_code: "38"
@@ -574,6 +607,7 @@ sources:
   - id: gov_kaliningrad
     name: Губернатор Калининградской области Алексей Беспрозванных
     type: орган_власти
+    role: authority
     site: https://gov39.ru
     region: Калининградская область
     region_code: "39"
@@ -591,6 +625,7 @@ sources:
   - id: gov_kaluga
     name: Губернатор Калужской области Владислав Шапша
     type: орган_власти
+    role: authority
     site: https://admoblkaluga.ru
     region: Калужская область
     region_code: "40"
@@ -608,6 +643,7 @@ sources:
   - id: gov_kamchatka
     name: Губернатор Камчатского края Владимир Солодов
     type: орган_власти
+    role: authority
     site: https://www.kamgov.ru
     region: Камчатский край
     region_code: "41"
@@ -625,6 +661,7 @@ sources:
   - id: gov_kuzbass
     name: Губернатор Кузбасса Илья Середюк
     type: орган_власти
+    role: authority
     site: https://ako.ru
     region: Кемеровская область — Кузбасс
     region_code: "42"
@@ -642,6 +679,7 @@ sources:
   - id: gov_kirov
     name: Губернатор Кировской области Александр Соколов
     type: орган_власти
+    role: authority
     site: https://www.kirovreg.ru
     region: Кировская область
     region_code: "43"
@@ -659,6 +697,7 @@ sources:
   - id: gov_kostroma
     name: Губернатор Костромской области Сергей Ситников
     type: орган_власти
+    role: authority
     site: https://www.adm44.ru
     region: Костромская область
     region_code: "44"
@@ -676,6 +715,7 @@ sources:
   - id: gov_kurgan
     name: Губернатор Курганской области Вадим Шумков
     type: орган_власти
+    role: authority
     site: https://kurganobl.ru
     region: Курганская область
     region_code: "45"
@@ -693,6 +733,7 @@ sources:
   - id: gov_kursk
     name: Губернатор Курской области Александр Хинштейн
     type: орган_власти
+    role: authority
     site: https://kursk.ru
     region: Курская область
     region_code: "46"
@@ -710,6 +751,7 @@ sources:
   - id: gov_lenobl
     name: Губернатор Ленинградской области Александр Дрозденко
     type: орган_власти
+    role: authority
     site: https://lenobl.ru
     region: Ленинградская область
     region_code: "47"
@@ -727,6 +769,7 @@ sources:
   - id: gov_lipetsk
     name: Губернатор Липецкой области Игорь Артамонов
     type: орган_власти
+    role: authority
     site: https://www.lipetsk.ru
     region: Липецкая область
     region_code: "48"
@@ -744,6 +787,7 @@ sources:
   - id: gov_magadan
     name: Губернатор Магаданской области Сергей Носов
     type: орган_власти
+    role: authority
     site: https://www.49gov.ru
     region: Магаданская область
     region_code: "49"
@@ -761,6 +805,7 @@ sources:
   - id: gov_mosobl
     name: Губернатор Московской области Андрей Воробьёв
     type: орган_власти
+    role: authority
     site: https://mosreg.ru
     region: Московская область
     region_code: "50"
@@ -778,6 +823,7 @@ sources:
   - id: gov_murmansk
     name: Губернатор Мурманской области Андрей Чибис
     type: орган_власти
+    role: authority
     site: https://gov-murman.ru
     region: Мурманская область
     region_code: "51"
@@ -795,6 +841,7 @@ sources:
   - id: gov_nnov
     name: Губернатор Нижегородской области Глеб Никитин
     type: орган_власти
+    role: authority
     site: https://nobl.ru
     region: Нижегородская область
     region_code: "52"
@@ -812,6 +859,7 @@ sources:
   - id: gov_novgorod
     name: Губернатор Новгородской области Александр Дронов
     type: орган_власти
+    role: authority
     site: https://www.novreg.ru
     region: Новгородская область
     region_code: "53"
@@ -829,6 +877,7 @@ sources:
   - id: gov_novosibirsk
     name: Губернатор Новосибирской области Андрей Травников
     type: орган_власти
+    role: authority
     site: https://www.nso.ru
     region: Новосибирская область
     region_code: "54"
@@ -846,6 +895,7 @@ sources:
   - id: gov_omsk
     name: Губернатор Омской области Виталий Хоценко
     type: орган_власти
+    role: authority
     site: https://omskportal.ru
     region: Омская область
     region_code: "55"
@@ -863,6 +913,7 @@ sources:
   - id: gov_orenburg
     name: Губернатор Оренбургской области Евгений Солнцев
     type: орган_власти
+    role: authority
     site: https://www.orb.ru
     region: Оренбургская область
     region_code: "56"
@@ -880,6 +931,7 @@ sources:
   - id: gov_orel
     name: Губернатор Орловской области Андрей Клычков
     type: орган_власти
+    role: authority
     site: https://orel-region.ru
     region: Орловская область
     region_code: "57"
@@ -897,6 +949,7 @@ sources:
   - id: gov_penza
     name: Губернатор Пензенской области Олег Мельниченко
     type: орган_власти
+    role: authority
     site: https://pnzreg.ru
     region: Пензенская область
     region_code: "58"
@@ -914,6 +967,7 @@ sources:
   - id: gov_perm
     name: Губернатор Пермского края Дмитрий Махонин
     type: орган_власти
+    role: authority
     site: https://www.permkrai.ru
     region: Пермский край
     region_code: "59"
@@ -931,6 +985,7 @@ sources:
   - id: gov_pskov
     name: Губернатор Псковской области Михаил Ведерников
     type: орган_власти
+    role: authority
     site: https://www.pskov.ru
     region: Псковская область
     region_code: "60"
@@ -948,6 +1003,7 @@ sources:
   - id: gov_rostov
     name: Губернатор Ростовской области Юрий Слюсарь
     type: орган_власти
+    role: authority
     site: https://www.donland.ru
     region: Ростовская область
     region_code: "61"
@@ -965,6 +1021,7 @@ sources:
   - id: gov_ryazan
     name: Губернатор Рязанской области Павел Малков
     type: орган_власти
+    role: authority
     site: https://ryazangov.ru
     region: Рязанская область
     region_code: "62"
@@ -982,6 +1039,7 @@ sources:
   - id: gov_samara
     name: Губернатор Самарской области Вячеслав Федорищев
     type: орган_власти
+    role: authority
     site: https://www.samregion.ru
     region: Самарская область
     region_code: "63"
@@ -999,6 +1057,7 @@ sources:
   - id: gov_saratov
     name: Губернатор Саратовской области Роман Бусаргин
     type: орган_власти
+    role: authority
     site: https://saratov.gov.ru
     region: Саратовская область
     region_code: "64"
@@ -1016,6 +1075,7 @@ sources:
   - id: gov_sakhalin
     name: Губернатор Сахалинской области Валерий Лимаренко
     type: орган_власти
+    role: authority
     site: https://sakhalin.gov.ru
     region: Сахалинская область
     region_code: "65"
@@ -1033,6 +1093,7 @@ sources:
   - id: gov_smolensk
     name: Губернатор Смоленской области Василий Анохин
     type: орган_власти
+    role: authority
     site: https://www.smolensk.ru
     region: Смоленская область
     region_code: "67"
@@ -1050,6 +1111,7 @@ sources:
   - id: gov_tambov
     name: Глава Тамбовской области Евгений Первышов
     type: орган_власти
+    role: authority
     site: https://www.tambov.gov.ru
     region: Тамбовская область
     region_code: "68"
@@ -1067,6 +1129,7 @@ sources:
   - id: gov_tula
     name: Губернатор Тульской области Дмитрий Миляев
     type: орган_власти
+    role: authority
     site: https://tularegion.ru
     region: Тульская область
     region_code: "71"
@@ -1084,6 +1147,7 @@ sources:
   - id: gov_tyumen
     name: Губернатор Тюменской области Александр Моор
     type: орган_власти
+    role: authority
     site: https://www.admtyumen.ru
     region: Тюменская область
     region_code: "72"
@@ -1101,6 +1165,7 @@ sources:
   - id: gov_ulyanovsk
     name: Губернатор Ульяновской области Алексей Русских
     type: орган_власти
+    role: authority
     site: https://ulgov.ru
     region: Ульяновская область
     region_code: "73"
@@ -1118,6 +1183,7 @@ sources:
   - id: gov_chelyabinsk
     name: Губернатор Челябинской области Алексей Текслер
     type: орган_власти
+    role: authority
     site: https://pravmin.gov74.ru
     region: Челябинская область
     region_code: "74"
@@ -1135,6 +1201,7 @@ sources:
   - id: gov_zabaykal
     name: Губернатор Забайкальского края Александр Осипов
     type: орган_власти
+    role: authority
     site: https://забкрай.рф
     region: Забайкальский край
     region_code: "75"
@@ -1152,6 +1219,7 @@ sources:
   - id: gov_yaroslavl
     name: Губернатор Ярославской области Михаил Евраев
     type: орган_власти
+    role: authority
     site: https://www.yarregion.ru
     region: Ярославская область
     region_code: "76"
@@ -1169,6 +1237,7 @@ sources:
   - id: gov_moscow_mayor
     name: Мэр Москвы Сергей Собянин
     type: орган_власти
+    role: authority
     site: https://www.mos.ru
     region: город Москва
     region_code: "77"
@@ -1186,6 +1255,7 @@ sources:
   - id: gov_spb
     name: Губернатор Санкт-Петербурга Александр Беглов
     type: орган_власти
+    role: authority
     site: https://www.gov.spb.ru
     region: город Санкт-Петербург
     region_code: "78"
@@ -1203,6 +1273,7 @@ sources:
   - id: gov_eao
     name: Губернатор ЕАО Мария Костюк
     type: орган_власти
+    role: authority
     site: https://www.eao.ru
     region: Еврейская автономная область
     region_code: "79"
@@ -1220,6 +1291,7 @@ sources:
   - id: gov_nenets
     name: Губернатор Ненецкого АО Ирина Гехт
     type: орган_власти
+    role: authority
     site: https://adm-nao.ru
     region: Ненецкий автономный округ
     region_code: "83"
@@ -1237,6 +1309,7 @@ sources:
   - id: gov_ugra
     name: Губернатор Югры Руслан Кухарук
     type: орган_власти
+    role: authority
     site: https://admhmao.ru
     region: Ханты-Мансийский автономный округ — Югра
     region_code: "86"
@@ -1254,6 +1327,7 @@ sources:
   - id: gov_chukotka
     name: Губернатор Чукотки Владислав Кузнецов
     type: орган_власти
+    role: authority
     site: https://чукотка.рф
     region: Чукотский автономный округ
     region_code: "87"
@@ -1271,6 +1345,7 @@ sources:
   - id: gov_yamal
     name: Губернатор Ямала Дмитрий Артюхов
     type: орган_власти
+    role: authority
     site: https://www.yanao.ru
     region: Ямало-Ненецкий автономный округ
     region_code: "89"
@@ -1288,6 +1363,7 @@ sources:
   - id: gov_zaporozhye
     name: Губернатор Запорожской области Евгений Балицкий
     type: орган_власти
+    role: authority
     site: https://zo.gov.ru
     region: Запорожская область
     region_code: "90"
@@ -1305,6 +1381,7 @@ sources:
   - id: gov_crimea
     name: Глава Республики Крым Сергей Аксёнов
     type: орган_власти
+    role: authority
     site: https://rk.gov.ru
     region: Республика Крым
     region_code: "91"
@@ -1322,6 +1399,7 @@ sources:
   - id: gov_sevastopol
     name: Губернатор Севастополя Михаил Развожаев
     type: орган_власти
+    role: authority
     site: https://sev.gov.ru
     region: город Севастополь
     region_code: "92"
@@ -1339,6 +1417,7 @@ sources:
   - id: gov_dnr
     name: Глава ДНР Денис Пушилин
     type: орган_власти
+    role: authority
     site: https://denis-pushilin.ru
     region: Донецкая Народная Республика
     region_code: "93"
@@ -1356,6 +1435,7 @@ sources:
   - id: gov_lnr
     name: Глава ЛНР Леонид Пасечник
     type: орган_власти
+    role: authority
     site: https://главалнр.рф
     region: Луганская Народная Республика
     region_code: "94"
@@ -1373,6 +1453,7 @@ sources:
   - id: gov_kherson
     name: Губернатор Херсонской области Владимир Сальдо
     type: орган_власти
+    role: authority
     site: https://khogov.ru
     region: Херсонская область
     region_code: "95"
@@ -1390,6 +1471,7 @@ sources:
   - id: govportal_moscow
     name: Официальный канал сайта мэра Москвы (mos.ru)
     type: орган_власти
+    role: authority
     site: https://www.mos.ru
     region: город Москва
     region_code: "77"
@@ -1407,6 +1489,7 @@ sources:
   - id: govportal_crimea
     name: Правительство Республики Крым
     type: орган_власти
+    role: authority
     site: https://rk.gov.ru
     region: Республика Крым
     region_code: "91"
@@ -1424,6 +1507,7 @@ sources:
   - id: govportal_primorye
     name: Правительство Приморского края
     type: орган_власти
+    role: authority
     site: https://www.primorsky.ru
     region: Приморский край
     region_code: "25"
@@ -1441,6 +1525,7 @@ sources:
   - id: govportal_sverdlovsk
     name: Правительство Свердловской области
     type: орган_власти
+    role: authority
     site: https://midural.ru
     region: Свердловская область
     region_code: "66"
@@ -1458,6 +1543,7 @@ sources:
   - id: govportal_ivanovo
     name: Правительство Ивановской области
     type: орган_власти
+    role: authority
     site: https://ivanovoobl.ru
     region: Ивановская область
     region_code: "37"
@@ -1475,6 +1561,7 @@ sources:
   - id: govportal_volgograd
     name: Администрация Волгоградской области
     type: орган_власти
+    role: authority
     site: https://www.volgograd.ru
     region: Волгоградская область
     region_code: "34"
@@ -1492,6 +1579,7 @@ sources:
   - id: govportal_krasnodar
     name: Пресс-служба администрации Краснодарского края
     type: орган_власти
+    role: authority
     site: https://admkrai.krasnodar.ru
     region: Краснодарский край
     region_code: "23"
@@ -1509,6 +1597,7 @@ sources:
   - id: gtrk_karelia
     name: ГТРК «Карелия»
     type: тв
+    role: media
     site: https://tv-karelia.ru
     region: Республика Карелия
     region_code: "10"
@@ -1529,6 +1618,7 @@ sources:
   - id: gtrk_komi
     name: ГТРК «Коми Гор»
     type: тв
+    role: media
     site: https://komigor.ru
     region: Республика Коми
     region_code: "11"
@@ -1549,6 +1639,7 @@ sources:
   - id: gtrk_pomorye
     name: ГТРК «Поморье» (Вести Поморья)
     type: тв
+    role: media
     site: https://pomorie.ru
     region: Архангельская область
     region_code: "29"
@@ -1574,6 +1665,7 @@ sources:
   - id: gtrk_lotos
     name: ГТРК «Лотос»
     type: тв
+    role: media
     site: https://lotosgtrk.ru
     region: Астраханская область
     region_code: "30"
@@ -1594,6 +1686,7 @@ sources:
   - id: gtrk_volgograd
     name: ГТРК «Волгоград-ТРВ»
     type: тв
+    role: media
     site: https://volgograd-trv.ru
     region: Волгоградская область
     region_code: "34"
@@ -1619,6 +1712,7 @@ sources:
   - id: gtrk_ivanovo
     name: ГТРК «Ивтелерадио» (Вести. Иваново)
     type: тв
+    role: media
     site: https://ivteleradio.ru
     region: Ивановская область
     region_code: "37"
@@ -1636,6 +1730,7 @@ sources:
   - id: gtrk_vyatka
     name: ГТРК «Вятка» (Вести. Кировская область)
     type: тв
+    role: media
     site: https://www.gtrk-vyatka.ru
     region: Кировская область
     region_code: "43"
@@ -1661,6 +1756,7 @@ sources:
   - id: gtrk_omsk
     name: ГТРК «Иртыш» (Вести Омск)
     type: тв
+    role: media
     site: https://vesti-omsk.ru
     region: Омская область
     region_code: "55"
@@ -1686,6 +1782,7 @@ sources:
   - id: gtrk_perm
     name: ГТРК «Пермь» (Вести Пермь)
     type: тв
+    role: media
     site: https://www.vesti-perm.ru
     region: Пермский край
     region_code: "59"
@@ -1703,6 +1800,7 @@ sources:
   - id: gtrk_oka
     name: ГТРК «Ока» (Рязань)
     type: тв
+    role: media
     site: https://www.gtrkoka.ru
     region: Рязанская область
     region_code: "62"
@@ -1723,6 +1821,7 @@ sources:
   - id: gtrk_samara
     name: ГТРК «Самара»
     type: тв
+    role: media
     site: https://tvsamara.ru
     region: Самарская область
     region_code: "63"
@@ -1743,6 +1842,7 @@ sources:
   - id: gtrk_rostov
     name: ГТРК «Дон-ТР» (Вести. Дон)
     type: тв
+    role: media
     site: https://dontr.ru
     region: Ростовская область
     region_code: "61"
@@ -1760,6 +1860,7 @@ sources:
   - id: gtrk_tula
     name: ГТРК «Тула» (Вести-Тула)
     type: тв
+    role: media
     site: https://vestitula.ru
     region: Тульская область
     region_code: "71"
@@ -1777,6 +1878,7 @@ sources:
   - id: gtrk_yaroslavl
     name: ГТРК «Ярославия» (Вести Ярославль)
     type: тв
+    role: media
     site: https://vesti-yaroslavl.ru
     region: Ярославская область
     region_code: "76"
@@ -1794,6 +1896,7 @@ sources:
   - id: gtrk_bashkortostan
     name: ГТРК «Башкортостан»
     type: тв
+    role: media
     site: https://gtrkrb.ru
     region: Республика Башкортостан
     region_code: "02"
@@ -1814,6 +1917,7 @@ sources:
   - id: gtrk_mariel
     name: ГТРК «Марий Эл» (Вести. Марий Эл)
     type: тв
+    role: media
     site: https://gtrkmariel.ru
     region: Республика Марий Эл
     region_code: "12"
@@ -1831,6 +1935,7 @@ sources:
   - id: gtrk_mordovia
     name: ГТРК «Мордовия» (Вести-Мордовия)
     type: тв
+    role: media
     site: https://www.e-mordovia.ru
     region: Республика Мордовия
     region_code: "13"
@@ -1848,6 +1953,7 @@ sources:
   - id: gtrk_orenburg
     name: ГТРК Оренбург (Вести Оренбуржья)
     type: тв
+    role: media
     site: https://www.gtrkorenburg.ru
     region: Оренбургская область
     region_code: "56"
@@ -1865,6 +1971,7 @@ sources:
   - id: gtrk_saratov
     name: ГТРК «Саратов»
     type: тв
+    role: media
     site: https://gtrk.saratov.ru
     region: Саратовская область
     region_code: "64"
@@ -1882,6 +1989,7 @@ sources:
   - id: gtrk_tomsk
     name: ГТРК «Томск» (Вести-Томск)
     type: тв
+    role: media
     site: https://www.tvtomsk.ru
     region: Томская область
     region_code: "70"
@@ -1899,6 +2007,7 @@ sources:
   - id: gtrk_altai_rep
     name: ГТРК «Горный Алтай» (Вести Эл Алтай)
     type: тв
+    role: media
     site: https://elaltay.ru
     region: Республика Алтай
     region_code: "04"
@@ -1916,6 +2025,7 @@ sources:
   - id: gtrk_altai_krai
     name: Вести Алтай (ГТРК «Алтай»)
     type: тв
+    role: media
     site: https://vestialtai.ru
     region: Алтайский край
     region_code: "22"
@@ -1933,6 +2043,7 @@ sources:
   - id: gtrk_kbr
     name: ГТРК «Кабардино-Балкария» (Вести КБР)
     type: тв
+    role: media
     site: https://vestikbr.ru
     region: Кабардино-Балкарская Республика
     region_code: "07"
@@ -1958,6 +2069,7 @@ sources:
   - id: gtrk_dagestan
     name: ГТРК «Дагестан»
     type: тв
+    role: media
     site: https://www.gtrkdagestan.ru
     region: Республика Дагестан
     region_code: "05"
@@ -1975,6 +2087,7 @@ sources:
   - id: gtrk_ingushetia
     name: ГТРК «Ингушетия»
     type: тв
+    role: media
     site: https://ingushetiatv.ru
     region: Республика Ингушетия
     region_code: "06"
@@ -1995,6 +2108,7 @@ sources:
   - id: gtrk_alania
     name: ГТРК «Алания» (Вести Алания)
     type: тв
+    role: media
     site: https://alaniatv.ru
     region: Республика Северная Осетия — Алания
     region_code: "15"
@@ -2020,6 +2134,7 @@ sources:
   - id: gtrk_stavropol
     name: ГТРК «Ставрополье»
     type: тв
+    role: media
     site: https://stavropolye.tv
     region: Ставропольский край
     region_code: "26"
@@ -2040,6 +2155,7 @@ sources:
   - id: gtrk_amur
     name: ГТРК «Амур» (Вести — Амурская область)
     type: тв
+    role: media
     site: https://gtrkamur.ru
     region: Амурская область
     region_code: "28"
@@ -2065,6 +2181,7 @@ sources:
   - id: gtrk_irkutsk
     name: ГТРК «Иркутск» (Вести Иркутск)
     type: тв
+    role: media
     site: https://vestiirk.ru
     region: Иркутская область
     region_code: "38"
@@ -2085,6 +2202,7 @@ sources:
   - id: gtrk_kuzbass
     name: Вести-Кузбасс (ГТРК «Кузбасс»)
     type: тв
+    role: media
     site: https://vesti42.ru
     region: Кемеровская область — Кузбасс
     region_code: "42"
@@ -2105,6 +2223,7 @@ sources:
   - id: gtrk_chita
     name: ГТРК «Чита» (Вести Чита)
     type: тв
+    role: media
     site: https://gtrkchita.ru
     region: Забайкальский край
     region_code: "75"
@@ -2125,6 +2244,7 @@ sources:
   - id: gtrk_orel
     name: ГТРК «Орёл» (Вести-Орёл)
     type: тв
+    role: media
     site: https://vestiorel.ru
     region: Орловская область
     region_code: "57"
@@ -2145,6 +2265,7 @@ sources:
   - id: gtrk_primorye
     name: "Вести: Приморье (ГТРК «Владивосток»)"
     type: тв
+    role: media
     site: https://vestiprim.ru
     region: Приморский край
     region_code: "25"
@@ -2165,6 +2286,7 @@ sources:
   - id: gtrk_sevastopol
     name: ГТРК «Севастополь» (Вести Севастополь)
     type: тв
+    role: media
     site: https://vesti92.ru
     region: город Севастополь
     region_code: "92"
@@ -2190,6 +2312,7 @@ sources:
   - id: gtrk_chelyabinsk
     name: ГТРК «Южный Урал» (cheltv.ru)
     type: тв
+    role: media
     site: https://cheltv.ru
     region: Челябинская область
     region_code: "74"
@@ -2210,6 +2333,7 @@ sources:
   - id: gtrk_tver
     name: Вести Тверь (ГТРК «Тверь»)
     type: тв
+    role: media
     site: https://vesti-tver.ru
     region: Тверская область
     region_code: "69"
@@ -2227,6 +2351,7 @@ sources:
   - id: m24
     name: Москва 24
     type: тв
+    role: media
     site: https://www.m24.ru
     region: город Москва
     region_code: "77"
@@ -2247,6 +2372,7 @@ sources:
   - id: tv360
     name: Телеканал 360 (Подмосковье)
     type: тв
+    role: media
     site: https://360tv.ru
     region: Московская область
     region_code: "50"
@@ -2272,6 +2398,7 @@ sources:
   - id: tatar_inform
     name: Татар-информ
     type: региональное
+    role: media
     site: https://tatar-inform.ru
     region: Республика Татарстан
     region_code: "16"
@@ -2292,6 +2419,7 @@ sources:
   - id: kuban24
     name: Кубань 24
     type: тв
+    role: media
     site: https://kuban24.tv
     region: Краснодарский край
     region_code: "23"
@@ -2309,6 +2437,7 @@ sources:
   - id: dan
     name: Донецкое агентство новостей (ДАН)
     type: региональное
+    role: media
     site: https://dan-news.ru
     region: Донецкая Народная Республика
     region_code: "93"
@@ -2330,3 +2459,547 @@ sources:
       latest: "2026-11-22 18:57 Europe/Berlin"
       messages_on_preview: 11
     notes: Официальное агентство ДНР, регистрация в РКН. Рабочая RSS.
+
+  - id: media_vesti_buryatia
+    name: Вести Бурятия
+    type: тв
+    role: media
+    site: https://t.me/vesti_buryatia
+    region: Республика Бурятия
+    region_code: "03"
+    federal_district: Дальневосточный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vesti_buryatia"
+      title: Вести Бурятия
+      check: ok
+    notes: Региональная телевизионная редакция «Вести Бурятия», публичное превью проверено.
+
+  - id: media_vesti_kalmykia
+    name: Вести Калмыкия
+    type: тв
+    role: media
+    site: https://t.me/vesti_kalmykia
+    region: Республика Калмыкия
+    region_code: "08"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vesti_kalmykia"
+      title: Вести Калмыкия
+      check: ok
+    notes: Региональная редакция «Вести Калмыкия», публичное превью проверено.
+
+  - id: media_vestikchr
+    name: Вести Карачаево-Черкесия
+    type: тв
+    role: media
+    site: https://t.me/vestikchr
+    region: Карачаево-Черкесская Республика
+    region_code: "09"
+    federal_district: Северо-Кавказский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vestikchr"
+      title: Вести Карачаево-Черкесия
+      check: ok
+    notes: Филиал ВГТРК ГТРК «Карачаево-Черкесия», публичное превью проверено.
+
+  - id: media_nvk_sakha
+    name: НВК Саха
+    type: тв
+    role: media
+    site: https://t.me/nvk_sakha
+    region: Республика Саха (Якутия)
+    region_code: "14"
+    federal_district: Дальневосточный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@nvk_sakha"
+      title: НВК Саха
+      check: ok
+    notes: Национальная вещательная компания «Саха», публичное превью проверено.
+
+  - id: media_tuvaonline
+    name: Тува-онлайн
+    type: тв
+    role: media
+    site: https://www.tuvaonline.ru
+    region: Республика Тыва
+    region_code: "17"
+    federal_district: Сибирский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@tuvaonline"
+      title: Тува-онлайн
+      check: ok
+    notes: Информационное агентство «Тува-онлайн», публичное превью проверено.
+
+  - id: media_udmtv
+    name: Вести. Удмуртия
+    type: тв
+    role: media
+    site: https://t.me/udmtv
+    region: Удмуртская Республика
+    region_code: "18"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@udmtv"
+      title: Вести. Удмуртия
+      check: ok
+    notes: Региональная редакция «Вести. Удмуртия», публичное превью проверено.
+
+  - id: media_vesti_khakasia
+    name: Вести-Хакасия
+    type: тв
+    role: media
+    site: https://t.me/vesti_khakasia
+    region: Республика Хакасия
+    region_code: "19"
+    federal_district: Сибирский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vesti_khakasia"
+      title: Вести-Хакасия
+      check: ok
+    notes: Региональная редакция «Вести-Хакасия», публичное превью проверено.
+
+  - id: media_gtrkvainah
+    name: ГТРК Вайнах
+    type: тв
+    role: media
+    site: https://gtrkvainah.tv/
+    region: Чеченская Республика
+    region_code: "20"
+    federal_district: Северо-Кавказский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@gtrkvainah"
+      title: ГТРК Вайнах
+      check: ok
+    notes: ГТРК «Вайнах», публичное превью проверено.
+
+  - id: media_vesti_chuvashia
+    name: Вести Чувашия
+    type: тв
+    role: media
+    site: https://t.me/vesti_chuvashia
+    region: Чувашская Республика
+    region_code: "21"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vesti_chuvashia"
+      title: Вести Чувашия
+      check: ok
+    notes: Региональная редакция «Вести Чувашия», публичное превью проверено.
+
+  - id: media_vesti_krsk
+    name: Вести. Красноярск
+    type: тв
+    role: media
+    site: https://t.me/vesti_krsk
+    region: Красноярский край
+    region_code: "24"
+    federal_district: Сибирский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vesti_krsk"
+      title: Вести. Красноярск
+      check: ok
+    notes: Выпуски «Вести. Красноярск» на «России 1», публичное превью проверено.
+
+  - id: media_mirbelogorya
+    name: Мир Белогорья
+    type: тв
+    role: media
+    site: https://mirbelogorya.ru/
+    region: Белгородская область
+    region_code: "31"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@mirbelogorya"
+      title: Мир Белогорья
+      check: ok
+    notes: ГТРК «Белгород» («Мир Белогорья»), публичное превью проверено.
+
+  - id: media_gtrkbryansk
+    name: ГТРК Брянск
+    type: тв
+    role: media
+    site: https://t.me/gtrkbryansk
+    region: Брянская область
+    region_code: "32"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@gtrkbryansk"
+      title: ГТРК Брянск
+      check: ok
+    notes: ГТРК «Брянск», публичное превью проверено.
+
+  - id: media_vesti33
+    name: 33 Вести
+    type: тв
+    role: media
+    site: https://t.me/vesti33
+    region: Владимирская область
+    region_code: "33"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vesti33"
+      title: 33 Вести
+      check: ok
+    notes: Региональный новостной канал «33 Вести», публичное превью проверено.
+
+  - id: media_vologda_vesti
+    name: Вологда Вести
+    type: тв
+    role: media
+    site: https://t.me/vologda_vesti
+    region: Вологодская область
+    region_code: "35"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vologda_vesti"
+      title: Вологда Вести
+      check: ok
+    notes: Региональный новостной канал «Вологда Вести», публичное превью проверено.
+
+  - id: media_vesti_vrn
+    name: Вести-Воронеж
+    type: тв
+    role: media
+    site: https://t.me/vesti_vrn
+    region: Воронежская область
+    region_code: "36"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vesti_vrn"
+      title: Вести-Воронеж
+      check: ok
+    notes: Региональная редакция «Вести-Воронеж», публичное превью проверено.
+
+  - id: media_gtrk_kaliningrad
+    name: Вести. Калининград
+    type: тв
+    role: media
+    site: https://vesti-kaliningrad.ru/
+    region: Калининградская область
+    region_code: "39"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@gtrk_kaliningrad"
+      title: Вести. Калининград
+      check: ok
+    notes: Официальный канал «Вести. Калининград», публичное превью проверено.
+
+  - id: media_gtrk_kaluga
+    name: ГТРК Калуга
+    type: тв
+    role: media
+    site: https://t.me/gtrk_kaluga
+    region: Калужская область
+    region_code: "40"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@gtrk_kaluga"
+      title: ГТРК Калуга
+      check: ok
+    notes: ГТРК «Калуга», публичное превью проверено.
+
+  - id: media_gtrk_kamchatka
+    name: Вести Камчатка
+    type: тв
+    role: media
+    site: https://t.me/gtrk_kamchatka
+    region: Камчатский край
+    region_code: "41"
+    federal_district: Дальневосточный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@gtrk_kamchatka"
+      title: Вести Камчатка
+      check: ok
+    notes: Филиал ВГТРК ГТРК «Камчатка», публичное превью проверено.
+
+  - id: media_vestikostroma
+    name: Вести-Кострома
+    type: тв
+    role: media
+    site: https://gtrk-kostroma.ru/
+    region: Костромская область
+    region_code: "44"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vestikostroma"
+      title: Вести-Кострома
+      check: ok
+    notes: ГТРК Кострома, публичное превью проверено.
+
+  - id: media_vesti_kursk
+    name: Вести Курск
+    type: тв
+    role: media
+    site: https://t.me/vesti_kursk
+    region: Курская область
+    region_code: "46"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vesti_kursk"
+      title: Вести Курск
+      check: ok
+    notes: Региональная редакция «Вести Курск», публичное превью проверено.
+
+  - id: media_vesti_lo
+    name: Пульс Приладожья
+    type: тв
+    role: media
+    site: https://t.me/vesti_lo
+    region: Ленинградская область
+    region_code: "47"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vesti_lo"
+      title: Пульс Приладожья
+      check: ok
+    notes: Ежедневная новостная лента Ленинградской области, публичное превью проверено.
+
+  - id: media_vestilipetsk
+    name: Липецк 24/7
+    type: тв
+    role: media
+    site: https://vesti-lipetsk.ru/
+    region: Липецкая область
+    region_code: "48"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vestilipetsk"
+      title: Липецк 24/7
+      check: ok
+    notes: Региональный канал ГТРК по Липецкой области, публичное превью проверено.
+
+  - id: media_vestimagadan
+    name: Вести Магадан
+    type: тв
+    role: media
+    site: https://t.me/vestimagadan
+    region: Магаданская область
+    region_code: "49"
+    federal_district: Дальневосточный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vestimagadan"
+      title: Вести Магадан
+      check: ok
+    notes: Официальный канал ГТРК «Магадан», публичное превью проверено.
+
+  - id: media_vesti_murman
+    name: Вести Мурман
+    type: тв
+    role: media
+    site: https://murmantv.ru
+    region: Мурманская область
+    region_code: "51"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vesti_murman"
+      title: Вести Мурман
+      check: ok
+    notes: Официальный канал ГТРК «Мурман», публичное превью проверено.
+
+  - id: media_gtrk_nn
+    name: Вести-Приволжье
+    type: тв
+    role: media
+    site: https://vestinn.ru
+    region: Нижегородская область
+    region_code: "52"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@gtrk_nn"
+      title: Вести-Приволжье
+      check: ok
+    notes: ГТРК «Нижний Новгород», публичное превью проверено.
+
+  - id: media_vestinovosibirsk
+    name: Вести Новосибирск
+    type: тв
+    role: media
+    site: https://t.me/vestinovosibirsk
+    region: Новосибирская область
+    region_code: "54"
+    federal_district: Сибирский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vestinovosibirsk"
+      title: Вести Новосибирск
+      check: ok
+    notes: Региональная редакция «Вести Новосибирск», публичное превью проверено.
+
+  - id: media_vestipskov
+    name: Вести Псков
+    type: тв
+    role: media
+    site: https://t.me/vestipskov
+    region: Псковская область
+    region_code: "60"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vestipskov"
+      title: Вести Псков
+      check: ok
+    notes: ГТРК «Псков», публичное превью проверено.
+
+  - id: media_vestismolensk
+    name: Вести-Смоленск
+    type: тв
+    role: media
+    site: https://t.me/vestismolensk
+    region: Смоленская область
+    region_code: "67"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vestismolensk"
+      title: Вести-Смоленск
+      check: ok
+    notes: Региональная редакция «Вести-Смоленск», публичное превью проверено.
+
+  - id: media_tyumen_time
+    name: Тюмень каждый день
+    type: тв
+    role: media
+    site: https://t.me/tyumen_time
+    region: Тюменская область
+    region_code: "72"
+    federal_district: Уральский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@tyumen_time"
+      title: Тюмень каждый день
+      check: ok
+    notes: Региональная новостная лента Тюмени, публичное превью проверено.
+
+  - id: media_gtrk_volga
+    name: ГТРК Волга
+    type: тв
+    role: media
+    site: https://gtrk-volga.ru
+    region: Ульяновская область
+    region_code: "73"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@gtrk_volga"
+      title: ГТРК Волга
+      check: ok
+    notes: Официальный канал ГТРК «Волга» (Ульяновск), публичное превью проверено.
+
+  - id: media_topspb_tv
+    name: Телеканал Санкт-Петербург
+    type: тв
+    role: media
+    site: https://tvspb.ru
+    region: город Санкт-Петербург
+    region_code: "78"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@topspb_tv"
+      title: Телеканал Санкт-Петербург
+      check: ok
+    notes: Телеканал «Санкт-Петербург», публичное превью проверено.
+
+  - id: media_nao24
+    name: НАО24
+    type: тв
+    role: media
+    site: https://t.me/nao24
+    region: Ненецкий автономный округ
+    region_code: "83"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@nao24"
+      title: НАО24
+      check: ok
+    notes: Ненецкое информационное агентство, публичное превью проверено.
+
+  - id: media_ugra_tv
+    name: Телеканал Югра
+    type: тв
+    role: media
+    site: http://ugra-tv.ru
+    region: Ханты-Мансийский автономный округ — Югра
+    region_code: "86"
+    federal_district: Уральский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@ugra_tv"
+      title: Телеканал Югра
+      check: ok
+    notes: Телеканал «Югра», публичное превью проверено.
+
+  - id: media_sever_press
+    name: Север-Пресс
+    type: тв
+    role: media
+    site: http://sever-press.ru
+    region: Ямало-Ненецкий автономный округ
+    region_code: "89"
+    federal_district: Уральский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@sever_press"
+      title: Север-Пресс
+      check: ok
+    notes: Информационное агентство «Север-Пресс», публичное превью проверено.

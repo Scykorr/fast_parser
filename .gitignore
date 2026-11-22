@@ -7,6 +7,8 @@ build/
 .venv/
 venv/
 .env
+*.session
+*.session-journal
 data/
 *.db
 *.sqlite

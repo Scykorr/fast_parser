@@ -68,6 +68,17 @@ class CategoryLookup(Base):
     title: Mapped[str] = mapped_column(String(128), unique=True)
 
 
+class TelegramCursor(Base):
+    """Last Telegram message id seen for one catalog channel."""
+
+    __tablename__ = "telegram_cursors"
+
+    source_id: Mapped[str] = mapped_column(ForeignKey("sources.id"), primary_key=True)
+    username: Mapped[str] = mapped_column(String(128))
+    last_message_id: Mapped[int] = mapped_column(Integer, default=0)
+    updated_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+
 class SavedSearch(Base):
     __tablename__ = "saved_searches"
 
@@ -84,6 +95,7 @@ class Source(Base):
     nid: Mapped[int | None] = mapped_column(Integer, unique=True, index=True)
     name: Mapped[str] = mapped_column(String(255))
     type: Mapped[str] = mapped_column(String(64))
+    role: Mapped[str | None] = mapped_column(String(16), index=True)
     site: Mapped[str] = mapped_column(String(512))
     status: Mapped[str] = mapped_column(String(64))
     notes: Mapped[str | None] = mapped_column(Text)

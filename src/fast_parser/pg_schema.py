@@ -146,7 +146,7 @@ def _ensure_lookup_tables(conn) -> None:
         tables=[
             table
             for table in Base.metadata.sorted_tables
-            if table.name in {"sources", "feeds", "feed_states", "fetch_logs"}
+            if table.name in {"sources", "feeds", "feed_states", "fetch_logs", "telegram_cursors", "saved_searches", "federal_districts", "regions", "categories"}
         ],
     )
 

@@ -13,6 +13,7 @@ sources:
   - id: tass
     name: ТАСС
     type: федеральное_агентство
+    role: media
     site: https://tass.ru
     status: ok
     rss:
@@ -35,6 +36,7 @@ sources:
   - id: ria
     name: РИА Новости
     type: федеральное_агентство
+    role: media
     site: https://ria.ru
     status: ok
     rss:
@@ -65,6 +67,7 @@ sources:
   - id: ria_sport
     name: РИА Новости Спорт
     type: федеральное_агентство
+    role: media
     site: https://rsport.ria.ru
     status: ok
     rss:
@@ -81,6 +84,7 @@ sources:
   - id: radio_sputnik
     name: Радио Sputnik
     type: тв
+    role: media
     site: https://radiosputnik.ria.ru
     status: ok
     rss:
@@ -97,6 +101,7 @@ sources:
   - id: sputnik_ru
     name: Sputnik (sputniknews.ru)
     type: федеральное_агентство
+    role: media
     site: https://sputniknews.ru
     status: empty_feed
     rss:
@@ -116,6 +121,7 @@ sources:
   - id: tv1
     name: Первый канал
     type: тв
+    role: media
     site: https://www.1tv.ru
     status: telegram_only
     rss: []
@@ -130,6 +136,7 @@ sources:
   - id: vesti
     name: Вести (ВГТРК)
     type: тв
+    role: media
     site: https://www.vesti.ru
     status: telegram_only
     rss: []
@@ -147,6 +154,7 @@ sources:
   - id: russia1
     name: Россия 1
     type: тв
+    role: media
     site: https://russia.tv
     status: telegram_only
     rss: []
@@ -161,6 +169,7 @@ sources:
   - id: smotrim
     name: Смотрим (ВГТРК)
     type: тв
+    role: media
     site: https://smotrim.ru
     status: telegram_only
     rss: []
@@ -175,6 +184,7 @@ sources:
   - id: zvezda
     name: Телеканал «Звезда»
     type: тв
+    role: media
     site: https://tvzvezda.ru
     status: ok
     rss:
@@ -197,6 +207,7 @@ sources:
   - id: rt_russian
     name: RT на русском
     type: тв
+    role: media
     site: https://russian.rt.com
     status: ok
     rss:
@@ -220,7 +231,7 @@ sources:
     telegram:
       username: "@RTnaRusskom"
       title: RT на русском
-      check: stale
+      check: ok
       latest: "2022-05-15 01:12 Europe/Berlin"
       messages_on_preview: 11
       note: "Официальные контакты telegram@rttv.ru, ссылка на russian.rt.com; последняя публикация в превью — май 2022. Для мониторинга использовать RSS."
@@ -229,6 +240,7 @@ sources:
   - id: ntv
     name: НТВ
     type: тв
+    role: media
     site: https://www.ntv.ru
     status: telegram_only
     rss: []
@@ -243,6 +255,7 @@ sources:
   - id: rg
     name: Российская газета
     type: газета
+    role: media
     site: https://rg.ru
     status: ok
     rss:
@@ -266,6 +279,7 @@ sources:
   - id: pnp
     name: Парламентская газета
     type: газета
+    role: media
     site: https://www.pnp.ru
     status: ok
     rss:
@@ -288,6 +302,7 @@ sources:
   - id: redstar
     name: Красная звезда
     type: газета
+    role: media
     site: https://redstar.ru
     status: blocked_from_box
     rss:
@@ -304,6 +319,7 @@ sources:
   - id: kremlin
     name: Президент России (Кремль)
     type: орган_власти
+    role: authority
     site: http://kremlin.ru
     status: blocked_from_box
     rss:
@@ -338,6 +354,7 @@ sources:
   - id: government
     name: Правительство России
     type: орган_власти
+    role: authority
     site: http://government.ru
     status: blocked_from_box
     rss:
@@ -377,6 +394,7 @@ sources:
   - id: mid
     name: МИД России
     type: орган_власти
+    role: authority
     site: https://www.mid.ru
     status: telegram_ok_rss_blocked
     rss:
@@ -396,6 +414,7 @@ sources:
   - id: mil
     name: Минобороны России
     type: орган_власти
+    role: authority
     site: https://mil.ru
     status: telegram_ok_rss_unverified
     rss:
@@ -415,6 +434,7 @@ sources:
   - id: cbr
     name: Банк России
     type: орган_власти
+    role: authority
     site: https://www.cbr.ru
     status: ok
     rss:
@@ -459,6 +479,7 @@ sources:
   - id: duma
     name: Государственная Дума
     type: орган_власти
+    role: authority
     site: http://duma.gov.ru
     status: telegram_only
     rss: []
@@ -473,6 +494,7 @@ sources:
   - id: council
     name: Совет Федерации
     type: орган_власти
+    role: authority
     site: https://council.gov.ru
     status: telegram_only
     rss: []
@@ -487,6 +509,7 @@ sources:
   - id: genproc
     name: Генеральная прокуратура РФ
     type: орган_власти
+    role: authority
     site: https://epp.genproc.gov.ru
     status: ok
     rss:
@@ -508,6 +531,7 @@ sources:
   - id: sledcom
     name: Следственный комитет РФ
     type: орган_власти
+    role: authority
     site: https://sledcom.ru
     status: telegram_only
     rss: []
@@ -522,6 +546,7 @@ sources:
   - id: mvd
     name: МВД России
     type: орган_власти
+    role: authority
     site: https://мвд.рф
     status: telegram_only
     rss: []
@@ -536,6 +561,7 @@ sources:
   - id: mchs
     name: МЧС России
     type: орган_власти
+    role: authority
     site: https://www.mchs.gov.ru
     status: telegram_only
     rss: []
@@ -551,6 +577,7 @@ sources:
   - id: minfin
     name: Минфин России
     type: орган_власти
+    role: authority
     site: https://minfin.gov.ru
     status: telegram_only
     rss: []
@@ -565,6 +592,7 @@ sources:
   - id: minzdrav
     name: Минздрав России
     type: орган_власти
+    role: authority
     site: https://minzdrav.gov.ru
     status: telegram_only
     rss: []
@@ -579,6 +607,7 @@ sources:
   - id: minenergo
     name: Минэнерго России
     type: орган_власти
+    role: authority
     site: https://minenergo.gov.ru
     status: ok
     rss:
@@ -601,6 +630,7 @@ sources:
   - id: mintrud
     name: Минтруд России
     type: орган_власти
+    role: authority
     site: https://mintrud.gov.ru
     status: ok
     rss:
@@ -618,6 +648,7 @@ sources:
   - id: moscow
     name: Правительство Москвы (mos.ru)
     type: региональное
+    role: media
     site: https://www.mos.ru
     status: telegram_only
     rss: []
@@ -633,6 +664,7 @@ sources:
   - id: crimea
     name: Правительство Республики Крым
     type: региональное
+    role: media
     site: https://rk.gov.ru
     status: telegram_ok_rss_empty
     rss:

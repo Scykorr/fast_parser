@@ -15,7 +15,10 @@
     · fake_score: {{ "%.2f"|format(article.fake_score) if article.fake_score is not none else "—" }}
   </p>
   {% if article.authors %}<p class="meta">Авторы: {{ article.authors | join(", ") }}</p>{% endif %}
-  <p><a href="{{ article.canonical_url }}">Оригинал</a> · текст: {{ article.content_origin }}</p>
+  <p><a href="{{ article.canonical_url }}">Оригинал</a> · текст: {{ article.content_origin }}
+    {% if article.extra and article.extra.views is not none %} · просмотры {{ article.extra.views }}{% endif %}
+    {% if article.extra and article.extra.forwards is not none %} · репосты {{ article.extra.forwards }}{% endif %}
+  </p>
   <div class="body-text">{{ article.text }}</div>
 </article>
 {% endblock %}
