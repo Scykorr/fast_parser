@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from datetime import date
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
@@ -14,11 +13,11 @@ from fast_parser import __version__
 from fast_parser.config import AppSettings, load_settings
 from fast_parser.db import init_db
 from fast_parser.service import open_session, run_once
+from fast_parser.search_filters import facet_counts, parse_filters
 from fast_parser.web.queries import (
     ArticleFilters,
     article_with_source,
     dashboard,
-    filter_choices,
     region_coverage,
     search_articles,
     snippets,
@@ -62,89 +61,75 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
             session.close()
 
     def _filters(
-        source_id: str | None = None,
-        source_type: str | None = None,
-        region_code: str | None = None,
-        federal_district: str | None = None,
-        date_from: date | None = None,
-        date_to: date | None = None,
-        period: str | None = None,
-        q: str | None = None,
+        source_id: list[str] = Query(default_factory=list, description="Источник, можно несколько"),
+        source_id_not: list[str] = Query(default_factory=list, description="Исключить источники"),
+        source_type: list[str] = Query(default_factory=list, description="Тип источника"),
+        source_type_not: list[str] = Query(default_factory=list),
+        source_status: list[str] = Query(default_factory=list, description="Состояние источника в каталоге"),
+        source_status_not: list[str] = Query(default_factory=list),
+        official: str | None = Query(default=None, description="yes — подтверждённый официальный источник"),
+        region: list[str] = Query(default_factory=list, description="Название региона"),
+        region_not: list[str] = Query(default_factory=list),
+        region_code: list[str] = Query(default_factory=list, description="Код субъекта"),
+        region_code_not: list[str] = Query(default_factory=list),
+        federal_district: list[str] = Query(default_factory=list),
+        federal_district_not: list[str] = Query(default_factory=list),
+        category: list[str] = Query(default_factory=list, description="Рубрика, можно несколько"),
+        category_not: list[str] = Query(default_factory=list, description="Исключить рубрики"),
+        sentiment: list[str] = Query(default_factory=list),
+        sentiment_not: list[str] = Query(default_factory=list),
+        channel: list[str] = Query(default_factory=list, description="rss, telegram, vk или x"),
+        channel_not: list[str] = Query(default_factory=list),
+        language: list[str] = Query(default_factory=list),
+        language_not: list[str] = Query(default_factory=list),
+        pipeline_status: list[str] = Query(default_factory=list, description="pending или processed"),
+        pipeline_status_not: list[str] = Query(default_factory=list),
+        tag: list[str] = Query(default_factory=list, description="Метка из RSS"),
+        tag_not: list[str] = Query(default_factory=list),
+        author: list[str] = Query(default_factory=list),
+        author_not: list[str] = Query(default_factory=list),
+        domain: list[str] = Query(default_factory=list),
+        domain_not: list[str] = Query(default_factory=list),
+        fake_label: list[str] = Query(default_factory=list, description="Метка недостоверности, появится позже"),
+        fake_label_not: list[str] = Query(default_factory=list),
+        weekday: list[int] = Query(default_factory=list, description="День недели публикации, 1=понедельник … 7=воскресенье, Москва"),
+        hour: list[int] = Query(default_factory=list, description="Час публикации, 0–23, Москва"),
+        url: str | None = None,
+        date_on: str = Query(default="published", description="published или collected"),
+        period: str | None = Query(default=None, description="today, 24h, 7d, 30d, month, 365d"),
+        date_from: str | None = None,
+        date_to: str | None = None,
+        q: str | None = Query(default=None, description="Слова в заголовке и тексте: фраза, OR, -исключить"),
+        title_q: str | None = Query(default=None, description="Слова только в заголовке"),
+        body_q: str | None = Query(default=None, description="Слова только в тексте"),
         fuzzy: bool = False,
-        category: str | None = None,
-        sentiment: str | None = None,
         sentiment_min: float | None = None,
+        sentiment_max: float | None = None,
+        category_confidence_min: float | None = None,
+        category_confidence_max: float | None = None,
         fake_score_min: float | None = None,
         fake_score_max: float | None = None,
         has_fulltext: str | None = None,
-        language: str | None = None,
+        text_len_min: int | None = None,
+        text_len_max: int | None = None,
+        min_cluster_sources: int | None = Query(default=None, description="Текст встретился минимум у стольких источников"),
         limit: int = Query(default=50, ge=1, le=200),
         offset: int = Query(default=0, ge=0),
     ) -> ArticleFilters:
-        return _filters_from(
-            {
-                "source_id": source_id,
-                "source_type": source_type,
-                "region_code": region_code,
-                "federal_district": federal_district,
-                "date_from": date_from,
-                "date_to": date_to,
-                "period": period,
-                "q": q,
-                "fuzzy": fuzzy,
-                "category": category,
-                "sentiment": sentiment,
-                "sentiment_min": sentiment_min,
-                "fake_score_min": fake_score_min,
-                "fake_score_max": fake_score_max,
-                "has_fulltext": has_fulltext,
-                "language": language,
-                "limit": limit,
-                "offset": offset,
-            }
-        )
-
-    def _filters_from(raw) -> ArticleFilters:
-        def _date(value):
-            if value is None or value == "":
-                return None
-            if isinstance(value, date):
-                return value
-            return date.fromisoformat(str(value))
-
-        def _float(value):
-            if value is None or value == "":
-                return None
-            return float(value)
-
-        fuzzy = raw.get("fuzzy")
-        return ArticleFilters(
-            source_id=_blank(_text(raw.get("source_id"))),
-            source_type=_blank(_text(raw.get("source_type"))),
-            region_code=_blank(_text(raw.get("region_code"))),
-            federal_district=_blank(_text(raw.get("federal_district"))),
-            date_from=_date(raw.get("date_from")),
-            date_to=_date(raw.get("date_to")),
-            period=_blank(_text(raw.get("period"))),
-            text=_blank(_text(raw.get("q"))),
-            fuzzy=bool(fuzzy) if isinstance(fuzzy, bool) else _flag(_text(fuzzy)) is True,
-            category=_blank(_text(raw.get("category"))),
-            sentiment=_blank(_text(raw.get("sentiment"))),
-            sentiment_min=_float(raw.get("sentiment_min")),
-            fake_score_min=_float(raw.get("fake_score_min")),
-            fake_score_max=_float(raw.get("fake_score_max")),
-            has_fulltext=_flag(_text(raw.get("has_fulltext"))),
-            language=_blank(_text(raw.get("language"))),
-            limit=int(raw.get("limit") or 50),
-            offset=int(raw.get("offset") or 0),
-        )
+        return parse_filters(locals(), limit=limit, offset=offset)
 
     @app.get("/api/health")
     def health() -> dict:
         return {"status": "ok", "version": __version__}
 
+    @app.get("/api/facets")
+    def api_facets(filters: ArticleFilters = Depends(_filters), session: Session = Depends(db_session)):
+        """Счётчики значений при текущем фильтре. Свой фильтр фасета в подсчёт не входит."""
+        return {"total": search_articles(session, filters)[1], "facets": facet_counts(session, filters)}
+
     @app.get("/api/articles", response_model=ArticlePage)
     def api_articles(filters: ArticleFilters = Depends(_filters), session: Session = Depends(db_session)):
+        """Та же модель фильтра, что у страницы и у команды search. Параметр можно повторить, *_not исключает значение."""
         rows, total = search_articles(session, filters)
         return ArticlePage(
             total=total,
@@ -191,9 +176,9 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
         context = {
             "request": request,
             "filters": filters,
-            "choices": filter_choices(session),
+            "facets": facet_counts(session, filters),
             "articles": rows,
-            "snippets": snippets(session, rows, filters.text),
+            "snippets": snippets(session, rows, filters.text or filters.title_text or filters.body_text),
             "saved": _saved(session),
             "total": total,
             "version": __version__,
@@ -252,8 +237,8 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
         name = str(form.get("name") or "").strip()
         if not name:
             raise HTTPException(status_code=400, detail="Нужно имя поиска")
-        filters = _filters_from(form)
-        payload = _query_payload(filters)
+        filters = parse_filters(form)
+        payload = filters.to_query()
         existing = session.scalar(select(SavedSearch).where(SavedSearch.name == name))
         if existing is None:
             session.add(SavedSearch(name=name, query_json=payload, created_at=utcnow()))
@@ -322,15 +307,6 @@ def _saved(session: Session) -> list:
     return list(session.scalars(select(SavedSearch).order_by(SavedSearch.name)))
 
 
-def _query_payload(filters: ArticleFilters) -> dict:
-    payload = {}
-    for key, value in filters.__dict__.items():
-        if key in {"limit", "offset"} or value in (None, "", False):
-            continue
-        payload[key] = value.isoformat() if hasattr(value, "isoformat") else value
-    return payload
-
-
 def _csv(rows) -> str:
     import csv
     import io
@@ -368,28 +344,6 @@ def _parquet(rows) -> bytes:
     connection.execute(f"COPY export_batch TO '{path}' (FORMAT PARQUET, COMPRESSION ZSTD)")
     connection.close()
     return Path(path).read_bytes()
-
-
-def _text(value) -> str | None:
-    if value is None or isinstance(value, (date, bool, int, float)):
-        return None if value is None else str(value)
-    return str(value)
-
-
-def _flag(value: str | None) -> bool | None:
-    text = (value or "").strip().lower()
-    if text in {"1", "true", "yes", "да"}:
-        return True
-    if text in {"0", "false", "no", "нет"}:
-        return False
-    return None
-
-
-def _blank(value: str | None) -> str | None:
-    if value is None:
-        return None
-    text = value.strip()
-    return text or None
 
 
 def _list_item(article, source) -> ArticleListItem:

@@ -32,11 +32,16 @@ _ARTICLE_COLUMNS = """
     fetched_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
     category VARCHAR(128),
+    category_confidence DOUBLE PRECISION,
     sentiment VARCHAR(16),
     sentiment_score DOUBLE PRECISION,
     fake_score DOUBLE PRECISION,
+    fake_label VARCHAR(64),
     content_origin VARCHAR(32) NOT NULL DEFAULT 'rss',
     pipeline_status VARCHAR(32) NOT NULL DEFAULT 'pending',
+    domain VARCHAR(255),
+    text_length INTEGER,
+    tags JSON,
     extra JSON,
     embedding BYTEA,
     search_vector tsvector,
@@ -53,6 +58,7 @@ def ensure_postgres(engine: Engine) -> None:
             conn.execute(text("CREATE TABLE articles_default PARTITION OF articles DEFAULT"))
             _search_trigger(conn)
         ensure_month_range(conn, date(2020, 1, 1), date(2028, 1, 1))
+        _ensure_article_columns(conn)
         _indexes(conn)
         _compress(conn)
 
@@ -171,6 +177,30 @@ def _search_trigger(conn) -> None:
     )
 
 
+def _ensure_article_columns(conn) -> None:
+    present = {
+        row[0]
+        for row in conn.execute(
+            text(
+                """
+                SELECT column_name FROM information_schema.columns
+                WHERE table_schema = 'public' AND table_name = 'articles'
+                """
+            )
+        )
+    }
+    wanted = {
+        "category_confidence": "DOUBLE PRECISION",
+        "fake_label": "VARCHAR(64)",
+        "domain": "VARCHAR(255)",
+        "text_length": "INTEGER",
+        "tags": "JSON",
+    }
+    for name, ddl in wanted.items():
+        if name not in present:
+            conn.execute(text(f"ALTER TABLE articles ADD COLUMN {name} {ddl}"))
+
+
 def _indexes(conn) -> None:
     statements = [
         "CREATE INDEX IF NOT EXISTS ix_articles_published_at ON articles (published_at)",
@@ -180,6 +210,10 @@ def _indexes(conn) -> None:
         "CREATE INDEX IF NOT EXISTS ix_articles_district_id ON articles (district_id)",
         "CREATE INDEX IF NOT EXISTS ix_articles_category_id ON articles (category_id)",
         "CREATE INDEX IF NOT EXISTS ix_articles_sentiment ON articles (sentiment)",
+        "CREATE INDEX IF NOT EXISTS ix_articles_language ON articles (language)",
+        "CREATE INDEX IF NOT EXISTS ix_articles_domain ON articles (domain)",
+        "CREATE INDEX IF NOT EXISTS ix_articles_pipeline ON articles (pipeline_status)",
+        "CREATE INDEX IF NOT EXISTS ix_articles_fetched_at ON articles (fetched_at)",
         "CREATE INDEX IF NOT EXISTS ix_articles_content_hash ON articles (source_id, content_hash)",
         "CREATE INDEX IF NOT EXISTS ix_articles_canonical_url ON articles (canonical_url)",
         "CREATE INDEX IF NOT EXISTS ix_articles_search ON articles USING GIN (search_vector)",

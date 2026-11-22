@@ -151,6 +151,15 @@ def _apply_source(row: Source, spec: SourceSpec, now) -> None:
     row.telegram_meta = telegram.model_dump(exclude_none=True)
 
 
+def _stamp_search_fields(article: Article, tags: list[str] | None) -> None:
+    from urllib.parse import urlparse
+
+    host = (urlparse(article.canonical_url).hostname or "").removeprefix("www.").lower()
+    article.domain = host or None
+    article.text_length = len(article.text or "")
+    article.tags = list(tags) if tags else None
+
+
 def _ensure_place(session: Session, region: str | None, code: str | None, district: str | None) -> tuple[int | None, int | None]:
     district_id = None
     if district:
@@ -253,6 +262,7 @@ def upsert_article(
             pipeline_status="pending",
             extra={"categories": item.categories} if item.categories else None,
         )
+        _stamp_search_fields(article, item.categories)
         attach_lookup_ids(session, article)
         session.add(article)
         session.flush()
@@ -296,6 +306,7 @@ def upsert_article(
     existing.fake_score = None
     existing.extra = {"categories": item.categories} if item.categories else None
     existing.category_id = None
+    _stamp_search_fields(existing, item.categories)
     attach_lookup_ids(session, existing)
     session.flush()
     return UpsertResult("updated", existing)

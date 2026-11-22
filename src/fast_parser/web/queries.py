@@ -1,45 +1,16 @@
 from __future__ import annotations
 
-import re
-from dataclasses import dataclass
-from datetime import date, datetime, time, timedelta, timezone
-from zoneinfo import ZoneInfo
-
-from sqlalchemy import func, or_, select, text
+from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 
 from fast_parser.catalog import FEDERAL_SUBJECT_CODES
 from fast_parser.models import Article, Feed, FeedState, Source
-
-MOSCOW = ZoneInfo("Europe/Moscow")
-
-
-@dataclass
-class ArticleFilters:
-    source_id: str | None = None
-    source_type: str | None = None
-    region_code: str | None = None
-    federal_district: str | None = None
-    date_from: date | None = None
-    date_to: date | None = None
-    period: str | None = None
-    text: str | None = None
-    fuzzy: bool = False
-    category: str | None = None
-    sentiment: str | None = None
-    sentiment_min: float | None = None
-    fake_score_min: float | None = None
-    fake_score_max: float | None = None
-    has_fulltext: bool | None = None
-    language: str | None = None
-    limit: int = 50
-    offset: int = 0
+from fast_parser.search_filters import ArticleFilters, apply_article_filters
 
 
 def search_articles(session: Session, filters: ArticleFilters) -> tuple[list[tuple[Article, Source]], int]:
-    filters = resolve_period(filters)
     stmt = select(Article, Source).join(Source, Article.source_id == Source.id)
-    stmt = _apply_filters(session, stmt, filters)
+    stmt = apply_article_filters(session, stmt, filters)
     total = session.scalar(select(func.count()).select_from(stmt.subquery())) or 0
     rows = session.execute(
         stmt.order_by(Article.published_at.desc(), Article.id.desc())
@@ -47,90 +18,6 @@ def search_articles(session: Session, filters: ArticleFilters) -> tuple[list[tup
         .offset(filters.offset)
     ).all()
     return [(row[0], row[1]) for row in rows], int(total)
-
-
-def _apply_filters(session: Session, stmt, filters: ArticleFilters):
-    if filters.source_id:
-        stmt = stmt.where(Source.id == filters.source_id)
-    if filters.source_type:
-        stmt = stmt.where(Source.type == filters.source_type)
-    if filters.region_code:
-        stmt = stmt.where(Source.region_code == filters.region_code)
-    if filters.federal_district:
-        stmt = stmt.where(Source.federal_district == filters.federal_district)
-    if filters.category:
-        stmt = stmt.where(Article.category == filters.category)
-    if filters.sentiment:
-        stmt = stmt.where(Article.sentiment == filters.sentiment)
-    if filters.sentiment_min is not None:
-        stmt = stmt.where(Article.sentiment_score >= filters.sentiment_min)
-    if filters.language:
-        stmt = stmt.where(Article.language == filters.language)
-    if filters.has_fulltext is True:
-        stmt = stmt.where(func.length(Article.text) >= 500)
-    elif filters.has_fulltext is False:
-        stmt = stmt.where(func.length(Article.text) < 500)
-    if filters.fake_score_min is not None:
-        stmt = stmt.where(Article.fake_score >= filters.fake_score_min)
-    if filters.fake_score_max is not None:
-        stmt = stmt.where(Article.fake_score <= filters.fake_score_max)
-    if filters.date_from is not None:
-        stmt = stmt.where(Article.published_at >= _day_start(filters.date_from))
-    if filters.date_to is not None:
-        stmt = stmt.where(Article.published_at < _day_start(filters.date_to + timedelta(days=1)))
-    needle = (filters.text or "").strip()
-    if needle:
-        dialect = session.get_bind().dialect.name
-        if dialect == "postgresql" and not filters.fuzzy:
-            stmt = stmt.where(
-                text("articles.search_vector @@ websearch_to_tsquery('russian', :q)")
-            ).params(q=needle)
-        elif dialect == "postgresql" and filters.fuzzy:
-            stmt = stmt.where(text("articles.title % :q OR articles.text % :q")).params(q=needle)
-        else:
-            stmt = _sqlite_text_filter(stmt, needle)
-    return stmt
-
-
-def _sqlite_text_filter(stmt, query: str):
-    """Approximate websearch_to_tsquery: words, \"phrases\", OR, and -exclude."""
-    groups = _parse_websearch(query)
-    clauses = []
-    for group in groups:
-        parts = []
-        for phrase, negated in group:
-            folded = f"%{phrase.casefold()}%"
-            match = or_(
-                func.py_lower(Article.title).like(folded),
-                func.py_lower(Article.text).like(folded),
-            )
-            parts.append(~match if negated else match)
-        if parts:
-            clause = parts[0]
-            for part in parts[1:]:
-                clause = clause & part
-            clauses.append(clause)
-    if not clauses:
-        return stmt
-    combined = clauses[0]
-    for clause in clauses[1:]:
-        combined = combined | clause
-    return stmt.where(combined)
-
-
-def _parse_websearch(query: str) -> list[list[tuple[str, bool]]]:
-    groups: list[list[tuple[str, bool]]] = [[]]
-    tokens = re.findall(r'"[^"]+"|\S+', query)
-    for token in tokens:
-        if token == "OR":
-            groups.append([])
-            continue
-        negated = token.startswith("-") and len(token) > 1
-        word = token[1:] if negated else token
-        word = word.strip('"').strip()
-        if word:
-            groups[-1].append((word, negated))
-    return [group for group in groups if group]
 
 
 def snippets(session: Session, rows: list[tuple[Article, Source]], query: str | None) -> dict[int, str]:
@@ -167,24 +54,6 @@ def snippets(session: Session, rows: list[tuple[Article, Source]], query: str | 
         start = max(0, at - 40)
         found[article.id] = haystack[start : start + 160]
     return found
-
-
-def resolve_period(filters: ArticleFilters) -> ArticleFilters:
-    if not filters.period or filters.date_from or filters.date_to:
-        return filters
-    today = datetime.now(MOSCOW).date()
-    spans = {"today": 0, "7d": 6, "30d": 29, "365d": 364}
-    if filters.period in spans:
-        filters.date_from = today - timedelta(days=spans[filters.period])
-        filters.date_to = today
-    elif filters.period == "month":
-        filters.date_from = today.replace(day=1)
-        filters.date_to = today
-    return filters
-
-
-def _day_start(value: date) -> datetime:
-    return datetime.combine(value, time.min, tzinfo=MOSCOW).astimezone(timezone.utc)
 
 
 def filter_choices(session: Session) -> dict:
