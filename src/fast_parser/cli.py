@@ -117,13 +117,31 @@ def format_run(stats: RunStats) -> str:
 
 def format_stats(stats: StatsSnapshot) -> str:
     lines = [
-        f"Источники: {stats.sources}",
+        (
+            f"Источники: {stats.sources} "
+            f"(федеральные: {stats.federal_sources}, региональные: {stats.regional_sources}, "
+            f"субъектов: {stats.regions_covered})"
+        ),
         f"Ленты: {stats.feeds} (в сборе: {stats.feeds_enabled})",
         f"Telegram-каналы в каталоге: {stats.telegram}",
         f"Статьи: {stats.articles} (ожидают обработки: {stats.pending})",
         f"Последний успешный опрос ленты: {_ts(stats.last_success_at)}",
         f"Самая свежая публикация: {_ts(stats.newest_published_at)}",
     ]
+    if stats.by_district:
+        lines.append("По федеральным округам:")
+        for item in stats.by_district:
+            lines.append(
+                f"  {item.federal_district}: регионов {item.regions}, "
+                f"источников {item.sources}, статей {item.articles}"
+            )
+    if stats.by_region:
+        lines.append("По регионам:")
+        for item in stats.by_region:
+            lines.append(
+                f"  {item.region_code}  {item.region} ({item.federal_district}): "
+                f"источников {item.sources}, статей {item.articles}"
+            )
     if stats.recent_errors:
         lines.append("Последние ошибки лент:")
         for url, error in stats.recent_errors:

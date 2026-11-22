@@ -52,6 +52,9 @@ class Source(Base):
     site: Mapped[str] = mapped_column(String(512))
     status: Mapped[str] = mapped_column(String(64))
     notes: Mapped[str | None] = mapped_column(Text)
+    region: Mapped[str | None] = mapped_column(String(128))
+    region_code: Mapped[str | None] = mapped_column(String(8), index=True)
+    federal_district: Mapped[str | None] = mapped_column(String(64), index=True)
     telegram_username: Mapped[str | None] = mapped_column(String(128))
     telegram_title: Mapped[str | None] = mapped_column(String(255))
     telegram_check: Mapped[str | None] = mapped_column(String(32))
@@ -159,12 +162,22 @@ class Article(Base):
     source: Mapped["Source"] = relationship(back_populates="articles")
     feed: Mapped["Feed | None"] = relationship(back_populates="articles")
 
-    def to_export_dict(self, source_name: str | None = None) -> dict:
+    def to_export_dict(
+        self,
+        source_name: str | None = None,
+        *,
+        region: str | None = None,
+        region_code: str | None = None,
+        federal_district: str | None = None,
+    ) -> dict:
         """Clean text plus the metadata a later RAG export will send as-is."""
         published = self.published_at.isoformat() if self.published_at else None
         return {
             "source": self.source_id,
             "source_name": source_name,
+            "region": region,
+            "region_code": region_code,
+            "federal_district": federal_district,
             "url": self.canonical_url,
             "published_at": published,
             "authors": list(self.authors or []),

@@ -20,6 +20,36 @@ class UpsertResult:
 
 
 @dataclass
+class RegionStat:
+    region_code: str
+    region: str
+    federal_district: str
+    sources: int
+    articles: int
+
+
+@dataclass
+class DistrictStat:
+    federal_district: str
+    sources: int
+    articles: int
+    regions: int
+
+
+# Official order of the federal districts, used by `stats`.
+DISTRICT_ORDER = (
+    "Центральный",
+    "Северо-Западный",
+    "Южный",
+    "Северо-Кавказский",
+    "Приволжский",
+    "Уральский",
+    "Сибирский",
+    "Дальневосточный",
+)
+
+
+@dataclass
 class StatsSnapshot:
     sources: int
     feeds: int
@@ -31,6 +61,11 @@ class StatsSnapshot:
     newest_published_at: object | None = None
     recent_errors: list[tuple[str, str]] = field(default_factory=list)
     telegram: int = 0
+    federal_sources: int = 0
+    regional_sources: int = 0
+    regions_covered: int = 0
+    by_district: list[DistrictStat] = field(default_factory=list)
+    by_region: list[RegionStat] = field(default_factory=list)
 
 
 def sync_catalog(
@@ -84,6 +119,9 @@ def _apply_source(row: Source, spec: SourceSpec, now) -> None:
     row.site = spec.site
     row.status = spec.status
     row.notes = spec.notes
+    row.region = spec.region
+    row.region_code = spec.region_code
+    row.federal_district = spec.federal_district
     row.updated_at = now
     telegram = spec.telegram
     if telegram is None:
@@ -301,6 +339,17 @@ def snapshot(session: Session, *, error_limit: int = 8) -> StatsSnapshot:
         .order_by(FeedState.last_attempt_at.desc())
         .limit(error_limit)
     ).all()
+    federal_sources = (
+        session.scalar(select(func.count()).select_from(Source).where(Source.region_code.is_(None)))
+        or 0
+    )
+    regional_sources = (
+        session.scalar(
+            select(func.count()).select_from(Source).where(Source.region_code.is_not(None))
+        )
+        or 0
+    )
+    by_region, by_district = _region_breakdown(session)
     return StatsSnapshot(
         sources=sources,
         feeds=feeds,
@@ -312,14 +361,99 @@ def snapshot(session: Session, *, error_limit: int = 8) -> StatsSnapshot:
         newest_published_at=newest,
         recent_errors=[(row[0], row[1] or "") for row in error_rows],
         telegram=telegram,
+        federal_sources=federal_sources,
+        regional_sources=regional_sources,
+        regions_covered=len(by_region),
+        by_district=by_district,
+        by_region=by_region,
     )
+
+
+def _region_breakdown(session: Session) -> tuple[list[RegionStat], list[DistrictStat]]:
+    source_rows = session.execute(
+        select(
+            Source.region_code,
+            Source.region,
+            Source.federal_district,
+            func.count(Source.id),
+        )
+        .where(Source.region_code.is_not(None))
+        .group_by(Source.region_code, Source.region, Source.federal_district)
+        .order_by(Source.region_code)
+    ).all()
+    article_by_code = dict(
+        session.execute(
+            select(Source.region_code, func.count(Article.id))
+            .join(Article, Article.source_id == Source.id)
+            .where(Source.region_code.is_not(None))
+            .group_by(Source.region_code)
+        ).all()
+    )
+    article_by_district = dict(
+        session.execute(
+            select(Source.federal_district, func.count(Article.id))
+            .join(Article, Article.source_id == Source.id)
+            .where(Source.federal_district.is_not(None))
+            .group_by(Source.federal_district)
+        ).all()
+    )
+    by_region = [
+        RegionStat(
+            region_code=code,
+            region=name or "",
+            federal_district=district or "",
+            sources=count,
+            articles=int(article_by_code.get(code, 0)),
+        )
+        for code, name, district, count in source_rows
+    ]
+    district_bucket: dict[str, DistrictStat] = {}
+    for item in by_region:
+        bucket = district_bucket.get(item.federal_district)
+        if bucket is None:
+            bucket = DistrictStat(
+                federal_district=item.federal_district,
+                sources=0,
+                articles=int(article_by_district.get(item.federal_district, 0)),
+                regions=0,
+            )
+            district_bucket[item.federal_district] = bucket
+        bucket.sources += item.sources
+        bucket.regions += 1
+    known = {name: index for index, name in enumerate(DISTRICT_ORDER)}
+    by_district = sorted(
+        district_bucket.values(),
+        key=lambda item: (known.get(item.federal_district, len(known)), item.federal_district),
+    )
+    return by_region, by_district
+
+
+def list_articles(
+    session: Session,
+    *,
+    region_code: str | None = None,
+    federal_district: str | None = None,
+) -> list[Article]:
+    """Articles whose source belongs to a subject or a federal district."""
+    stmt = select(Article).join(Source, Article.source_id == Source.id)
+    if region_code is not None:
+        stmt = stmt.where(Source.region_code == region_code)
+    if federal_district is not None:
+        stmt = stmt.where(Source.federal_district == federal_district)
+    stmt = stmt.order_by(Article.published_at, Article.id)
+    return list(session.scalars(stmt))
 
 
 def iter_export_dicts(session: Session):
     rows = session.execute(
-        select(Article, Source.name)
+        select(Article, Source)
         .join(Source, Article.source_id == Source.id)
         .order_by(Article.published_at, Article.id)
     )
-    for article, source_name in rows:
-        yield article.to_export_dict(source_name)
+    for article, source in rows:
+        yield article.to_export_dict(
+            source.name,
+            region=source.region,
+            region_code=source.region_code,
+            federal_district=source.federal_district,
+        )

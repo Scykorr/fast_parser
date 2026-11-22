@@ -74,6 +74,7 @@ class AppSettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
     sources_file: str = "sources.yaml"
+    regional_sources_file: str | None = None
     database: DatabaseSettings = Field(default_factory=DatabaseSettings)
     http: HttpSettings = Field(default_factory=HttpSettings)
     collector: CollectorSettings = Field(default_factory=CollectorSettings)
@@ -82,6 +83,7 @@ class AppSettings(BaseModel):
     loop: LoopSettings = Field(default_factory=LoopSettings)
     logging: LoggingSettings = Field(default_factory=LoggingSettings)
     sources_path: Path = Path("config/sources.yaml")
+    regional_sources_path: Path | None = None
     config_path: Path = Path("config/settings.yaml")
 
 
@@ -119,6 +121,18 @@ def load_settings(path: Path | None = None) -> AppSettings:
             base = config_path.parent if config_path.exists() else Path.cwd()
             sources = base / sources
         settings.sources_path = sources
+
+    regional_override = os.environ.get("FAST_PARSER_REGIONAL_SOURCES")
+    if regional_override:
+        settings.regional_sources_path = Path(regional_override)
+    elif settings.regional_sources_file:
+        regional = Path(settings.regional_sources_file)
+        if not regional.is_absolute():
+            base = config_path.parent if config_path.exists() else Path.cwd()
+            regional = base / regional
+        settings.regional_sources_path = regional
+    else:
+        settings.regional_sources_path = None
 
     if url := os.environ.get("DATABASE_URL"):
         settings.database.url = url

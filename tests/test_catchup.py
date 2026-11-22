@@ -179,6 +179,9 @@ def test_catchup_dedupes_conditional_get_and_survives_feed_errors(tmp_path):
         assert set(exported[0]) == {
             "source",
             "source_name",
+            "region",
+            "region_code",
+            "federal_district",
             "url",
             "published_at",
             "authors",
@@ -190,6 +193,7 @@ def test_catchup_dedupes_conditional_get_and_survives_feed_errors(tmp_path):
         }
         assert exported[0]["source"] == "alpha"
         assert exported[0]["source_name"] == "Альфа"
+        assert exported[0]["region_code"] is None
         assert exported[0]["category"] is None
         assert exported[0]["sentiment"] is None
         assert exported[0]["fake_score"] is None

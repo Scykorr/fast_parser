@@ -1,0 +1,2332 @@
+# Региональные государственные и официальные СМИ субъектов РФ (все 89)
+# Проверка: 2026-11-22, curl с бокса (User-Agent Chrome 122). Время в Europe/Berlin.
+# Коды субъектов — по перечню ФНС (приказ ЕД-1-3/117@, 24.02.2026): ДНР 93, ЛНР 94, Запорожская 90, Херсонская 95, Крым 91, Севастополь 92.
+# RSS: только ленты, которые удалось разобрать как валидный XML с item.
+# Telegram: только каналы с публичным превью t.me/s/<user> и признаками официальности (подпись «официальный», филиал ВГТРК/ГТРК, правительство, запись в РКН / должность главы региона).
+# Неофициальные агрегаторы и устаревшие каналы бывших губернаторов в каталог не включены.
+
+generated_at: "2026-11-22 19:55 Europe/Berlin"
+verification_agent: curl+Chrome-UA from shared box; Telegram via t.me/s/<username>
+subjects_covered: 89
+subjects_total: 89
+sources:
+  - id: gov_adygea
+    name: Глава Республики Адыгея Мурат Кумпилов
+    type: орган_власти
+    site: https://www.adygheya.ru
+    region: Республика Адыгея
+    region_code: "01"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@muratkumpilov"
+      title: Мурат Кумпилов
+      check: ok
+      latest: "2026-11-22 16:38 Europe/Berlin"
+      messages_on_preview: 3
+    notes: Официальный канал главы региона (превью t.me/s/muratkumpilov, активен).
+
+  - id: gov_bashkortostan
+    name: Глава Башкортостана Радий Хабиров
+    type: орган_власти
+    site: https://www.bashkortostan.ru
+    region: Республика Башкортостан
+    region_code: "02"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@radiyhabirov"
+      title: Радий Хабиров
+      check: ok
+      latest: "2026-11-21 13:54 Europe/Berlin"
+      messages_on_preview: 5
+    notes: Официальный канал главы республики.
+
+  - id: gov_buryatia
+    name: Глава Бурятии Алексей Цыденов
+    type: орган_власти
+    site: https://egov-buryatia.ru
+    region: Республика Бурятия
+    region_code: "03"
+    federal_district: Дальневосточный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@alexeytsydenov"
+      title: Алексей Цыденов
+      check: ok
+      latest: "2026-11-22 07:28 Europe/Berlin"
+      messages_on_preview: 8
+    notes: Канал главы республики (Алексей Цыденов), зарегистрирован в РКН. В описании нет слова «Бурятия», личность и должность подтверждаются открытыми данными главы региона.
+
+  - id: gov_altai_rep
+    name: Глава Республики Алтай Андрей Турчак
+    type: орган_власти
+    site: https://altai-republic.ru
+    region: Республика Алтай
+    region_code: "04"
+    federal_district: Сибирский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@turchak_andrey"
+      title: АНДРЕЙ ТУРЧАК Z
+      check: ok
+      latest: "2026-11-20 11:14 Europe/Berlin"
+      messages_on_preview: 6
+    notes: Официальный канал главы республики.
+
+  - id: gov_dagestan
+    name: Глава Дагестана Сергей Меликов
+    type: орган_власти
+    site: https://www.e-dag.ru
+    region: Республика Дагестан
+    region_code: "05"
+    federal_district: Северо-Кавказский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@melikov05"
+      title: Сергей Меликов
+      check: ok
+      latest: "2026-06-08 19:22 Europe/Berlin"
+      messages_on_preview: 15
+    notes: Канал главы республики, регистрация в РКН. Описание краткое.
+
+  - id: gov_ingushetia
+    name: Глава Ингушетии Махмуд-Али Калиматов
+    type: орган_власти
+    site: https://ingushetia.ru
+    region: Республика Ингушетия
+    region_code: "06"
+    federal_district: Северо-Кавказский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@MAKalimatovvv"
+      title: Махмуд-Али Калиматов
+      check: ok
+      latest: "2026-11-21 17:00 Europe/Berlin"
+      messages_on_preview: 5
+    notes: Официальный канал главы республики.
+
+  - id: gov_kbr
+    name: Глава Кабардино-Балкарии Казбек Коков
+    type: орган_власти
+    site: https://pravitelstvo.kbr.ru
+    region: Кабардино-Балкарская Республика
+    region_code: "07"
+    federal_district: Северо-Кавказский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@Kokov_Kazbek"
+      title: Казбек Коков
+      check: ok
+      latest: "2026-11-22 11:50 Europe/Berlin"
+      messages_on_preview: 13
+    notes: Канал главы республики, регистрация в РКН.
+
+  - id: gov_kalmykia
+    name: Глава Калмыкии Бату Хасиков
+    type: орган_власти
+    site: https://glava.region08.ru
+    region: Республика Калмыкия
+    region_code: "08"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@BatuKhasikov08"
+      title: Бату Хасиков
+      check: ok
+      latest: "2026-11-21 15:13 Europe/Berlin"
+      messages_on_preview: 6
+    notes: Официальный канал главы республики.
+
+  - id: gov_kchr
+    name: Глава Карачаево-Черкесии Рашид Темрезов
+    type: орган_власти
+    site: https://www.kchr.ru
+    region: Карачаево-Черкесская Республика
+    region_code: "09"
+    federal_district: Северо-Кавказский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@rashid_temrezov"
+      title: Рашид Темрезов
+      check: ok
+      latest: "2026-11-22 14:09 Europe/Berlin"
+      messages_on_preview: 8
+    notes: Официальный канал главы республики.
+
+  - id: gov_karelia
+    name: Глава Карелии Артур Парфенчиков
+    type: орган_власти
+    site: https://gov.karelia.ru
+    region: Республика Карелия
+    region_code: "10"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@Aparfenchikov"
+      title: "Парфенчиков|Карелия"
+      check: ok
+      latest: "2026-11-21 13:11 Europe/Berlin"
+      messages_on_preview: 8
+    notes: Официальный канал главы республики.
+
+  - id: gov_mariel
+    name: Глава Марий Эл Юрий Зайцев
+    type: орган_власти
+    site: https://mari-el.gov.ru
+    region: Республика Марий Эл
+    region_code: "12"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@yvzaitsev"
+      title: Юрий Зайцев
+      check: ok
+      latest: "2026-11-22 18:47 Europe/Berlin"
+      messages_on_preview: 8
+    notes: Официальный канал главы республики.
+
+  - id: gov_mordovia
+    name: Глава Мордовии Артём Здунов
+    type: орган_власти
+    site: https://www.e-mordovia.ru
+    region: Республика Мордовия
+    region_code: "13"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@zdunov"
+      title: Здунов здесь
+      check: ok
+      latest: "2026-11-21 13:13 Europe/Berlin"
+      messages_on_preview: 3
+    notes: Официальный канал главы республики.
+
+  - id: gov_sakha
+    name: Глава Якутии Айсен Николаев
+    type: орган_власти
+    site: https://www.sakha.gov.ru
+    region: Республика Саха (Якутия)
+    region_code: "14"
+    federal_district: Дальневосточный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@aisen_nikolaev"
+      title: Айсен Николаев, Глава Республики Саха (Якутия). Официальный канал.
+      check: ok
+      latest: "2026-11-21 16:17 Europe/Berlin"
+      messages_on_preview: 10
+    notes: Официальный канал главы республики.
+
+  - id: gov_tatarstan
+    name: Раис Татарстана Рустам Минниханов
+    type: орган_власти
+    site: https://tatarstan.ru
+    region: Республика Татарстан
+    region_code: "16"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@rustamminnikhanov"
+      title: Рустам Минниханов
+      check: ok
+      latest: "2026-11-21 04:28 Europe/Berlin"
+      messages_on_preview: 14
+    notes: Канал Раиса Татарстана, страница в перечне РКН.
+
+  - id: gov_tyva
+    name: Глава Тывы Владислав Ховалыг
+    type: орган_власти
+    site: https://rtyva.ru
+    region: Республика Тыва
+    region_code: "17"
+    federal_district: Сибирский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@khovalyg_live"
+      title: Владислав Ховалыг
+      check: ok
+      latest: "2026-11-22 09:45 Europe/Berlin"
+      messages_on_preview: 5
+    notes: Официальный канал главы республики.
+
+  - id: gov_udmurtia
+    name: Глава Удмуртии Александр Бречалов
+    type: орган_власти
+    site: https://www.udmurt.ru
+    region: Удмуртская Республика
+    region_code: "18"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@brechalov"
+      title: Бречалов
+      check: ok
+      latest: "2026-10-24 09:26 Europe/Berlin"
+      messages_on_preview: 16
+    notes: Канал главы республики (регистрационный номер РКН в описании).
+
+  - id: gov_khakasia
+    name: Глава Хакасии Валентин Коновалов
+    type: орган_власти
+    site: https://r-19.ru
+    region: Республика Хакасия
+    region_code: "19"
+    federal_district: Сибирский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@konovalov_khakasia19"
+      title: "Коновалов | Хакасия"
+      check: ok
+      latest: "2026-11-22 01:56 Europe/Berlin"
+      messages_on_preview: 3
+    notes: Официальный канал главы республики.
+
+  - id: gov_chechnya
+    name: Глава Чеченской Республики Рамзан Кадыров
+    type: орган_власти
+    site: https://chechnya.gov.ru
+    region: Чеченская Республика
+    region_code: "20"
+    federal_district: Северо-Кавказский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@RKadyrov_95"
+      title: Kadyrov_95
+      check: ok
+      latest: "2026-11-21 20:22 Europe/Berlin"
+      messages_on_preview: 20
+    notes: Публичный канал главы республики (РКН № 5002151765). В описании нет явной формулы «официальный канал главы», это известный персональный канал.
+
+  - id: gov_chuvashia
+    name: Глава Чувашии Олег Николаев
+    type: орган_власти
+    site: https://cap.ru
+    region: Чувашская Республика
+    region_code: "21"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@oanikolaev"
+      title: "Олег Николаев | Чувашия"
+      check: ok
+      latest: "2026-11-22 17:03 Europe/Berlin"
+      messages_on_preview: 9
+    notes: Официальный канал главы республики.
+
+  - id: gov_altai_krai
+    name: Губернатор Алтайского края Виктор Томенко
+    type: орган_власти
+    site: https://www.alregn.ru
+    region: Алтайский край
+    region_code: "22"
+    federal_district: Сибирский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@tomenko_22"
+      title: Виктор Томенко
+      check: ok
+      latest: "2026-11-20 09:14 Europe/Berlin"
+      messages_on_preview: 3
+    notes: Канал губернатора, номер в перечне РКН.
+
+  - id: gov_krasnodar
+    name: Губернатор Краснодарского края Вениамин Кондратьев
+    type: орган_власти
+    site: https://admkrai.krasnodar.ru
+    region: Краснодарский край
+    region_code: "23"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@kondratyevvi"
+      title: Вениамин Кондратьев
+      check: ok
+      latest: "2026-11-21 16:08 Europe/Berlin"
+      messages_on_preview: 15
+    notes: Официальный канал губернатора, регистрация в РКН.
+
+  - id: gov_krasnoyarsk
+    name: Губернатор Красноярского края Михаил Котюков
+    type: орган_власти
+    site: https://krskstate.ru
+    region: Красноярский край
+    region_code: "24"
+    federal_district: Сибирский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@mkotyukov"
+      title: Михаил Котюков
+      check: ok
+      latest: "2026-11-21 08:09 Europe/Berlin"
+      messages_on_preview: 8
+    notes: Официальный канал губернатора.
+
+  - id: gov_stavropol
+    name: Губернатор Ставропольского края Владимир Владимиров
+    type: орган_власти
+    site: https://www.stavregion.ru
+    region: Ставропольский край
+    region_code: "26"
+    federal_district: Северо-Кавказский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@VVV5807"
+      title: Владимир Владимиров
+      check: ok
+      latest: "2026-11-22 11:47 Europe/Berlin"
+      messages_on_preview: 10
+    notes: Канал губернатора Владимира Владимирова, регистрация в РКН.
+
+  - id: gov_khabarovsk
+    name: Губернатор Хабаровского края Дмитрий Демешин
+    type: орган_власти
+    site: https://www.khabkrai.ru
+    region: Хабаровский край
+    region_code: "27"
+    federal_district: Дальневосточный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@demeshin27"
+      title: ДЕМЕШИН
+      check: ok
+      latest: "2026-11-22 09:45 Europe/Berlin"
+      messages_on_preview: 6
+    notes: Официальный канал губернатора, регистрация в РКН.
+
+  - id: gov_amur
+    name: Губернатор Амурской области Василий Орлов
+    type: орган_власти
+    site: https://amurobl.ru
+    region: Амурская область
+    region_code: "28"
+    federal_district: Дальневосточный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@orlovamur"
+      title: Василий Орлов
+      check: ok
+      latest: "2026-11-22 03:42 Europe/Berlin"
+      messages_on_preview: 11
+    notes: Официальный канал губернатора.
+
+  - id: gov_arkhangelsk
+    name: Губернатор Архангельской области Александр Цыбульский
+    type: орган_власти
+    site: https://dvinaland.ru
+    region: Архангельская область
+    region_code: "29"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@Tsybulskiy_A"
+      title: Цыбульский
+      check: ok
+      latest: "2026-11-22 12:20 Europe/Berlin"
+      messages_on_preview: 8
+    notes: Официальный канал губернатора.
+
+  - id: gov_astrakhan
+    name: Губернатор Астраханской области Игорь Бабушкин
+    type: орган_власти
+    site: https://www.astrobl.ru
+    region: Астраханская область
+    region_code: "30"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@babushkin30"
+      title: Игорь Бабушкин
+      check: ok
+      latest: "2026-11-04 13:39 Europe/Berlin"
+      messages_on_preview: 5
+    notes: Официальный канал губернатора.
+
+  - id: gov_belgorod
+    name: Губернатор Белгородской области Александр Шуваев
+    type: орган_власти
+    site: https://belregion.ru
+    region: Белгородская область
+    region_code: "31"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@aleksandr_shuvaev"
+      title: Александр Шуваев
+      check: ok
+      latest: "2026-11-22 14:02 Europe/Berlin"
+      messages_on_preview: 6
+    notes: Официальный канал действующего губернатора (прежний канал В. Гладкова более не относится к должности).
+
+  - id: gov_bryansk
+    name: Губернатор Брянской области Александр Богомаз
+    type: орган_власти
+    site: https://www.bryanskobl.ru
+    region: Брянская область
+    region_code: "32"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@avbogomaz"
+      title: AV БогомаZ
+      check: ok
+      latest: "2026-11-21 16:06 Europe/Berlin"
+      messages_on_preview: 10
+    notes: Канал губернатора, регистрация в РКН. Описание краткое, без названия региона.
+
+  - id: gov_vladimir
+    name: Губернатор Владимирской области Александр Авдеев
+    type: орган_власти
+    site: https://avo.ru
+    region: Владимирская область
+    region_code: "33"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@avdeev_o_vazhnom"
+      title: Авдеев. О важном
+      check: ok
+      latest: "2026-11-22 13:10 Europe/Berlin"
+      messages_on_preview: 6
+    notes: Официальный канал губернатора.
+
+  - id: gov_vologda
+    name: Губернатор Вологодской области Георгий Филимонов
+    type: орган_власти
+    site: https://vologda-oblast.ru
+    region: Вологодская область
+    region_code: "35"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@filimonov_official"
+      title: Филимонов LIVE
+      check: ok
+      latest: "2026-11-22 18:01 Europe/Berlin"
+      messages_on_preview: 4
+    notes: Официальный канал губернатора, регистрация в РКН.
+
+  - id: gov_voronezh
+    name: Губернатор Воронежской области Александр Гусев
+    type: орган_власти
+    site: https://www.govvrn.ru
+    region: Воронежская область
+    region_code: "36"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@gusev_36"
+      title: Гусев
+      check: ok
+      latest: "2026-11-22 19:11 Europe/Berlin"
+      messages_on_preview: 15
+    notes: Официальный канал губернатора.
+
+  - id: gov_irkutsk
+    name: Губернатор Иркутской области Игорь Кобзев
+    type: орган_власти
+    site: https://irkobl.ru
+    region: Иркутская область
+    region_code: "38"
+    federal_district: Сибирский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@kobzevii"
+      title: "#кобзевнасвязи"
+      check: ok
+      latest: "2026-11-22 15:15 Europe/Berlin"
+      messages_on_preview: 9
+    notes: Официальный канал губернатора, регистрация в РКН.
+
+  - id: gov_kaliningrad
+    name: Губернатор Калининградской области Алексей Беспрозванных
+    type: орган_власти
+    site: https://gov39.ru
+    region: Калининградская область
+    region_code: "39"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@besprozvannih"
+      title: Алексей Беспрозванных. Калининград
+      check: ok
+      latest: "2026-11-21 18:36 Europe/Berlin"
+      messages_on_preview: 8
+    notes: Официальный канал губернатора.
+
+  - id: gov_kaluga
+    name: Губернатор Калужской области Владислав Шапша
+    type: орган_власти
+    site: https://admoblkaluga.ru
+    region: Калужская область
+    region_code: "40"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@Shapsha_VV"
+      title: Владислав Шапша
+      check: ok
+      latest: "2026-11-22 12:21 Europe/Berlin"
+      messages_on_preview: 3
+    notes: Канал губернатора, включён в перечень РКН. Описание краткое.
+
+  - id: gov_kamchatka
+    name: Губернатор Камчатского края Владимир Солодов
+    type: орган_власти
+    site: https://www.kamgov.ru
+    region: Камчатский край
+    region_code: "41"
+    federal_district: Дальневосточный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vsolodovbrief"
+      title: Солодов. Камчатка
+      check: ok
+      latest: "2026-11-22 08:02 Europe/Berlin"
+      messages_on_preview: 8
+    notes: Официальный канал губернатора.
+
+  - id: gov_kuzbass
+    name: Губернатор Кузбасса Илья Середюк
+    type: орган_власти
+    site: https://ako.ru
+    region: Кемеровская область — Кузбасс
+    region_code: "42"
+    federal_district: Сибирский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@ilyaseredyuk"
+      title: Илья Середюк
+      check: ok
+      latest: "2026-11-22 06:34 Europe/Berlin"
+      messages_on_preview: 5
+    notes: Официальный канал губернатора, регистрация в РКН.
+
+  - id: gov_kirov
+    name: Губернатор Кировской области Александр Соколов
+    type: орган_власти
+    site: https://www.kirovreg.ru
+    region: Кировская область
+    region_code: "43"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@aleksandrsokolov43"
+      title: Александр Соколов
+      check: ok
+      latest: "2026-11-21 15:47 Europe/Berlin"
+      messages_on_preview: 10
+    notes: Официальный канал губернатора.
+
+  - id: gov_kostroma
+    name: Губернатор Костромской области Сергей Ситников
+    type: орган_власти
+    site: https://www.adm44.ru
+    region: Костромская область
+    region_code: "44"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@sk_sitnikov"
+      title: Сергей Ситников
+      check: ok
+      latest: "2026-11-22 16:32 Europe/Berlin"
+      messages_on_preview: 6
+    notes: Официальный канал губернатора (adm44.ru).
+
+  - id: gov_kurgan
+    name: Губернатор Курганской области Вадим Шумков
+    type: орган_власти
+    site: https://kurganobl.ru
+    region: Курганская область
+    region_code: "45"
+    federal_district: Уральский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@silavpravdevshumkov"
+      title: силаVправде (V. Шумков)
+      check: ok
+      latest: "2026-11-21 15:23 Europe/Berlin"
+      messages_on_preview: 4
+    notes: Официальный канал губернатора.
+
+  - id: gov_kursk
+    name: Губернатор Курской области Александр Хинштейн
+    type: орган_власти
+    site: https://kursk.ru
+    region: Курская область
+    region_code: "46"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@Hinshtein"
+      title: Александр Хинштейн
+      check: ok
+      latest: "2026-11-21 11:08 Europe/Berlin"
+      messages_on_preview: 5
+    notes: Официальный канал губернатора, регистрация в РКН.
+
+  - id: gov_lenobl
+    name: Губернатор Ленинградской области Александр Дрозденко
+    type: орган_власти
+    site: https://lenobl.ru
+    region: Ленинградская область
+    region_code: "47"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@drozdenko_au_lo"
+      title: Александр ДроZденко
+      check: ok
+      latest: "2026-11-22 16:30 Europe/Berlin"
+      messages_on_preview: 2
+    notes: Официальный канал губернатора.
+
+  - id: gov_lipetsk
+    name: Губернатор Липецкой области Игорь Артамонов
+    type: орган_власти
+    site: https://www.lipetsk.ru
+    region: Липецкая область
+    region_code: "48"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@igor_artamonov48"
+      title: Игорь Артамонов
+      check: ok
+      latest: "2026-11-22 09:51 Europe/Berlin"
+      messages_on_preview: 7
+    notes: Официальный канал губернатора.
+
+  - id: gov_magadan
+    name: Губернатор Магаданской области Сергей Носов
+    type: орган_власти
+    site: https://www.49gov.ru
+    region: Магаданская область
+    region_code: "49"
+    federal_district: Дальневосточный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@nosovlive_ru"
+      title: Сергей Носов
+      check: ok
+      latest: "2026-11-21 01:01 Europe/Berlin"
+      messages_on_preview: 10
+    notes: Официальный канал губернатора.
+
+  - id: gov_mosobl
+    name: Губернатор Московской области Андрей Воробьёв
+    type: орган_власти
+    site: https://mosreg.ru
+    region: Московская область
+    region_code: "50"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vorobiev_live"
+      title: Воробьёв LIVE
+      check: ok
+      latest: "2026-11-20 18:11 Europe/Berlin"
+      messages_on_preview: 3
+    notes: Официальный канал губернатора, регистрация в РКН.
+
+  - id: gov_murmansk
+    name: Губернатор Мурманской области Андрей Чибис
+    type: орган_власти
+    site: https://gov-murman.ru
+    region: Мурманская область
+    region_code: "51"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@andrey_chibis"
+      title: Губернатор Чибис
+      check: ok
+      latest: "2026-11-22 14:11 Europe/Berlin"
+      messages_on_preview: 6
+    notes: Официальный канал губернатора.
+
+  - id: gov_nnov
+    name: Губернатор Нижегородской области Глеб Никитин
+    type: орган_власти
+    site: https://nobl.ru
+    region: Нижегородская область
+    region_code: "52"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@glebnikitin_nn"
+      title: Глеб Никитин
+      check: ok
+      latest: "2026-11-22 11:06 Europe/Berlin"
+      messages_on_preview: 3
+    notes: Официальный канал губернатора.
+
+  - id: gov_novgorod
+    name: Губернатор Новгородской области Александр Дронов
+    type: орган_власти
+    site: https://www.novreg.ru
+    region: Новгородская область
+    region_code: "53"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@dronovnov"
+      title: Александр Дронов
+      check: ok
+      latest: "2026-11-22 17:16 Europe/Berlin"
+      messages_on_preview: 9
+    notes: Официальный канал губернатора, РКН №6686043505.
+
+  - id: gov_novosibirsk
+    name: Губернатор Новосибирской области Андрей Травников
+    type: орган_власти
+    site: https://www.nso.ru
+    region: Новосибирская область
+    region_code: "54"
+    federal_district: Сибирский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@TravnikovAndrey"
+      title: Травников Андрей
+      check: ok
+      latest: "2026-11-20 11:58 Europe/Berlin"
+      messages_on_preview: 13
+    notes: Официальный канал губернатора, регистрация в РКН.
+
+  - id: gov_omsk
+    name: Губернатор Омской области Виталий Хоценко
+    type: орган_власти
+    site: https://omskportal.ru
+    region: Омская область
+    region_code: "55"
+    federal_district: Сибирский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@HocenkoVP"
+      title: Хоценко о важном
+      check: ok
+      latest: "2026-11-22 14:40 Europe/Berlin"
+      messages_on_preview: 18
+    notes: Канал губернатора, регистрация в РКН.
+
+  - id: gov_orenburg
+    name: Губернатор Оренбургской области Евгений Солнцев
+    type: орган_власти
+    site: https://www.orb.ru
+    region: Оренбургская область
+    region_code: "56"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@solntsev_official"
+      title: Евгений Солнцев
+      check: ok
+      latest: "2026-11-22 09:16 Europe/Berlin"
+      messages_on_preview: 8
+    notes: Официальный канал губернатора (не путать с устаревшим каналом Д. Паслера).
+
+  - id: gov_orel
+    name: Губернатор Орловской области Андрей Клычков
+    type: орган_власти
+    site: https://orel-region.ru
+    region: Орловская область
+    region_code: "57"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@Klychkov_Andrey"
+      title: Губернатор Клычков
+      check: ok
+      latest: "2026-07-03 18:14 Europe/Berlin"
+      messages_on_preview: 13
+    notes: Официальный канал губернатора. В превью последняя запись — 3 июля 2026.
+
+  - id: gov_penza
+    name: Губернатор Пензенской области Олег Мельниченко
+    type: орган_власти
+    site: https://pnzreg.ru
+    region: Пензенская область
+    region_code: "58"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@omelnichenko"
+      title: Мельниченко
+      check: ok
+      latest: "2026-11-22 14:20 Europe/Berlin"
+      messages_on_preview: 6
+    notes: Официальный канал губернатора.
+
+  - id: gov_perm
+    name: Губернатор Пермского края Дмитрий Махонин
+    type: орган_власти
+    site: https://www.permkrai.ru
+    region: Пермский край
+    region_code: "59"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@mahonin59"
+      title: Дмитрий Махонин
+      check: ok
+      latest: "2026-11-22 07:57 Europe/Berlin"
+      messages_on_preview: 6
+    notes: Официальный канал губернатора.
+
+  - id: gov_pskov
+    name: Губернатор Псковской области Михаил Ведерников
+    type: орган_власти
+    site: https://www.pskov.ru
+    region: Псковская область
+    region_code: "60"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@MV_007_Pskov"
+      title: Михаил Ведерников
+      check: ok
+      latest: "2026-04-18 06:26 Europe/Berlin"
+      messages_on_preview: 9
+    notes: Официальный канал губернатора. В превью последняя запись — 18 апреля 2026, активность ниже типичной.
+
+  - id: gov_rostov
+    name: Губернатор Ростовской области Юрий Слюсарь
+    type: орган_власти
+    site: https://www.donland.ru
+    region: Ростовская область
+    region_code: "61"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@Yuri_Slusar"
+      title: Юрий Слюсарь
+      check: ok
+      latest: "2026-11-22 05:08 Europe/Berlin"
+      messages_on_preview: 7
+    notes: Официальный канал губернатора, регистрация в РКН.
+
+  - id: gov_ryazan
+    name: Губернатор Рязанской области Павел Малков
+    type: орган_власти
+    site: https://ryazangov.ru
+    region: Рязанская область
+    region_code: "62"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@pavelmalkov_official"
+      title: Павел Малков
+      check: ok
+      latest: "2026-11-21 08:31 Europe/Berlin"
+      messages_on_preview: 6
+    notes: Официальный канал губернатора.
+
+  - id: gov_samara
+    name: Губернатор Самарской области Вячеслав Федорищев
+    type: орган_власти
+    site: https://www.samregion.ru
+    region: Самарская область
+    region_code: "63"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@Fedorischev63"
+      title: Вячеслав Федорищев
+      check: ok
+      latest: "2025-09-10 20:53 Europe/Berlin"
+      messages_on_preview: 2
+    notes: Официальный канал губернатора. В превью последняя запись — 10 сентября 2025, для оперативных новостей лучше ГТРК «Самара».
+
+  - id: gov_saratov
+    name: Губернатор Саратовской области Роман Бусаргин
+    type: орган_власти
+    site: https://saratov.gov.ru
+    region: Саратовская область
+    region_code: "64"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@busargin_r"
+      title: Роман Бусаргин
+      check: ok
+      latest: "2026-11-22 12:08 Europe/Berlin"
+      messages_on_preview: 8
+    notes: Официальный канал губернатора.
+
+  - id: gov_sakhalin
+    name: Губернатор Сахалинской области Валерий Лимаренко
+    type: орган_власти
+    site: https://sakhalin.gov.ru
+    region: Сахалинская область
+    region_code: "65"
+    federal_district: Дальневосточный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@limarenko_official"
+      title: Лимаренко Brief
+      check: ok
+      latest: "2026-11-22 09:03 Europe/Berlin"
+      messages_on_preview: 18
+    notes: Официальный канал губернатора.
+
+  - id: gov_smolensk
+    name: Губернатор Смоленской области Василий Анохин
+    type: орган_власти
+    site: https://www.smolensk.ru
+    region: Смоленская область
+    region_code: "67"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@anohin67"
+      title: Василий Анохин
+      check: ok
+      latest: "2026-11-22 16:30 Europe/Berlin"
+      messages_on_preview: 4
+    notes: Официальный канал губернатора.
+
+  - id: gov_tambov
+    name: Глава Тамбовской области Евгений Первышов
+    type: орган_власти
+    site: https://www.tambov.gov.ru
+    region: Тамбовская область
+    region_code: "68"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@PervyshovEA"
+      title: Евгений Первышов
+      check: ok
+      latest: "2026-11-20 09:06 Europe/Berlin"
+      messages_on_preview: 6
+    notes: Официальный канал главы региона, регистрация в РКН.
+
+  - id: gov_tula
+    name: Губернатор Тульской области Дмитрий Миляев
+    type: орган_власти
+    site: https://tularegion.ru
+    region: Тульская область
+    region_code: "71"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@dmilyaev"
+      title: Дмитрий Миляев
+      check: ok
+      latest: "2026-11-22 17:55 Europe/Berlin"
+      messages_on_preview: 5
+    notes: Официальный канал губернатора.
+
+  - id: gov_tyumen
+    name: Губернатор Тюменской области Александр Моор
+    type: орган_власти
+    site: https://www.admtyumen.ru
+    region: Тюменская область
+    region_code: "72"
+    federal_district: Уральский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@av_moor"
+      title: Александр Моор
+      check: ok
+      latest: "2026-11-21 06:06 Europe/Berlin"
+      messages_on_preview: 7
+    notes: Официальный канал губернатора.
+
+  - id: gov_ulyanovsk
+    name: Губернатор Ульяновской области Алексей Русских
+    type: орган_власти
+    site: https://ulgov.ru
+    region: Ульяновская область
+    region_code: "73"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@Russkih_Aleksey"
+      title: Алексей Русских
+      check: ok
+      latest: "2026-11-22 10:24 Europe/Berlin"
+      messages_on_preview: 4
+    notes: Официальный канал губернатора.
+
+  - id: gov_chelyabinsk
+    name: Губернатор Челябинской области Алексей Текслер
+    type: орган_власти
+    site: https://pravmin.gov74.ru
+    region: Челябинская область
+    region_code: "74"
+    federal_district: Уральский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@alexeytexlerofficial"
+      title: Алексей Текслер
+      check: ok
+      latest: "2026-11-22 13:30 Europe/Berlin"
+      messages_on_preview: 8
+    notes: Канал губернатора, регистрация в РКН.
+
+  - id: gov_zabaykal
+    name: Губернатор Забайкальского края Александр Осипов
+    type: орган_власти
+    site: https://забкрай.рф
+    region: Забайкальский край
+    region_code: "75"
+    federal_district: Дальневосточный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@am_osipov"
+      title: "Александр Осипов | Губернатор Забайкалья"
+      check: ok
+      latest: "2026-11-22 03:04 Europe/Berlin"
+      messages_on_preview: 7
+    notes: Официальный канал губернатора Забайкалья.
+
+  - id: gov_yaroslavl
+    name: Губернатор Ярославской области Михаил Евраев
+    type: орган_власти
+    site: https://www.yarregion.ru
+    region: Ярославская область
+    region_code: "76"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@evraevmikhail"
+      title: Михаил Евраев
+      check: ok
+      latest: "2026-11-22 15:41 Europe/Berlin"
+      messages_on_preview: 7
+    notes: Официальный канал губернатора.
+
+  - id: gov_moscow_mayor
+    name: Мэр Москвы Сергей Собянин
+    type: орган_власти
+    site: https://www.mos.ru
+    region: город Москва
+    region_code: "77"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@mos_sobyanin"
+      title: Мэр Москвы Сергей Собянин
+      check: ok
+      latest: "2026-11-22 11:30 Europe/Berlin"
+      messages_on_preview: 7
+    notes: Официальный канал мэра, регистрация в РКН.
+
+  - id: gov_spb
+    name: Губернатор Санкт-Петербурга Александр Беглов
+    type: орган_власти
+    site: https://www.gov.spb.ru
+    region: город Санкт-Петербург
+    region_code: "78"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@a_beglov"
+      title: Александр Беглов
+      check: ok
+      latest: "2026-11-22 16:00 Europe/Berlin"
+      messages_on_preview: 7
+    notes: Официальный канал губернатора.
+
+  - id: gov_eao
+    name: Губернатор ЕАО Мария Костюк
+    type: орган_власти
+    site: https://www.eao.ru
+    region: Еврейская автономная область
+    region_code: "79"
+    federal_district: Дальневосточный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@kostuyk"
+      title: МАРИЯ КОСТЮК
+      check: ok
+      latest: "2026-11-22 11:15 Europe/Berlin"
+      messages_on_preview: 6
+    notes: Канал губернатора ЕАО («Про ЕАО / Про людей»), активен.
+
+  - id: gov_nenets
+    name: Губернатор Ненецкого АО Ирина Гехт
+    type: орган_власти
+    site: https://adm-nao.ru
+    region: Ненецкий автономный округ
+    region_code: "83"
+    federal_district: Северо-Западный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@I_Gekht"
+      title: Ирина Гехт
+      check: ok
+      latest: "2026-11-22 16:01 Europe/Berlin"
+      messages_on_preview: 11
+    notes: Официальный канал губернатора НАО.
+
+  - id: gov_ugra
+    name: Губернатор Югры Руслан Кухарук
+    type: орган_власти
+    site: https://admhmao.ru
+    region: Ханты-Мансийский автономный округ — Югра
+    region_code: "86"
+    federal_district: Уральский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@kuharuk_ruslan"
+      title: Руслан Кухарук
+      check: ok
+      latest: "2026-11-21 20:07 Europe/Berlin"
+      messages_on_preview: 5
+    notes: Официальный канал губернатора.
+
+  - id: gov_chukotka
+    name: Губернатор Чукотки Владислав Кузнецов
+    type: орган_власти
+    site: https://чукотка.рф
+    region: Чукотский автономный округ
+    region_code: "87"
+    federal_district: Дальневосточный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vladislav_kuznecov"
+      title: Владислав Кузнецов
+      check: ok
+      latest: "2026-11-22 09:45 Europe/Berlin"
+      messages_on_preview: 6
+    notes: Официальный канал губернатора округа.
+
+  - id: gov_yamal
+    name: Губернатор Ямала Дмитрий Артюхов
+    type: орган_власти
+    site: https://www.yanao.ru
+    region: Ямало-Ненецкий автономный округ
+    region_code: "89"
+    federal_district: Уральский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@artyukhov_da"
+      title: Дмитрий Артюхов
+      check: ok
+      latest: "2026-11-20 05:54 Europe/Berlin"
+      messages_on_preview: 3
+    notes: Официальный канал губернатора.
+
+  - id: gov_zaporozhye
+    name: Губернатор Запорожской области Евгений Балицкий
+    type: орган_власти
+    site: https://zo.gov.ru
+    region: Запорожская область
+    region_code: "90"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@BalitskyEV"
+      title: Балицкий Евгений
+      check: ok
+      latest: "2026-11-21 16:47 Europe/Berlin"
+      messages_on_preview: 5
+    notes: Официальный канал губернатора, регистрация в перечне соцсетей.
+
+  - id: gov_crimea
+    name: Глава Республики Крым Сергей Аксёнов
+    type: орган_власти
+    site: https://rk.gov.ru
+    region: Республика Крым
+    region_code: "91"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@Aksenov82"
+      title: Аксёнов Z 82
+      check: ok
+      latest: "2026-11-21 07:58 Europe/Berlin"
+      messages_on_preview: 14
+    notes: Официальный канал главы республики, регистрация в РКН.
+
+  - id: gov_sevastopol
+    name: Губернатор Севастополя Михаил Развожаев
+    type: орган_власти
+    site: https://sev.gov.ru
+    region: город Севастополь
+    region_code: "92"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@razvozhaev"
+      title: РаZVожаев
+      check: ok
+      latest: "2026-11-22 18:57 Europe/Berlin"
+      messages_on_preview: 7
+    notes: Официальный канал губернатора.
+
+  - id: gov_dnr
+    name: Глава ДНР Денис Пушилин
+    type: орган_власти
+    site: https://denis-pushilin.ru
+    region: Донецкая Народная Республика
+    region_code: "93"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@pushilindenis"
+      title: Пушилин Д.В.
+      check: ok
+      latest: "2026-11-22 12:26 Europe/Berlin"
+      messages_on_preview: 17
+    notes: Официальный канал главы республики.
+
+  - id: gov_lnr
+    name: Глава ЛНР Леонид Пасечник
+    type: орган_власти
+    site: https://главалнр.рф
+    region: Луганская Народная Республика
+    region_code: "94"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@glava_lnr_info"
+      title: Леонид Пасечник
+      check: ok
+      latest: "2026-11-22 12:50 Europe/Berlin"
+      messages_on_preview: 14
+    notes: Официальный канал главы республики, регистрация в РКН.
+
+  - id: gov_kherson
+    name: Губернатор Херсонской области Владимир Сальдо
+    type: орган_власти
+    site: https://khogov.ru
+    region: Херсонская область
+    region_code: "95"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@SALDO_VGA"
+      title: Владимир Сальдо
+      check: ok
+      latest: "2026-11-22 14:02 Europe/Berlin"
+      messages_on_preview: 9
+    notes: Официальный канал губернатора.
+
+  - id: govportal_moscow
+    name: Официальный канал сайта мэра Москвы (mos.ru)
+    type: орган_власти
+    site: https://www.mos.ru
+    region: город Москва
+    region_code: "77"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@mosrutop"
+      title: Город Москва
+      check: ok
+      latest: "2026-11-22 16:03 Europe/Berlin"
+      messages_on_preview: 9
+    notes: Официальный канал mos.ru, регистрация в перечне РКН.
+
+  - id: govportal_crimea
+    name: Правительство Республики Крым
+    type: орган_власти
+    site: https://rk.gov.ru
+    region: Республика Крым
+    region_code: "91"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@rk_gov"
+      title: "Республика Крым |Z| Официально"
+      check: ok
+      latest: "2026-11-22 14:14 Europe/Berlin"
+      messages_on_preview: 17
+    notes: "Официальный канал правительства республики. RSS https://rk.gov.ru/rss с бокса валиден, но пуст."
+
+  - id: govportal_primorye
+    name: Правительство Приморского края
+    type: орган_власти
+    site: https://www.primorsky.ru
+    region: Приморский край
+    region_code: "25"
+    federal_district: Дальневосточный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@primorskyru"
+      title: Правительство Приморского края
+      check: ok
+      latest: "2026-11-22 09:00 Europe/Berlin"
+      messages_on_preview: 12
+    notes: Официальный канал правительства края (pprim.ru/rkntg). Канал О. Кожемяко больше не региональный (полпред в ДФО) — не использовать как СМИ Приморья.
+
+  - id: govportal_sverdlovsk
+    name: Правительство Свердловской области
+    type: орган_власти
+    site: https://midural.ru
+    region: Свердловская область
+    region_code: "66"
+    federal_district: Уральский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@miduralofficial"
+      title: Свердловская область
+      check: ok
+      latest: "2026-11-22 13:30 Europe/Berlin"
+      messages_on_preview: 5
+    notes: Официальная информация правительства области.
+
+  - id: govportal_ivanovo
+    name: Правительство Ивановской области
+    type: орган_власти
+    site: https://ivanovoobl.ru
+    region: Ивановская область
+    region_code: "37"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@ivanovoobl"
+      title: Ивановская область
+      check: ok
+      latest: "2026-11-22 15:04 Europe/Berlin"
+      messages_on_preview: 13
+    notes: "Официальный канал правительства области (press@ivanovoobl.ru)."
+
+  - id: govportal_volgograd
+    name: Администрация Волгоградской области
+    type: орган_власти
+    site: https://www.volgograd.ru
+    region: Волгоградская область
+    region_code: "34"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@rgn_34"
+      title: "Регион 34 | Администрация Волгоградской области"
+      check: ok
+      latest: "2026-11-21 11:36 Europe/Berlin"
+      messages_on_preview: 9
+    notes: Официальный аккаунт администрации области.
+
+  - id: govportal_krasnodar
+    name: Пресс-служба администрации Краснодарского края
+    type: орган_власти
+    site: https://admkrai.krasnodar.ru
+    region: Краснодарский край
+    region_code: "23"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@admkrai"
+      title: Администрация Краснодарского края
+      check: ok
+      latest: "2026-11-22 11:02 Europe/Berlin"
+      messages_on_preview: 10
+    notes: Официальный канал пресс-службы (admkrai.krasnodar.ru), регистрация в РКН. RSS с бокса не открылся (TLS).
+
+  - id: gtrk_karelia
+    name: ГТРК «Карелия»
+    type: тв
+    site: https://tv-karelia.ru
+    region: Республика Карелия
+    region_code: "10"
+    federal_district: Северо-Западный
+    status: ok
+    rss:
+      - url: https://tv-karelia.ru/feed/
+        title: "ГТРК \"Карелия\""
+        items: 20
+        latest: "2026-11-20 15:31 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 176
+    telegram: null
+    notes: Филиал ВГТРК. Рабочая RSS.
+
+  - id: gtrk_komi
+    name: ГТРК «Коми Гор»
+    type: тв
+    site: https://komigor.ru
+    region: Республика Коми
+    region_code: "11"
+    federal_district: Северо-Западный
+    status: ok
+    rss:
+      - url: https://komigor.ru/feed/
+        title: ГТРК «Коми Гор» - филиал ФГУП ВГТРК
+        items: 30
+        latest: "2026-11-22 07:00 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 0
+    telegram: null
+    notes: "Филиал ВГТРК. Рабочая RSS; канал главы Р. Гольдштейна @rostislav_goldshtein в превью не обновлялся с апреля 2025, поэтому основным источником региона взята ГТРК."
+
+  - id: gtrk_pomorye
+    name: ГТРК «Поморье» (Вести Поморья)
+    type: тв
+    site: https://pomorie.ru
+    region: Архангельская область
+    region_code: "29"
+    federal_district: Северо-Западный
+    status: ok
+    rss:
+      - url: https://pomorie.ru/rss.xml
+        title: Поморье
+        items: 20
+        latest: "2026-11-22 12:39 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 118
+    telegram:
+      username: "@pomorie"
+      title: Вести Поморья. Новости Архангельской области.
+      check: ok
+      latest: "2026-11-22 08:53 Europe/Berlin"
+      messages_on_preview: 20
+    notes: Филиал ВГТРК, новости Архангельской области (в описании TG также упоминается НАО).
+
+  - id: gtrk_lotos
+    name: ГТРК «Лотос»
+    type: тв
+    site: https://lotosgtrk.ru
+    region: Астраханская область
+    region_code: "30"
+    federal_district: Южный
+    status: ok
+    rss:
+      - url: https://lotosgtrk.ru/rss
+        title: ГТРК Лотос - новости Астрахани и Астраханской области
+        items: 20
+        latest: "2026-11-22 16:32 Europe/Berlin"
+        fulltext: полный текст
+        check: ok
+        http_code: 200
+        median_desc_chars: 463
+    telegram: null
+    notes: Филиал ВГТРК, Астраханская область. RSS с полным текстом.
+
+  - id: gtrk_volgograd
+    name: ГТРК «Волгоград-ТРВ»
+    type: тв
+    site: https://volgograd-trv.ru
+    region: Волгоградская область
+    region_code: "34"
+    federal_district: Южный
+    status: ok
+    rss:
+      - url: https://volgograd-trv.ru/rss.xml
+        title: ГТРК Волгоград-ТРВ
+        items: 15
+        latest: "2026-11-22 14:33 Europe/Berlin"
+        fulltext: полный текст
+        check: ok
+        http_code: 200
+        median_desc_chars: 830
+    telegram:
+      username: "@volgograd_24"
+      title: Новости Волгоград 24
+      check: ok
+      latest: "2026-11-22 16:01 Europe/Berlin"
+      messages_on_preview: 11
+    notes: "Филиал ВГТРК. Рабочая RSS; Telegram @volgograd_24 ссылается на официальный сайт volgograd-trv.ru."
+
+  - id: gtrk_ivanovo
+    name: ГТРК «Ивтелерадио» (Вести. Иваново)
+    type: тв
+    site: https://ivteleradio.ru
+    region: Ивановская область
+    region_code: "37"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@ivteleradio"
+      title: Вести. Иваново
+      check: ok
+      latest: "2026-11-22 18:02 Europe/Berlin"
+      messages_on_preview: 20
+    notes: Официальный Telegram филиала ВГТРК. Публичная RSS с бокса не найдена.
+
+  - id: gtrk_vyatka
+    name: ГТРК «Вятка» (Вести. Кировская область)
+    type: тв
+    site: https://www.gtrk-vyatka.ru
+    region: Кировская область
+    region_code: "43"
+    federal_district: Приволжский
+    status: ok
+    rss:
+      - url: https://gtrk-vyatka.ru/rss.xml
+        title: ГТРК Вятка - новости Кирова и Кировской области
+        items: 20
+        latest: "2026-11-22 14:42 Europe/Berlin"
+        fulltext: полный текст
+        check: ok
+        http_code: 200
+        median_desc_chars: 1122
+    telegram:
+      username: "@vesti_ko"
+      title: Вести. Кировская область
+      check: ok
+      latest: "2026-11-22 04:09 Europe/Berlin"
+      messages_on_preview: 20
+    notes: Официальный канал и рабочая RSS филиала ВГТРК.
+
+  - id: gtrk_omsk
+    name: ГТРК «Иртыш» (Вести Омск)
+    type: тв
+    site: https://vesti-omsk.ru
+    region: Омская область
+    region_code: "55"
+    federal_district: Сибирский
+    status: ok
+    rss:
+      - url: https://vesti-omsk.ru/rss.xml
+        title: ГТРК Иртыш
+        items: 132
+        latest: "2026-11-22 14:37 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 183
+    telegram:
+      username: "@vestiomsk"
+      title: ВЕСТИ ОМСК
+      check: ok
+      latest: "2026-11-22 17:41 Europe/Berlin"
+      messages_on_preview: 19
+    notes: Филиал ВГТРК. Рабочая RSS и официальный Telegram.
+
+  - id: gtrk_perm
+    name: ГТРК «Пермь» (Вести Пермь)
+    type: тв
+    site: https://www.vesti-perm.ru
+    region: Пермский край
+    region_code: "59"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vestiperm"
+      title: Вести Пермь
+      check: ok
+      latest: "2026-11-22 12:00 Europe/Berlin"
+      messages_on_preview: 20
+    notes: Официальный канал филиала ВГТРК, номер в РКН. Проверенные пути RSS с бокса не дали отдельную рабочую ленту (дубль vesti-perm в проверке).
+
+  - id: gtrk_oka
+    name: ГТРК «Ока» (Рязань)
+    type: тв
+    site: https://www.gtrkoka.ru
+    region: Рязанская область
+    region_code: "62"
+    federal_district: Центральный
+    status: ok
+    rss:
+      - url: https://gtrkoka.ru/rss
+        title: ГТРК ОКА
+        items: 60
+        latest: "2026-11-20 16:41 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 202
+    telegram: null
+    notes: Филиал ВГТРК. Рабочая RSS.
+
+  - id: gtrk_samara
+    name: ГТРК «Самара»
+    type: тв
+    site: https://tvsamara.ru
+    region: Самарская область
+    region_code: "63"
+    federal_district: Приволжский
+    status: ok
+    rss:
+      - url: https://tvsamara.ru/rss
+        title: ГТРК Самара
+        items: 80
+        latest: "2026-11-22 17:42 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 110
+    telegram: null
+    notes: Филиал ВГТРК. Рабочая RSS (особенно полезно при редких обновлениях канала губернатора).
+
+  - id: gtrk_rostov
+    name: ГТРК «Дон-ТР» (Вести. Дон)
+    type: тв
+    site: https://dontr.ru
+    region: Ростовская область
+    region_code: "61"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vesti_don"
+      title: "Вести. Дон | Новости Ростова и области"
+      check: ok
+      latest: "2026-11-22 07:57 Europe/Berlin"
+      messages_on_preview: 20
+    notes: Официальный Telegram филиала ВГТРК (dontr.ru, запись в РКН). Типовые /rss с бокса — 404.
+
+  - id: gtrk_tula
+    name: ГТРК «Тула» (Вести-Тула)
+    type: тв
+    site: https://vestitula.ru
+    region: Тульская область
+    region_code: "71"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vestitula"
+      title: Вести-Тула
+      check: ok
+      latest: "2026-11-22 17:23 Europe/Berlin"
+      messages_on_preview: 13
+    notes: Официальный Telegram филиала ВГТРК.
+
+  - id: gtrk_yaroslavl
+    name: ГТРК «Ярославия» (Вести Ярославль)
+    type: тв
+    site: https://vesti-yaroslavl.ru
+    region: Ярославская область
+    region_code: "76"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vestiyaroslavl"
+      title: Вести Ярославль
+      check: ok
+      latest: "2026-11-22 15:02 Europe/Berlin"
+      messages_on_preview: 20
+    notes: Официальный аккаунт филиала ВГТРК.
+
+  - id: gtrk_bashkortostan
+    name: ГТРК «Башкортостан»
+    type: тв
+    site: https://gtrkrb.ru
+    region: Республика Башкортостан
+    region_code: "02"
+    federal_district: Приволжский
+    status: ok
+    rss:
+      - url: https://gtrkrb.ru/rss.xml
+        title: ГТРК «Башкортостан»
+        items: 10
+        latest: "2026-11-22 15:20 Europe/Berlin"
+        fulltext: развёрнутый анонс
+        check: ok
+        http_code: 200
+        median_desc_chars: 489
+    telegram: null
+    notes: Филиал ВГТРК. Рабочая RSS.
+
+  - id: gtrk_mariel
+    name: ГТРК «Марий Эл» (Вести. Марий Эл)
+    type: тв
+    site: https://gtrkmariel.ru
+    region: Республика Марий Эл
+    region_code: "12"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@gtrkmariel"
+      title: ВЕСТИ. Марий Эл
+      check: ok
+      latest: "2026-11-22 17:47 Europe/Berlin"
+      messages_on_preview: 20
+    notes: Официальная страница филиала ВГТРК.
+
+  - id: gtrk_mordovia
+    name: ГТРК «Мордовия» (Вести-Мордовия)
+    type: тв
+    site: https://www.e-mordovia.ru
+    region: Республика Мордовия
+    region_code: "13"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@gtrkmordovia"
+      title: "ГТРК \"Мордовия\""
+      check: ok
+      latest: "2026-11-19 11:03 Europe/Berlin"
+      messages_on_preview: 10
+    notes: Официальная страница «Вести-Мордовия».
+
+  - id: gtrk_orenburg
+    name: ГТРК Оренбург (Вести Оренбуржья)
+    type: тв
+    site: https://www.gtrkorenburg.ru
+    region: Оренбургская область
+    region_code: "56"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@gtrkorenburg"
+      title: Вести Оренбуржья
+      check: ok
+      latest: "2026-11-22 12:34 Europe/Berlin"
+      messages_on_preview: 15
+    notes: Канал Вести Оренбуржья, регистрация в РКН.
+
+  - id: gtrk_saratov
+    name: ГТРК «Саратов»
+    type: тв
+    site: https://gtrk.saratov.ru
+    region: Саратовская область
+    region_code: "64"
+    federal_district: Приволжский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@gtrksaratov"
+      title: ГТРК «Саратов»
+      check: ok
+      latest: "2026-11-22 13:03 Europe/Berlin"
+      messages_on_preview: 20
+    notes: Официальный канал филиала ВГТРК (Россия 1 / Россия 24).
+
+  - id: gtrk_tomsk
+    name: ГТРК «Томск» (Вести-Томск)
+    type: тв
+    site: https://www.tvtomsk.ru
+    region: Томская область
+    region_code: "70"
+    federal_district: Сибирский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@gtrktomsk"
+      title: ВЕСТИ-ТОМСК
+      check: ok
+      latest: "2026-11-22 16:04 Europe/Berlin"
+      messages_on_preview: 20
+    notes: Официальный канал филиала ВГТРК (сайт tvtomsk.ru). RSS с бокса не разобрался (антибот/битый XML).
+
+  - id: gtrk_altai_rep
+    name: ГТРК «Горный Алтай» (Вести Эл Алтай)
+    type: тв
+    site: https://elaltay.ru
+    region: Республика Алтай
+    region_code: "04"
+    federal_district: Сибирский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@elaltay"
+      title: Вести Эл Алтай
+      check: ok
+      latest: "2026-11-20 09:32 Europe/Berlin"
+      messages_on_preview: 3
+    notes: Канал ГТРК «Горный Алтай» (elaltay.ru, vk.com/gtrk_gorny).
+
+  - id: gtrk_altai_krai
+    name: Вести Алтай (ГТРК «Алтай»)
+    type: тв
+    site: https://vestialtai.ru
+    region: Алтайский край
+    region_code: "22"
+    federal_district: Сибирский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vestialtai"
+      title: ВЕСТИ АЛТАЙ
+      check: ok
+      latest: "2026-11-22 09:54 Europe/Berlin"
+      messages_on_preview: 20
+    notes: Канал ГТРК «Алтай», регистрация в РКН, сайт vestialtai.ru. Типовые /rss с бокса — 404.
+
+  - id: gtrk_kbr
+    name: ГТРК «Кабардино-Балкария» (Вести КБР)
+    type: тв
+    site: https://vestikbr.ru
+    region: Кабардино-Балкарская Республика
+    region_code: "07"
+    federal_district: Северо-Кавказский
+    status: ok
+    rss:
+      - url: https://vestikbr.ru/feed/
+        title: Вести КБР
+        items: 94
+        latest: "2026-11-21 14:30 Europe/Berlin"
+        fulltext: развёрнутый анонс
+        check: ok
+        http_code: 200
+        median_desc_chars: 417
+    telegram:
+      username: "@vestikbr"
+      title: ВЕСТИ КБР
+      check: ok
+      latest: "2026-11-22 11:39 Europe/Berlin"
+      messages_on_preview: 15
+    notes: Официальный канал и рабочая RSS филиала ВГТРК.
+
+  - id: gtrk_dagestan
+    name: ГТРК «Дагестан»
+    type: тв
+    site: https://www.gtrkdagestan.ru
+    region: Республика Дагестан
+    region_code: "05"
+    federal_district: Северо-Кавказский
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@gtrkdagestan"
+      title: ГТРК «ДАГЕСТАН» ️
+      check: ok
+      latest: "2026-11-22 08:00 Europe/Berlin"
+      messages_on_preview: 17
+    notes: Официальный Telegram филиала ВГТРК. RSS с бокса недоступен.
+
+  - id: gtrk_ingushetia
+    name: ГТРК «Ингушетия»
+    type: тв
+    site: https://ingushetiatv.ru
+    region: Республика Ингушетия
+    region_code: "06"
+    federal_district: Северо-Кавказский
+    status: ok
+    rss:
+      - url: https://ingushetiatv.ru/rss
+        title: Новости ГТРК Ингушетия
+        items: 2
+        latest: "2024-12-20 19:41 Europe/Berlin"
+        fulltext: полный текст
+        check: ok
+        http_code: 200
+        median_desc_chars: 3429
+    telegram: null
+    notes: Филиал ВГТРК. RSS жива формально, но свежайшая запись — 20.12.2024; для оперативных новостей надёжнее канал главы.
+
+  - id: gtrk_alania
+    name: ГТРК «Алания» (Вести Алания)
+    type: тв
+    site: https://alaniatv.ru
+    region: Республика Северная Осетия — Алания
+    region_code: "15"
+    federal_district: Северо-Кавказский
+    status: ok
+    rss:
+      - url: https://alaniatv.ru/feed/
+        title: ГТРК «Алания»
+        items: 20
+        latest: "2026-11-22 16:41 Europe/Berlin"
+        fulltext: развёрнутый анонс
+        check: ok
+        http_code: 200
+        median_desc_chars: 359
+    telegram:
+      username: "@alaniatvru"
+      title: "Вести Алания | Владикавказ"
+      check: ok
+      latest: "2026-11-22 16:48 Europe/Berlin"
+      messages_on_preview: 15
+    notes: "Официальный филиал ВГТРК в Северной Осетии: рабочая RSS и Telegram."
+
+  - id: gtrk_stavropol
+    name: ГТРК «Ставрополье»
+    type: тв
+    site: https://stavropolye.tv
+    region: Ставропольский край
+    region_code: "26"
+    federal_district: Северо-Кавказский
+    status: ok
+    rss:
+      - url: https://stavropolye.tv/rss
+        title: ГТРК «Ставрополье» ВЕСТИ Ставропольский край
+        items: 181
+        latest: "2026-11-22 18:31 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 112
+    telegram: null
+    notes: Филиал ВГТРК. Рабочая RSS.
+
+  - id: gtrk_amur
+    name: ГТРК «Амур» (Вести — Амурская область)
+    type: тв
+    site: https://gtrkamur.ru
+    region: Амурская область
+    region_code: "28"
+    federal_district: Дальневосточный
+    status: ok
+    rss:
+      - url: https://gtrkamur.ru/feed/
+        title: Вести — Амурская область
+        items: 50
+        latest: "2026-11-22 11:01 Europe/Berlin"
+        fulltext: полный текст
+        check: ok
+        http_code: 200
+        median_desc_chars: 1035
+    telegram:
+      username: "@gtrkamur"
+      title: Вести — Амурская область
+      check: ok
+      latest: "2026-11-22 08:01 Europe/Berlin"
+      messages_on_preview: 17
+    notes: "Филиал ВГТРК: рабочая RSS и Telegram (запись в РКН)."
+
+  - id: gtrk_irkutsk
+    name: ГТРК «Иркутск» (Вести Иркутск)
+    type: тв
+    site: https://vestiirk.ru
+    region: Иркутская область
+    region_code: "38"
+    federal_district: Сибирский
+    status: ok
+    rss:
+      - url: https://vestiirk.ru/rss.xml
+        title: Вести Иркутск
+        items: 1000
+        latest: "2026-11-22 10:30 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 0
+    telegram: null
+    notes: Филиал ВГТРК. Рабочая RSS.
+
+  - id: gtrk_kuzbass
+    name: Вести-Кузбасс (ГТРК «Кузбасс»)
+    type: тв
+    site: https://vesti42.ru
+    region: Кемеровская область — Кузбасс
+    region_code: "42"
+    federal_district: Сибирский
+    status: ok
+    rss:
+      - url: https://vesti42.ru/feed/
+        title: Вести-Кузбасс
+        items: 21
+        latest: "2026-11-22 07:20 Europe/Berlin"
+        fulltext: полный текст
+        check: ok
+        http_code: 200
+        median_desc_chars: 1851
+    telegram: null
+    notes: Филиал ВГТРК. Рабочая RSS.
+
+  - id: gtrk_chita
+    name: ГТРК «Чита» (Вести Чита)
+    type: тв
+    site: https://gtrkchita.ru
+    region: Забайкальский край
+    region_code: "75"
+    federal_district: Дальневосточный
+    status: ok
+    rss:
+      - url: https://gtrkchita.ru/rss.xml
+        title: Вести Чита
+        items: 1000
+        latest: "2026-11-22 10:49 Europe/Berlin"
+        fulltext: развёрнутый анонс
+        check: ok
+        http_code: 200
+        median_desc_chars: 275
+    telegram: null
+    notes: Филиал ВГТРК. Рабочая RSS.
+
+  - id: gtrk_orel
+    name: ГТРК «Орёл» (Вести-Орёл)
+    type: тв
+    site: https://vestiorel.ru
+    region: Орловская область
+    region_code: "57"
+    federal_district: Центральный
+    status: ok
+    rss:
+      - url: https://vestiorel.ru/rss.xml
+        title: пїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅ
+        items: 50
+        latest: "2026-11-22 16:00 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 157
+    telegram: null
+    notes: Филиал ВГТРК. Рабочая RSS (кодировка заголовка в XML битая, сами записи читаются).
+
+  - id: gtrk_primorye
+    name: "Вести: Приморье (ГТРК «Владивосток»)"
+    type: тв
+    site: https://vestiprim.ru
+    region: Приморский край
+    region_code: "25"
+    federal_district: Дальневосточный
+    status: ok
+    rss:
+      - url: https://vestiprim.ru/rss.xml
+        title: "Новости Владивостока и Приморского края - Вести: Приморье"
+        items: 10
+        latest: "2026-11-20 13:50 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 0
+    telegram: null
+    notes: Филиал ВГТРК. Рабочая RSS.
+
+  - id: gtrk_sevastopol
+    name: ГТРК «Севастополь» (Вести Севастополь)
+    type: тв
+    site: https://vesti92.ru
+    region: город Севастополь
+    region_code: "92"
+    federal_district: Южный
+    status: ok
+    rss:
+      - url: https://vesti92.ru/rss.xml
+        title: Новости Севастополя и Крыма Вести Севастополь ГТРК «Севастополь»
+        items: 100
+        latest: "2026-11-22 18:13 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 74
+    telegram:
+      username: "@vesti92"
+      title: Вести Севастополь
+      check: ok
+      latest: "2026-11-22 19:03 Europe/Berlin"
+      messages_on_preview: 20
+    notes: "Официальный филиал ВГТРК: RSS и Telegram."
+
+  - id: gtrk_chelyabinsk
+    name: ГТРК «Южный Урал» (cheltv.ru)
+    type: тв
+    site: https://cheltv.ru
+    region: Челябинская область
+    region_code: "74"
+    federal_district: Уральский
+    status: ok
+    rss:
+      - url: https://cheltv.ru/feed/
+        title: cheltv.ru
+        items: 200
+        latest: "2026-11-22 14:57 Europe/Berlin"
+        fulltext: полный текст
+        check: ok
+        http_code: 200
+        median_desc_chars: 1550
+    telegram: null
+    notes: Филиал ВГТРК. Рабочая RSS с полным текстом.
+
+  - id: gtrk_tver
+    name: Вести Тверь (ГТРК «Тверь»)
+    type: тв
+    site: https://vesti-tver.ru
+    region: Тверская область
+    region_code: "69"
+    federal_district: Центральный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@vesti_tver"
+      title: Вести Тверь
+      check: ok
+      latest: "2026-11-22 15:01 Europe/Berlin"
+      messages_on_preview: 13
+    notes: Канал сайта филиала ВГТРК vesti-tver.ru. Типовые /rss с бокса отдают HTML, не XML.
+
+  - id: m24
+    name: Москва 24
+    type: тв
+    site: https://www.m24.ru
+    region: город Москва
+    region_code: "77"
+    federal_district: Центральный
+    status: ok
+    rss:
+      - url: https://www.m24.ru/rss.xml
+        title: Москва 24
+        items: 100
+        latest: "2026-11-22 19:15 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 68
+    telegram: null
+    notes: Официальный городской телеканал правительства Москвы. Рабочая RSS.
+
+  - id: tv360
+    name: Телеканал 360 (Подмосковье)
+    type: тв
+    site: https://360tv.ru
+    region: Московская область
+    region_code: "50"
+    federal_district: Центральный
+    status: ok
+    rss:
+      - url: https://360tv.ru/rss
+        title: 360.ru
+        items: 100
+        latest: "2026-11-22 19:14 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 191
+    telegram:
+      username: "@tv360"
+      title: 360.ru
+      check: ok
+      latest: "2026-11-22 18:59 Europe/Berlin"
+      messages_on_preview: 15
+    notes: Обязательный общедоступный телеканал Московской области (основатель — правительство области). Рабочая RSS и Telegram (реестр РКН).
+
+  - id: tatar_inform
+    name: Татар-информ
+    type: региональное
+    site: https://tatar-inform.ru
+    region: Республика Татарстан
+    region_code: "16"
+    federal_district: Приволжский
+    status: ok
+    rss:
+      - url: https://tatar-inform.ru/rss
+        title: "Новости Татарстана и Казани - Татар-информ: Новости"
+        items: 100
+        latest: "2026-11-22 19:18 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 0
+    telegram: null
+    notes: Государственное информагентство Татарстана. Рабочая RSS.
+
+  - id: kuban24
+    name: Кубань 24
+    type: тв
+    site: https://kuban24.tv
+    region: Краснодарский край
+    region_code: "23"
+    federal_district: Южный
+    status: telegram_only
+    rss: []
+    telegram:
+      username: "@kuban24"
+      title: Кубань 24
+      check: ok
+      latest: "2026-11-22 19:10 Europe/Berlin"
+      messages_on_preview: 9
+    notes: Крупный официальный региональный телеканал края (запись в реестре РКН). Типовые /rss с бокса не являются XML.
+
+  - id: dan
+    name: Донецкое агентство новостей (ДАН)
+    type: региональное
+    site: https://dan-news.ru
+    region: Донецкая Народная Республика
+    region_code: "93"
+    federal_district: Южный
+    status: ok
+    rss:
+      - url: https://dan-news.ru/rss.xml
+        title: Донецкое Агентство Новостей - аналитика, последние новости, прогноз погоды в Мариуполе, Макеевке, Донецке, ДНР и России
+        items: 20
+        latest: "2026-11-22 18:57 Europe/Berlin"
+        fulltext: анонс/заголовок
+        check: ok
+        http_code: 200
+        median_desc_chars: 231
+    telegram:
+      username: "@dan_dnr"
+      title: Донецкое агентство новостей
+      check: ok
+      latest: "2026-11-22 18:57 Europe/Berlin"
+      messages_on_preview: 11
+    notes: Официальное агентство ДНР, регистрация в РКН. Рабочая RSS.

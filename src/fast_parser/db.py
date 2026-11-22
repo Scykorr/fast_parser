@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine, event, inspect, text
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
@@ -30,10 +30,38 @@ def make_engine(url: str) -> Engine:
     return engine
 
 
+# Nullable columns added after the first SQLite file may already exist.
+# create_all does not alter an existing table.
+_SOURCE_COLUMN_UPGRADES = (
+    ("region", "VARCHAR(128)"),
+    ("region_code", "VARCHAR(8)"),
+    ("federal_district", "VARCHAR(64)"),
+)
+
+
 def init_db(url: str) -> sessionmaker[Session]:
     engine = make_engine(url)
     Base.metadata.create_all(engine)
+    _upgrade_schema(engine)
     return sessionmaker(bind=engine, expire_on_commit=False, future=True)
+
+
+def _upgrade_schema(engine: Engine) -> None:
+    inspector = inspect(engine)
+    if "sources" not in inspector.get_table_names():
+        return
+    present = {column["name"] for column in inspector.get_columns("sources")}
+    with engine.begin() as conn:
+        for name, ddl in _SOURCE_COLUMN_UPGRADES:
+            if name not in present:
+                conn.execute(text(f"ALTER TABLE sources ADD COLUMN {name} {ddl}"))
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_sources_region_code ON sources (region_code)"))
+        conn.execute(
+            text(
+                "CREATE INDEX IF NOT EXISTS ix_sources_federal_district "
+                "ON sources (federal_district)"
+            )
+        )
 
 
 def _ensure_sqlite_parent(url: str) -> None:

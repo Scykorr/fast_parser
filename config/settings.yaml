@@ -2,6 +2,8 @@
 # дочитывает то, что сейчас отдают ленты, и отбрасывает уже сохранённое.
 
 sources_file: sources.yaml
+# Отдельный снимок: все 89 субъектов. Пустой путь отключает региональный каталог.
+regional_sources_file: sources_regional.yaml
 
 database:
   # Меняется на PostgreSQL без правки кода: postgresql+psycopg://user:pass@localhost/fast_parser

@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 import httpx
 from sqlalchemy.orm import Session
 
-from fast_parser.catalog import load_catalog
+from fast_parser.catalog import load_merged_catalog
 from fast_parser.config import AppSettings
 from fast_parser.db import init_db
 from fast_parser.pipeline.runner import Pipeline
@@ -42,7 +42,10 @@ class RunStats:
 
 
 def open_session(settings: AppSettings) -> Session:
-    catalog = load_catalog(settings.sources_path)
+    paths = [settings.sources_path]
+    if settings.regional_sources_path is not None:
+        paths.append(settings.regional_sources_path)
+    catalog = load_merged_catalog(paths)
     factory = init_db(settings.database.url)
     session = factory()
     sync_catalog(
