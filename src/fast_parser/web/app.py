@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from datetime import date
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from sqlalchemy import select
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -52,6 +54,23 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
     )
     app.state.settings = settings
     app.mount("/static", StaticFiles(directory=str(_ROOT / "static")), name="static")
+
+    @app.exception_handler(RequestValidationError)
+    async def show_validation_error(request: Request, exc: RequestValidationError):
+        lines = []
+        for item in exc.errors():
+            place = " ".join(str(part) for part in item.get("loc", []) if part != "query")
+            lines.append(f"{place}: {item.get('msg')}" if place else str(item.get("msg")))
+        text = "Фильтр не применился. " + " ".join(lines)
+        accepts = request.headers.get("accept", "")
+        if request.headers.get("HX-Request") or "text/html" in accepts:
+            page = (
+                "<!DOCTYPE html><html lang=\"ru\"><meta charset=\"utf-8\">"
+                f"<title>Ошибка фильтра</title><p class=\"error\">{_escape(text)}</p>"
+                "<p><a href=\"/\">Вернуться к ленте</a></p></html>"
+            )
+            return HTMLResponse(page, status_code=422)
+        return JSONResponse(status_code=422, content={"detail": exc.errors()})
 
     def db_session():
         session = factory()
@@ -102,17 +121,17 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
         q: str | None = Query(default=None, description="Слова в заголовке и тексте: фраза, OR, -исключить"),
         title_q: str | None = Query(default=None, description="Слова только в заголовке"),
         body_q: str | None = Query(default=None, description="Слова только в тексте"),
-        fuzzy: bool = False,
-        sentiment_min: float | None = None,
-        sentiment_max: float | None = None,
-        category_confidence_min: float | None = None,
-        category_confidence_max: float | None = None,
-        fake_score_min: float | None = None,
-        fake_score_max: float | None = None,
+        fuzzy: str | None = None,
+        sentiment_min: str | None = None,
+        sentiment_max: str | None = None,
+        category_confidence_min: str | None = None,
+        category_confidence_max: str | None = None,
+        fake_score_min: str | None = None,
+        fake_score_max: str | None = None,
         has_fulltext: str | None = None,
-        text_len_min: int | None = None,
-        text_len_max: int | None = None,
-        min_cluster_sources: int | None = Query(default=None, description="Текст встретился минимум у стольких источников"),
+        text_len_min: str | None = None,
+        text_len_max: str | None = None,
+        min_cluster_sources: str | None = Query(default=None, description="Текст встретился минимум у стольких источников"),
         limit: int = Query(default=50, ge=1, le=200),
         offset: int = Query(default=0, ge=0),
     ) -> ArticleFilters:
@@ -183,7 +202,8 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
             "total": total,
             "version": __version__,
         }
-        template = "feed_list.html" if request.headers.get("HX-Request") else "feed.html"
+        context["problems"] = _query_problems(request)
+        template = "browser.html" if request.headers.get("HX-Request") else "feed.html"
         return TEMPLATES.TemplateResponse(request, template, context)
 
     @app.get("/articles/{article_id}", response_class=HTMLResponse)
@@ -299,6 +319,47 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
         )
 
     return app
+
+
+_NUMBER_FIELDS = (
+    "sentiment_min",
+    "sentiment_max",
+    "category_confidence_min",
+    "category_confidence_max",
+    "fake_score_min",
+    "fake_score_max",
+)
+_INTEGER_FIELDS = ("text_len_min", "text_len_max", "min_cluster_sources")
+
+
+def _query_problems(request: Request) -> list[str]:
+    problems = []
+    for key in _NUMBER_FIELDS + _INTEGER_FIELDS:
+        raw = request.query_params.get(key)
+        if raw is None or not str(raw).strip():
+            continue
+        try:
+            int(raw) if key in _INTEGER_FIELDS else float(raw)
+        except ValueError:
+            problems.append(f"«{key}» должно быть числом, сейчас там «{raw}».")
+    for key in ("date_from", "date_to"):
+        raw = request.query_params.get(key)
+        if raw is None or not str(raw).strip():
+            continue
+        try:
+            date.fromisoformat(str(raw)[:10])
+        except ValueError:
+            problems.append(f"«{key}» должно быть датой ГГГГ-ММ-ДД, сейчас там «{raw}».")
+    return problems
+
+
+def _escape(value: str) -> str:
+    return (
+        value.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+    )
 
 
 def _saved(session: Session) -> list:

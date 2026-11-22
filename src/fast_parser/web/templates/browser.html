@@ -1,7 +1,7 @@
 <section class="panel">
   <h1>Лента</h1>
-  <form class="filters" method="get" action="/" autocomplete="off"
-        hx-get="/" hx-target="#browser" hx-swap="innerHTML" hx-push-url="true" hx-trigger="change, submit">
+  <form class="filters" method="get" action="/#feed" autocomplete="off" novalidate
+        hx-get="/" hx-target="#browser" hx-swap="innerHTML show:#feed" hx-push-url="true" hx-trigger="change, submit">
     <label>Период
       <select name="period">
         <option value="">Свой диапазон</option>
@@ -47,6 +47,10 @@
       </select>
     </label>
     <button type="submit">Показать</button>
+    <p class="hint" id="found">Найдено: {{ total }}</p>
+    {% for problem in problems or [] %}
+    <p class="error">{{ problem }}</p>
+    {% endfor %}
     <div class="facets">
       {% for key, title in [
         ("category", "Рубрика"),

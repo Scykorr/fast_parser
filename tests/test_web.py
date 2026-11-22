@@ -186,6 +186,40 @@ def test_sources_regions_stats_and_pages(tmp_path):
     assert "/api/collect" in schema.json()["paths"]
 
 
+def test_empty_numeric_fields_still_filter_the_feed(tmp_path):
+    client = _client(tmp_path)
+    params = {
+        "region_code": "01",
+        "period": "",
+        "date_from": "",
+        "date_to": "",
+        "sentiment_min": "",
+        "sentiment_max": "",
+        "category_confidence_min": "",
+        "category_confidence_max": "",
+        "fake_score_min": "",
+        "fake_score_max": "",
+        "text_len_min": "",
+        "text_len_max": "",
+        "min_cluster_sources": "",
+        "official": "",
+    }
+    page = client.get("/", params=params)
+    assert page.status_code == 200
+    assert "Бюджет Адыгеи" in page.text
+    assert "Метро" not in page.text
+    assert "Найдено: 1" in page.text
+    assert "novalidate" in page.text
+    partial = client.get("/", params=params, headers={"HX-Request": "true"})
+    assert partial.status_code == 200
+    assert "Показать" in partial.text
+    assert "Бюджет Адыгеи" in partial.text
+    assert "<html" not in partial.text.lower()
+    broken = client.get("/", params={"sentiment_min": "нет"})
+    assert broken.status_code == 200
+    assert "числом" in broken.text
+
+
 def test_saved_search_and_exports(tmp_path):
     client = _client(tmp_path)
     saved = client.post("/searches", data={"name": "бюджет", "q": "бюджет"}, follow_redirects=False)
