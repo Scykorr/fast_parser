@@ -1,0 +1,49 @@
+{% if rows %}
+<fieldset class="facet{% if key == 'sentiment' %} facet-sentiment{% endif %}">
+  <legend>{{ title }}</legend>
+  {% for item in rows if item.count or item.included or item.excluded or item.always %}
+  <div class="facet-row">
+    <label>
+      <input type="checkbox" name="{{ {
+        'category': 'category',
+        'sentiment': 'sentiment',
+        'source_type': 'source_type',
+        'federal_district': 'federal_district',
+        'channel': 'channel',
+        'language': 'language',
+        'pipeline_status': 'pipeline_status',
+        'weekday': 'weekday',
+        'source_status': 'source_status',
+        'fake_label': 'fake_label',
+        'tag': 'tag',
+        'domain': 'domain',
+        'region_code': 'region_code',
+        'source': 'source_id'
+      }[key] }}" value="{{ item.value }}" {% if item.included %}checked{% endif %}>
+      <span>{{ item.label }}</span>
+      <span class="count">{{ item.count }}</span>
+    </label>
+    {% if key != 'weekday' %}
+    <label class="exclude">
+      <input type="checkbox" name="{{ {
+        'category': 'category_not',
+        'sentiment': 'sentiment_not',
+        'source_type': 'source_type_not',
+        'federal_district': 'federal_district_not',
+        'channel': 'channel_not',
+        'language': 'language_not',
+        'pipeline_status': 'pipeline_status_not',
+        'source_status': 'source_status_not',
+        'fake_label': 'fake_label_not',
+        'tag': 'tag_not',
+        'domain': 'domain_not',
+        'region_code': 'region_code_not',
+        'source': 'source_id_not'
+      }[key] }}" value="{{ item.value }}" {% if item.excluded %}checked{% endif %}>
+      не
+    </label>
+    {% endif %}
+  </div>
+  {% endfor %}
+</fieldset>
+{% endif %}

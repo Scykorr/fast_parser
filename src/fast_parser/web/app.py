@@ -192,6 +192,11 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
         filters: ArticleFilters = Depends(_filters),
         session: Session = Depends(db_session),
     ):
+        if filters.limit not in (20, 50, 100, 200):
+            filters.limit = 50
+        page = _positive_int(request.query_params.get("page"))
+        if page:
+            filters.offset = (page - 1) * filters.limit
         rows, total = search_articles(session, filters)
         context = {
             "request": request,
@@ -201,6 +206,7 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
             "snippets": snippets(session, rows, filters.text or filters.title_text or filters.body_text),
             "saved": _saved(session),
             "total": total,
+            "pager": _pager(request, filters, total),
             "version": __version__,
         }
         context["problems"] = _query_problems(request)
@@ -366,6 +372,49 @@ def _escape(value: str) -> str:
         .replace(">", "&gt;")
         .replace('"', "&quot;")
     )
+
+
+def _positive_int(value: str | None) -> int | None:
+    if value is None or not str(value).strip().isdigit():
+        return None
+    number = int(value)
+    return number if number > 0 else None
+
+
+def _pager(request: Request, filters: ArticleFilters, total: int) -> dict:
+    limit = filters.limit
+    pages = max(1, (total + limit - 1) // limit) if total else 1
+    page = min(filters.offset // limit + 1, pages)
+
+    def href(number: int, size: int = limit) -> str:
+        pairs = [
+            (key, value)
+            for key, value in request.query_params.multi_items()
+            if key not in {"page", "offset", "limit"}
+        ]
+        pairs.append(("limit", str(size)))
+        if number > 1:
+            pairs.append(("page", str(number)))
+        from urllib.parse import urlencode
+
+        return "/?" + urlencode(pairs) + "#feed"
+
+    nearby: list[int | None] = []
+    wanted = sorted({n for n in (1, pages, page - 2, page - 1, page, page + 1, page + 2) if 1 <= n <= pages})
+    previous = 0
+    for number in wanted:
+        if previous and number > previous + 1:
+            nearby.append(None)
+        nearby.append(number)
+        previous = number
+    return {
+        "page": page,
+        "pages": pages,
+        "limit": limit,
+        "sizes": (20, 50, 100, 200),
+        "href": href,
+        "nearby": nearby,
+    }
 
 
 def _page(request: Request, template: str, context: dict, session: Session):
