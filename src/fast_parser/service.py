@@ -39,6 +39,12 @@ class RunStats:
     items_duplicate: int = 0
     items_updated: int = 0
     errors: list[tuple[str, str]] = field(default_factory=list)
+    telegram_mode: str = ""
+    telegram_channels: int = 0
+    telegram_new: int = 0
+    telegram_skipped: int = 0
+    telegram_duplicate: int = 0
+    telegram_errors: int = 0
 
 
 def open_session(settings: AppSettings) -> Session:
@@ -61,6 +67,24 @@ def run_once(settings: AppSettings) -> RunStats:
     session = open_session(settings)
     try:
         stats = asyncio.run(collect_enabled(settings, session))
+        if settings.telegram.enabled:
+            from fast_parser.telegram.collect import collect_telegram
+
+            try:
+                telegram = collect_telegram(settings, session)
+            except Exception as exc:
+                log.exception("telegram collect failed")
+                stats.telegram_mode = "error"
+                stats.telegram_errors = 1
+                stats.errors.append(("telegram", str(exc)))
+            else:
+                stats.telegram_mode = telegram.mode
+                stats.telegram_channels = telegram.channels
+                stats.telegram_new = telegram.new
+                stats.telegram_skipped = telegram.skipped
+                stats.telegram_duplicate = telegram.duplicate
+                stats.telegram_errors = telegram.error
+                stats.errors.extend(telegram.errors)
     finally:
         session.close()
     if settings.pipeline.enabled:

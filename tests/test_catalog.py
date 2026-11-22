@@ -55,9 +55,9 @@ def test_real_catalog_keeps_every_source_and_skips_dead_feeds(tmp_path, monkeypa
         stats = snapshot(session)
     finally:
         session.close()
-    assert stats.sources == 161
+    assert stats.sources == 195
     assert stats.federal_sources == 32
-    assert stats.regional_sources == 129
+    assert stats.regional_sources == 163
     assert stats.regions_covered == 89
     assert stats.feeds_enabled == 51
     assert stats.telegram >= 20

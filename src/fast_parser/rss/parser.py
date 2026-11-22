@@ -25,6 +25,7 @@ class ParsedItem:
     categories: list[str] = field(default_factory=list)
     origin: str = "rss"
     language: str | None = None
+    extra: dict | None = None
 
 
 def parse_feed(payload: bytes | str, *, naive_timezone: str) -> list[ParsedItem]:

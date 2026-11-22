@@ -24,6 +24,15 @@ http:
   backoff_multiplier: 2.0
   trust_env: true
 
+telegram:
+  # Сбор каналов каталога вместе с RSS. Без сессии читается публичное превью t.me/s.
+  # С сессией — чтение через аккаунт, без вступления в каналы и без отправки сообщений.
+  enabled: true
+  pause_seconds: 3
+  first_run_limit: 25
+  catchup_limit: 60
+  session_file: data/telegram.session
+
 collector:
   # Если в ленте только короткий анонс, догружаем страницу и вытаскиваем текст.
   fetch_fulltext: true

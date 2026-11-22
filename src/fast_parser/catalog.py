@@ -76,6 +76,12 @@ class SourceSpec(BaseModel):
     rss: list[RssFeed] = Field(default_factory=list)
     telegram: TelegramChannel | None = None
     notes: str | None = None
+    role: str | None = None
+
+    def resolved_role(self) -> str:
+        if self.role in {"media", "authority"}:
+            return self.role
+        return "authority" if self.type == "орган_власти" else "media"
 
     @field_validator("region_code", mode="before")
     @classmethod

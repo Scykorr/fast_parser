@@ -22,6 +22,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "run":
             print(format_run(run_once(settings)))
             return 0
+        if args.command == "telegram":
+            return _telegram(settings, args)
         if args.command == "loop":
             interval = args.interval if args.interval is not None else settings.loop.interval_seconds
             if interval < 1:
@@ -202,6 +204,12 @@ def format_run(stats: RunStats) -> str:
             f"дублей {stats.items_duplicate}, обновлено {stats.items_updated}"
         ),
     ]
+    if stats.telegram_mode:
+        lines.append(
+            f"  telegram ({stats.telegram_mode}): каналов {stats.telegram_channels}, "
+            f"новых {stats.telegram_new}, пропущено {stats.telegram_skipped}, "
+            f"дублей {stats.telegram_duplicate}, ошибок {stats.telegram_errors}"
+        )
     if stats.errors:
         lines.append("  ошибки:")
         for url, error in stats.errors[:20]:
@@ -301,6 +309,37 @@ def _search_raw(args) -> dict:
     }
 
 
+def _telegram(settings: AppSettings, args) -> int:
+    from pathlib import Path
+
+    session_file = Path(settings.telegram.session_file)
+    if args.telegram_command == "login":
+        from fast_parser.telegram.mtproto import login
+
+        try:
+            login(session_file)
+        except RuntimeError as exc:
+            print(str(exc), file=sys.stderr)
+            return 2
+        return 0
+    settings.telegram.enabled = True
+    session = open_session(settings)
+    try:
+        from fast_parser.telegram.collect import collect_telegram
+
+        stats = collect_telegram(session=session, settings=settings, preview_only=args.preview)
+    finally:
+        session.close()
+    print(
+        f"Telegram ({stats.mode}): каналов {stats.channels}, успешно {stats.ok}, "
+        f"ошибок {stats.error}, получено {stats.fetched}, новых {stats.new}, "
+        f"коротких и рекламы {stats.skipped}, дублей {stats.duplicate}"
+    )
+    for username, error in stats.errors[:20]:
+        print(f"  - {username}: {error}")
+    return 0
+
+
 def _ts(value) -> str:
     if value is None:
         return "—"
@@ -317,6 +356,11 @@ def _parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("run", help="Один прогон: забрать всё, что сейчас есть в лентах, и отсеять дубли")
+    telegram = sub.add_parser("telegram", help="Чтение каналов каталога: вход и сбор")
+    telegram_sub = telegram.add_subparsers(dest="telegram_command", required=True)
+    telegram_sub.add_parser("login", help="Один раз войти в аккаунт и сохранить сессию")
+    collect = telegram_sub.add_parser("collect", help="Догон каналов каталога")
+    collect.add_argument("--preview", action="store_true", help="Читать публичное превью t.me/s, даже если сессия есть")
     loop = sub.add_parser("loop", help="Повторять сбор, пока процесс запущен")
     loop.add_argument("--interval", type=int, default=None, help="Секунды между прогонами")
     sub.add_parser("stats", help="Сводка по локальной базе")

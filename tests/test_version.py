@@ -20,7 +20,7 @@ def _changelog_checker():
 
 
 def test_version_is_the_package_constant():
-    assert __version__ == "0.4.1"
+    assert __version__ == "0.5.0"
 
 
 def test_cli_prints_the_same_version(capsys):

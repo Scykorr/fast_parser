@@ -89,6 +89,16 @@ class PipelineSettings(BaseModel):
     sentiment: SentimentModelSettings = Field(default_factory=SentimentModelSettings)
 
 
+class TelegramSettings(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    enabled: bool = False
+    pause_seconds: float = 3.0
+    first_run_limit: int = 25
+    catchup_limit: int = 60
+    session_file: str = "data/telegram.session"
+
+
 class LoopSettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
@@ -116,6 +126,7 @@ class AppSettings(BaseModel):
     database: DatabaseSettings = Field(default_factory=DatabaseSettings)
     http: HttpSettings = Field(default_factory=HttpSettings)
     collector: CollectorSettings = Field(default_factory=CollectorSettings)
+    telegram: TelegramSettings = Field(default_factory=TelegramSettings)
     dates: DateSettings = Field(default_factory=DateSettings)
     pipeline: PipelineSettings = Field(default_factory=PipelineSettings)
     loop: LoopSettings = Field(default_factory=LoopSettings)
@@ -141,6 +152,9 @@ def project_config_path(explicit: Path | None = None) -> Path:
 
 
 def load_settings(path: Path | None = None) -> AppSettings:
+    from fast_parser.telegram.credentials import load_dotenv
+
+    load_dotenv()
     config_path = project_config_path(path)
     raw: dict = {}
     if config_path.exists():

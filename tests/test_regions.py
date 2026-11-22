@@ -22,7 +22,7 @@ import pytest
 def test_regional_catalog_covers_every_federal_subject():
     assert len(FEDERAL_SUBJECT_CODES) == 89
     catalog = load_catalog(ROOT / "config" / "sources_regional.yaml")
-    assert len(catalog.sources) == 129
+    assert len(catalog.sources) == 163
     assert missing_subject_codes(catalog) == []
     by_code: dict[str, int] = {}
     for source in catalog.sources:
@@ -43,15 +43,20 @@ def test_regional_catalog_covers_every_federal_subject():
             telegram_only.append(source.id)
         collected.extend(enabled)
     assert len(collected) == 26
-    assert len(telegram_only) == 103
+    assert len(telegram_only) == 137
     assert "gov_adygea" in telegram_only
+    media_regions = {source.region_code for source in catalog.sources if source.resolved_role() == "media"}
+    assert len(media_regions) == 75
+    assert source_without_media(catalog) == {
+        "01", "27", "45", "53", "58", "65", "66", "68", "79", "87", "90", "91", "94", "95",
+    }
 
 
 def test_merged_catalog_keeps_federal_sources_without_a_region(tmp_path, monkeypatch):
     monkeypatch.setenv("DATABASE_URL", f"sqlite:///{(tmp_path / 'regions.sqlite').as_posix()}")
     settings = load_settings(ROOT / "config" / "settings.yaml")
     merged = load_merged_catalog([settings.sources_path, settings.regional_sources_path])
-    assert len(merged.sources) == 161
+    assert len(merged.sources) == 195
     by_id = {source.id: source for source in merged.sources}
     assert by_id["tass"].region_code is None
     assert by_id["gov_adygea"].region_code == "01"
@@ -79,6 +84,11 @@ def test_merged_catalog_keeps_federal_sources_without_a_region(tmp_path, monkeyp
     assert "По федеральным округам:" in text_stats
     assert "Южный: регионов" in text_stats
     assert "01  Республика Адыгея (Южный): источников" in text_stats
+
+
+def source_without_media(catalog) -> set[str]:
+    present = {source.region_code for source in catalog.sources if source.resolved_role() == "media"}
+    return {source.region_code for source in catalog.sources if source.region_code not in present}
 
 
 def test_articles_can_be_filtered_by_region_and_district(tmp_path):
