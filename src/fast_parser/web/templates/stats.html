@@ -8,6 +8,50 @@
     <span><strong>{{ stats.sources }}</strong> источников</span>
     <span><strong>{{ stats.feeds_enabled }}</strong> лент в сборе</span>
   </p>
+  <h2>По рубрикам</h2>
+  {% if stats.per_category %}
+  <table>
+    <thead><tr><th>Рубрика</th><th>Статьи</th></tr></thead>
+    <tbody>
+      {% for row in stats.per_category %}
+      <tr><td>{{ row.label }}</td><td>{{ row.count }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<p>Рубрики ещё не проставлены. Команда: <code>fast-parser process</code>.</p>{% endif %}
+  <h2>По тональности</h2>
+  {% if stats.per_sentiment %}
+  <table>
+    <thead><tr><th>Тональность</th><th>Статьи</th></tr></thead>
+    <tbody>
+      {% for row in stats.per_sentiment %}
+      <tr><td>{{ row.label }}</td><td>{{ row.count }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<p>Тональность появится после установки extra <code>ml</code> и команды <code>fast-parser process</code>.</p>{% endif %}
+  <h2>Рубрики по регионам</h2>
+  {% if stats.category_by_region %}
+  <table>
+    <thead><tr><th>Регион и рубрика</th><th>Статьи</th></tr></thead>
+    <tbody>
+      {% for row in stats.category_by_region %}
+      <tr><td>{{ row.label }}</td><td>{{ row.count }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<p>Нет региональных статей с рубрикой.</p>{% endif %}
+  <h2>Тональность по источникам</h2>
+  {% if stats.sentiment_by_source %}
+  <table>
+    <thead><tr><th>Источник</th><th>Статьи</th></tr></thead>
+    <tbody>
+      {% for row in stats.sentiment_by_source %}
+      <tr><td>{{ row.label }}</td><td>{{ row.count }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<p>Нет статей с тональностью.</p>{% endif %}
   <h2>По дням</h2>
   {% if stats.per_day %}
   <table>

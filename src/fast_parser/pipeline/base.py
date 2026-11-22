@@ -17,6 +17,7 @@ class ArticleView:
     authors: tuple[str, ...]
     published_at: datetime | None
     language: str | None
+    rss_categories: tuple[str, ...] = ()
 
 
 @dataclass
@@ -28,6 +29,7 @@ class ProcessorResult:
     sentiment: str | None = None
     sentiment_score: float | None = None
     fake_score: float | None = None
+    category_confidence: float | None = None
 
     def __post_init__(self) -> None:
         if self.sentiment is not None and self.sentiment not in ALLOWED_SENTIMENTS:

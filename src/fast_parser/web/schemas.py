@@ -91,6 +91,10 @@ class StatsReport(BaseModel):
     per_day: list[NamedCount]
     per_source: list[NamedCount]
     per_region: list[NamedCount]
+    per_category: list[NamedCount] = Field(default_factory=list)
+    per_sentiment: list[NamedCount] = Field(default_factory=list)
+    category_by_region: list[NamedCount] = Field(default_factory=list)
+    sentiment_by_source: list[NamedCount] = Field(default_factory=list)
 
 
 class CollectResult(BaseModel):

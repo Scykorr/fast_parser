@@ -25,6 +25,10 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+ml = [
+    "torch>=2.2",
+    "transformers>=4.40",
+]
 
 [project.scripts]
 fast-parser = "fast_parser.cli:main"
@@ -40,7 +44,8 @@ fast_parser = ["web/templates/*.html", "web/static/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q"
+addopts = "-q -m 'not slow'"
+markers = ["slow: downloads a real Hugging Face model"]
 pythonpath = ["tests"]
 filterwarnings = [
     "ignore:SOCKS support in urllib3 requires the installation of optional dependencies:Warning",
