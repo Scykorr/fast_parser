@@ -1,7 +1,10 @@
+import pytest
+
 from fast_parser.pipeline.linear_head import LinearHead, fit_softmax
 
 
 def test_softmax_separates_two_obvious_classes():
+    pytest.importorskip("numpy")
     features = [[0.0], [0.05], [0.95], [1.0]]
     labels = [0, 0, 1, 1]
     mean, std, weight, bias = fit_softmax(features, labels, n_classes=2, epochs=60, lr=0.8, l2=0.0)
