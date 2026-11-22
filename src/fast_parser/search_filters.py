@@ -492,8 +492,6 @@ def _sentiment_labels(rows: list[dict], filters: ArticleFilters) -> list[dict]:
         )
     for row in by_value.values():
         labeled.append(row)
-    if not any(item["count"] or item["included"] or item["excluded"] for item in labeled):
-        return []
     return labeled
 
 

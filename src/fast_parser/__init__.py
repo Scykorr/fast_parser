@@ -1,3 +1,3 @@
 """Catch-up collector for Russian state-media RSS feeds."""
 
-__version__ = "0.5.1"
+__version__ = "0.5.2"

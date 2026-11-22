@@ -3,6 +3,17 @@ from fast_parser.cli import main
 from conftest import settings_for
 
 
+def test_run_logs_the_sentiment_hint_when_nothing_is_labelled(tmp_path, capsys):
+    settings_for(tmp_path, "sources: []\n")
+    assert main(["--config", str(tmp_path / "settings.yaml"), "run"]) == 0
+    captured = capsys.readouterr()
+    assert "Прогон завершён" in captured.out
+    assert (
+        'Тональность не посчитана: установите pip install -e ".[ml]" и выполните fast-parser process'
+        in captured.err
+    )
+
+
 def test_stats_run_and_export_on_empty_catalog(tmp_path, capsys):
     settings_for(tmp_path, "sources: []\n")
     config = str(tmp_path / "settings.yaml")

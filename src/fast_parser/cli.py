@@ -49,7 +49,9 @@ def main(argv: list[str] | None = None) -> int:
                 f"с тональностью {result.with_sentiment}, готовы {result.completed}"
             )
             if not _ml_installed():
-                print("  модель тональности не установлена: pip install -e \".[ml]\"")
+                from fast_parser.sentiment_hint import SENTIMENT_HINT
+
+                print(f"  {SENTIMENT_HINT}")
             return 0
         if args.command == "search":
             from fast_parser.search_filters import parse_filters

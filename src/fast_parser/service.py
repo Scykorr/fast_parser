@@ -66,6 +66,9 @@ def open_session(settings: AppSettings) -> Session:
 def run_once(settings: AppSettings) -> RunStats:
     session = open_session(settings)
     try:
+        from fast_parser.sentiment_hint import warn_if_sentiment_uncomputed
+
+        warn_if_sentiment_uncomputed(session)
         stats = asyncio.run(collect_enabled(settings, session))
         if settings.telegram.enabled:
             from fast_parser.telegram.collect import collect_telegram

@@ -1,27 +1,31 @@
 <nav class="pager" aria-label="Страницы ленты">
-  <span>Найдено: {{ total }}</span>
+  <span class="pager-total">Найдено: {{ total }}</span>
   <span class="pager-size">На странице:
     {% for size in pager.sizes %}
-      {% if size == pager.limit %}<strong>{{ size }}</strong>
-      {% else %}<a href="{{ pager.href(1, size) }}">{{ size }}</a>{% endif %}
+      {% if size == pager.limit %}<span class="pager-current" aria-current="true">{{ size }}</span>
+      {% else %}<a class="pager-link" href="{{ pager.href(1, size) }}">{{ size }}</a>{% endif %}
     {% endfor %}
   </span>
-  {% if pager.pages > 1 %}
   <span class="pager-pages">
     {% if pager.page > 1 %}
-    <a href="{{ pager.href(1) }}">Первая</a>
-    <a href="{{ pager.href(pager.page - 1) }}">Предыдущая</a>
+    <a class="pager-link" href="{{ pager.href(1) }}">Первая</a>
+    <a class="pager-link" href="{{ pager.href(pager.page - 1) }}">Предыдущая</a>
+    {% else %}
+    <span class="pager-disabled" aria-disabled="true">Первая</span>
+    <span class="pager-disabled" aria-disabled="true">Предыдущая</span>
     {% endif %}
     {% for number in pager.nearby %}
-      {% if number is none %}<span>…</span>
-      {% elif number == pager.page %}<strong>{{ number }}</strong>
-      {% else %}<a href="{{ pager.href(number) }}">{{ number }}</a>
+      {% if number is none %}<span class="pager-gap" aria-hidden="true">…</span>
+      {% elif number == pager.page %}<span class="pager-current" aria-current="page">{{ number }}</span>
+      {% else %}<a class="pager-link" href="{{ pager.href(number) }}">{{ number }}</a>
       {% endif %}
     {% endfor %}
     {% if pager.page < pager.pages %}
-    <a href="{{ pager.href(pager.page + 1) }}">Следующая</a>
-    <a href="{{ pager.href(pager.pages) }}">Последняя</a>
+    <a class="pager-link" href="{{ pager.href(pager.page + 1) }}">Следующая</a>
+    <a class="pager-link" href="{{ pager.href(pager.pages) }}">Последняя</a>
+    {% else %}
+    <span class="pager-disabled" aria-disabled="true">Следующая</span>
+    <span class="pager-disabled" aria-disabled="true">Последняя</span>
     {% endif %}
   </span>
-  {% endif %}
 </nav>

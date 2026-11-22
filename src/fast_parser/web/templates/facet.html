@@ -1,6 +1,9 @@
-{% if rows %}
-<fieldset class="facet{% if key == 'sentiment' %} facet-sentiment{% endif %}">
+{% if rows or key == 'sentiment' %}
+<fieldset class="facet{% if key == 'sentiment' %} facet-sentiment{% endif %}"{% if key == 'sentiment' %} id="sentiment"{% endif %}>
   <legend>{{ title }}</legend>
+  {% if key == 'sentiment' and sentiment_missing %}
+  <p class="facet-note">Тональность не посчитана: установите pip install -e ".[ml]" и выполните fast-parser process</p>
+  {% endif %}
   {% for item in rows if item.count or item.included or item.excluded or item.always %}
   <div class="facet-row">
     <label>

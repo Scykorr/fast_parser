@@ -140,7 +140,28 @@ def test_include_exclude_and_ranges_combine(session):
     assert "Спорт" not in categories
     sentiments = {item["value"]: item["count"] for item in facets["sentiment"]}
     assert sentiments["positive"] == 1
+    assert sentiments["neutral"] == 0
     assert sentiments["negative"] == 2
+
+
+def test_sentiment_facet_keeps_zero_counts(session):
+    _source(session, "south", "Юг", "газета", "ok", "01", "Адыгея", "Южный")
+    feed = Feed(source_id="south", url="https://south.example/rss", enabled=True)
+    session.add(feed)
+    session.flush()
+    _article(
+        session,
+        "south",
+        feed.id,
+        "https://south.example/plain",
+        "Заметка без тона",
+        "Текст без оценки тональности.",
+        datetime.now(timezone.utc),
+    )
+    session.commit()
+    facets = facet_counts(session, ArticleFilters())
+    sentiments = [(item["value"], item["count"]) for item in facets["sentiment"]]
+    assert sentiments[:3] == [("positive", 0), ("neutral", 0), ("negative", 0)]
 
 
 def test_api_repeats_exclude_and_documents_facets(tmp_path):
