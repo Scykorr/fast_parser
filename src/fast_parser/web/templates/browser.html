@@ -1,7 +1,8 @@
 <section class="panel">
   <h1>Лента</h1>
-  <form class="filters" method="get" action="/#feed" autocomplete="off" novalidate
-        hx-get="/" hx-target="#browser" hx-swap="innerHTML show:#feed" hx-push-url="true" hx-trigger="change, submit">
+  <form class="filters" method="get" action="/" autocomplete="off" novalidate
+        hx-get="/" hx-target="#browser" hx-swap="innerHTML show:none focus-scroll:false"
+        hx-push-url="true" hx-trigger="change, submit">
     <label>Период
       <select name="period">
         <option value="">Свой диапазон</option>
@@ -73,7 +74,7 @@
       ] %}
       {% set rows = facets[key] %}
       {% if rows %}
-      <fieldset class="facet">
+      <fieldset class="facet" data-facet="{{ key }}" id="facet-{{ key }}">
         <legend>{{ title }}</legend>
         {% for item in rows if item.count or item.included or item.excluded or item.always %}
         <div class="facet-row">
@@ -145,6 +146,6 @@
   </form>
   <p class="hint">Галочка слева включает значение, «не» исключает. Адресная строка хранит весь фильтр. Подрубрик у 12 рубрик нет: метки самой ленты фильтруются отдельно.</p>
 </section>
-<div id="feed">
+<div id="feed-panel">
   {% include "feed_list.html" %}
 </div>

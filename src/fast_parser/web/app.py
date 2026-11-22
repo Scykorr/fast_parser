@@ -400,7 +400,7 @@ def _pager(request: Request, filters: ArticleFilters, total: int) -> dict:
             pairs.append(("page", str(number)))
         from urllib.parse import urlencode
 
-        return "/?" + urlencode(pairs) + "#feed"
+        return "/?" + urlencode(pairs)
 
     nearby: list[int | None] = []
     wanted = sorted({n for n in (1, pages, page - 2, page - 1, page, page + 1, page + 2) if 1 <= n <= pages})

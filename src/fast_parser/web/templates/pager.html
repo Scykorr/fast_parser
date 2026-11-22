@@ -3,13 +3,19 @@
   <span class="pager-size">На странице:
     {% for size in pager.sizes %}
       {% if size == pager.limit %}<span class="pager-current" aria-current="true">{{ size }}</span>
-      {% else %}<a class="pager-link" href="{{ pager.href(1, size) }}">{{ size }}</a>{% endif %}
+      {% else %}<a class="pager-link" href="{{ pager.href(1, size) }}"
+         hx-get="{{ pager.href(1, size) }}" hx-target="#browser"
+         hx-swap="innerHTML show:none focus-scroll:false" hx-push-url="true">{{ size }}</a>{% endif %}
     {% endfor %}
   </span>
   <span class="pager-pages">
     {% if pager.page > 1 %}
-    <a class="pager-link" href="{{ pager.href(1) }}">Первая</a>
-    <a class="pager-link" href="{{ pager.href(pager.page - 1) }}">Предыдущая</a>
+    <a class="pager-link" href="{{ pager.href(1) }}"
+       hx-get="{{ pager.href(1) }}" hx-target="#browser"
+       hx-swap="innerHTML show:none focus-scroll:false" hx-push-url="true">Первая</a>
+    <a class="pager-link" href="{{ pager.href(pager.page - 1) }}"
+       hx-get="{{ pager.href(pager.page - 1) }}" hx-target="#browser"
+       hx-swap="innerHTML show:none focus-scroll:false" hx-push-url="true">Предыдущая</a>
     {% else %}
     <span class="pager-disabled" aria-disabled="true">Первая</span>
     <span class="pager-disabled" aria-disabled="true">Предыдущая</span>
@@ -17,12 +23,18 @@
     {% for number in pager.nearby %}
       {% if number is none %}<span class="pager-gap" aria-hidden="true">…</span>
       {% elif number == pager.page %}<span class="pager-current" aria-current="page">{{ number }}</span>
-      {% else %}<a class="pager-link" href="{{ pager.href(number) }}">{{ number }}</a>
+      {% else %}<a class="pager-link" href="{{ pager.href(number) }}"
+         hx-get="{{ pager.href(number) }}" hx-target="#browser"
+         hx-swap="innerHTML show:none focus-scroll:false" hx-push-url="true">{{ number }}</a>
       {% endif %}
     {% endfor %}
     {% if pager.page < pager.pages %}
-    <a class="pager-link" href="{{ pager.href(pager.page + 1) }}">Следующая</a>
-    <a class="pager-link" href="{{ pager.href(pager.pages) }}">Последняя</a>
+    <a class="pager-link" href="{{ pager.href(pager.page + 1) }}"
+       hx-get="{{ pager.href(pager.page + 1) }}" hx-target="#browser"
+       hx-swap="innerHTML show:none focus-scroll:false" hx-push-url="true">Следующая</a>
+    <a class="pager-link" href="{{ pager.href(pager.pages) }}"
+       hx-get="{{ pager.href(pager.pages) }}" hx-target="#browser"
+       hx-swap="innerHTML show:none focus-scroll:false" hx-push-url="true">Последняя</a>
     {% else %}
     <span class="pager-disabled" aria-disabled="true">Следующая</span>
     <span class="pager-disabled" aria-disabled="true">Последняя</span>

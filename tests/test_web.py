@@ -229,7 +229,7 @@ def test_sentiment_facet_stays_visible_without_labels(tmp_path):
     session.close()
     page = client.get("/")
     assert page.status_code == 200
-    assert 'id="sentiment"' in page.text
+    assert 'id="facet-sentiment"' in page.text
     assert "Положительные" in page.text
     assert "Нейтральные" in page.text
     assert "Отрицательные" in page.text
@@ -277,7 +277,8 @@ def test_pages_keep_the_region_filter(tmp_path):
     assert "Следующая" in page.text or "Предыдущая" in page.text
     assert "region_code=01" in page.text
     assert "limit=20" in page.text
-    assert 'href="/?region_code=01&amp;limit=20#feed"' in page.text
+    assert 'href="/?region_code=01&amp;limit=20"' in page.text
+    assert "limit=20#feed" not in page.text
     assert "Предыдущая" in page.text
     assert 'class="pager-link"' in page.text
     assert 'class="pager-current" aria-current="page"' in page.text
