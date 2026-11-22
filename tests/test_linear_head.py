@@ -13,7 +13,7 @@ def test_softmax_separates_two_obvious_classes():
 def test_shipped_category_head_has_the_twelve_rubrics():
     from pathlib import Path
 
-    path = Path(__file__).resolve().parents[1] / "src" / "fast_parser" / "pipeline" / "data" / "category_head.json"
+    path = Path(__file__).resolve().parents[1] / "src" / "fast_parser" / "pipeline" / "weights" / "category_head.json"
     head = LinearHead.load(path)
     assert len(head.labels) == 12
     assert "Экономика" in head.labels

@@ -20,8 +20,8 @@ from fast_parser.pipeline.llm import LlmFallback
 from fast_parser.pipeline.ml_models import category_encoder, ml_available, sentiment_model
 from fast_parser.pipeline.taxonomy import CategorySpec, load_taxonomy
 
-_CATEGORY_HEAD = Path(__file__).resolve().parent / "data" / "category_head.json"
-_SENTIMENT_HEAD = Path(__file__).resolve().parent / "data" / "sentiment_head.json"
+_CATEGORY_HEAD = Path(__file__).resolve().parent / "weights" / "category_head.json"
+_SENTIMENT_HEAD = Path(__file__).resolve().parent / "weights" / "sentiment_head.json"
 
 log = logging.getLogger(__name__)
 

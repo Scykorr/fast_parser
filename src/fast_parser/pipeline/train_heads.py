@@ -16,8 +16,8 @@ from fast_parser.pipeline.linear_head import LinearHead, fit_softmax, stratified
 from fast_parser.pipeline.ml_models import category_encoder
 from fast_parser.pipeline.taxonomy import load_taxonomy
 
-HEAD_PATH = Path(__file__).resolve().parent / "data" / "category_head.json"
-SENTIMENT_HEAD_PATH = Path(__file__).resolve().parent / "data" / "sentiment_head.json"
+HEAD_PATH = Path(__file__).resolve().parent / "weights" / "category_head.json"
+SENTIMENT_HEAD_PATH = Path(__file__).resolve().parent / "weights" / "sentiment_head.json"
 FOLDS = 3
 SEED = 0
 
