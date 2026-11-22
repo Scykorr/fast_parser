@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fast-parser"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Catch-up RSS collector for Russian state media"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -28,6 +28,9 @@ fast-parser = "fast_parser.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.dynamic]
+version = { attr = "fast_parser.__version__" }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
