@@ -10,9 +10,8 @@
     {% if article.published_at %} · {{ article.published_at.strftime("%Y-%m-%d %H:%M UTC") }}{% endif %}
   </p>
   <p class="meta">
-    Категория: {{ article.category or "—" }}
-    · Тональность: {{ article.sentiment or "—" }}
-    {% if article.sentiment_score is not none %} ({{ "%.2f"|format(article.sentiment_score) }}){% endif %}
+    {% if article.category %}<span class="badge">{{ article.category }}</span>{% else %}<span class="badge muted">категория позже</span>{% endif %}
+    {% if article.sentiment %}<span class="badge sentiment-{{ article.sentiment }}">{{ article.sentiment }}{% if article.sentiment_score is not none %} {{ "%.2f"|format(article.sentiment_score) }}{% endif %}</span>{% else %}<span class="badge muted">тональность позже</span>{% endif %}
     · fake_score: {{ "%.2f"|format(article.fake_score) if article.fake_score is not none else "—" }}
   </p>
   {% if article.authors %}<p class="meta">Авторы: {{ article.authors | join(", ") }}</p>{% endif %}

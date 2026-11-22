@@ -245,6 +245,52 @@ def dashboard(session: Session) -> dict:
             .order_by(Source.region_code)
         ).all()
     ]
+    per_category = _named_counts(
+        session.execute(
+            select(Article.category, func.count())
+            .where(Article.category.is_not(None))
+            .group_by(Article.category)
+            .order_by(func.count().desc(), Article.category)
+        ).all()
+    )
+    per_sentiment = _named_counts(
+        session.execute(
+            select(Article.sentiment, func.count())
+            .where(Article.sentiment.is_not(None))
+            .group_by(Article.sentiment)
+            .order_by(func.count().desc())
+        ).all()
+    )
+    category_by_region = [
+        {
+            "key": f"{code}:{category}",
+            "label": f"{code} {name or ''} · {category}".strip(),
+            "count": int(count),
+        }
+        for code, name, category, count in session.execute(
+            select(Source.region_code, Source.region, Article.category, func.count())
+            .join(Article, Article.source_id == Source.id)
+            .where(Source.region_code.is_not(None), Article.category.is_not(None))
+            .group_by(Source.region_code, Source.region, Article.category)
+            .order_by(func.count().desc())
+            .limit(30)
+        ).all()
+    ]
+    sentiment_by_source = [
+        {
+            "key": f"{source_id}:{sentiment}",
+            "label": f"{name} · {sentiment}",
+            "count": int(count),
+        }
+        for source_id, name, sentiment, count in session.execute(
+            select(Source.id, Source.name, Article.sentiment, func.count())
+            .join(Article, Article.source_id == Source.id)
+            .where(Article.sentiment.is_not(None))
+            .group_by(Source.id, Source.name, Article.sentiment)
+            .order_by(func.count().desc())
+            .limit(30)
+        ).all()
+    ]
     return {
         "articles": int(articles),
         "sources": int(sources),
@@ -252,4 +298,12 @@ def dashboard(session: Session) -> dict:
         "per_day": per_day,
         "per_source": per_source,
         "per_region": per_region,
+        "per_category": per_category,
+        "per_sentiment": per_sentiment,
+        "category_by_region": category_by_region,
+        "sentiment_by_source": sentiment_by_source,
     }
+
+
+def _named_counts(rows) -> list[dict]:
+    return [{"key": str(key), "label": str(key), "count": int(count)} for key, count in rows]

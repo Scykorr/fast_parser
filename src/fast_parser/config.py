@@ -49,13 +49,42 @@ class DateSettings(BaseModel):
     naive_timezone: str = "Europe/Moscow"
 
 
-class PipelineSettings(BaseModel):
+class LlmSettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
     enabled: bool = False
+    base_url: str = "http://127.0.0.1:11434/v1"
+    model: str = "qwen3:8b"
+    api_key: str = ""
+    timeout_seconds: float = 60.0
+
+
+class CategoryModelSettings(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    model: str = "cointegrated/rubert-tiny2"
+    use_embeddings: bool = True
+
+
+class SentimentModelSettings(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    model: str = "seara/rubert-tiny2-russian-sentiment"
+
+
+class PipelineSettings(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    enabled: bool = True
     processors: list[str] = Field(
         default_factory=lambda: ["category", "sentiment", "fake_score"]
     )
+    batch_size: int = 16
+    min_confidence: float = 0.45
+    categories_file: str = "categories.yaml"
+    llm: LlmSettings = Field(default_factory=LlmSettings)
+    category: CategoryModelSettings = Field(default_factory=CategoryModelSettings)
+    sentiment: SentimentModelSettings = Field(default_factory=SentimentModelSettings)
 
 
 class LoopSettings(BaseModel):
@@ -92,6 +121,7 @@ class AppSettings(BaseModel):
     logging: LoggingSettings = Field(default_factory=LoggingSettings)
     sources_path: Path = Path("config/sources.yaml")
     regional_sources_path: Path | None = None
+    categories_path: Path = Path("config/categories.yaml")
     config_path: Path = Path("config/settings.yaml")
 
 
@@ -150,6 +180,26 @@ def load_settings(path: Path | None = None) -> AppSettings:
         settings.loop.interval_seconds = int(interval)
     if fulltext := os.environ.get("FAST_PARSER_FETCH_FULLTEXT"):
         settings.collector.fetch_fulltext = _as_bool(fulltext)
+    if flag := os.environ.get("FAST_PARSER_PIPELINE"):
+        settings.pipeline.enabled = _as_bool(flag)
+    if flag := os.environ.get("FAST_PARSER_LLM_ENABLED"):
+        settings.pipeline.llm.enabled = _as_bool(flag)
+    if value := os.environ.get("FAST_PARSER_LLM_BASE_URL"):
+        settings.pipeline.llm.base_url = value
+    if value := os.environ.get("FAST_PARSER_LLM_MODEL"):
+        settings.pipeline.llm.model = value
+    if value := os.environ.get("FAST_PARSER_LLM_API_KEY") or os.environ.get("OPENAI_API_KEY"):
+        settings.pipeline.llm.api_key = value
+    if value := os.environ.get("FAST_PARSER_SENTIMENT_MODEL"):
+        settings.pipeline.sentiment.model = value
+    if value := os.environ.get("FAST_PARSER_CATEGORY_MODEL"):
+        settings.pipeline.category.model = value
+
+    categories = Path(settings.pipeline.categories_file)
+    if not categories.is_absolute():
+        base = config_path.parent if config_path.exists() else Path.cwd()
+        categories = base / categories
+    settings.categories_path = categories
     return settings
 
 

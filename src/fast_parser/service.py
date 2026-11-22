@@ -60,9 +60,14 @@ def open_session(settings: AppSettings) -> Session:
 def run_once(settings: AppSettings) -> RunStats:
     session = open_session(settings)
     try:
-        return asyncio.run(collect_enabled(settings, session))
+        stats = asyncio.run(collect_enabled(settings, session))
     finally:
         session.close()
+    if settings.pipeline.enabled:
+        from fast_parser.process import process_pending
+
+        process_pending(settings)
+    return stats
 
 
 async def collect_enabled(

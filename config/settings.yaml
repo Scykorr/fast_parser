@@ -40,13 +40,27 @@ dates:
   naive_timezone: Europe/Moscow
 
 pipeline:
-  # Этап 1 только сохраняет текст. Классификация, тональность и fake_score
-  # подключаются следующими этапами через те же имена процессоров.
-  enabled: false
+  # Рубрики считаются по словам и рубрикам ленты сразу.
+  # Тональность и эмбеддинги включаются, если установлен extra ml.
+  enabled: true
+  batch_size: 16
+  min_confidence: 0.45
+  categories_file: categories.yaml
   processors:
     - category
     - sentiment
     - fake_score
+  category:
+    model: cointegrated/rubert-tiny2
+    use_embeddings: true
+  sentiment:
+    model: seara/rubert-tiny2-russian-sentiment
+  llm:
+    enabled: false
+    base_url: http://127.0.0.1:11434/v1
+    model: qwen3:8b
+    api_key: ""
+    timeout_seconds: 60
 
 loop:
   interval_seconds: 900

@@ -37,6 +37,18 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.command == "web":
             return run_web(settings, host=args.host, port=args.port)
+        if args.command == "process":
+            from fast_parser.process import process_pending
+
+            result = process_pending(settings, limit=args.limit)
+            print(
+                "Разметка завершена\n"
+                f"  просмотрено {result.seen}, с рубрикой {result.with_category}, "
+                f"с тональностью {result.with_sentiment}, готовы {result.completed}"
+            )
+            if not _ml_installed():
+                print("  модель тональности не установлена: pip install -e \".[ml]\"")
+            return 0
     except FileNotFoundError as exc:
         print(str(exc), file=sys.stderr)
         return 2
@@ -192,4 +204,12 @@ def _parser() -> argparse.ArgumentParser:
     web = sub.add_parser("web", help="Локальный веб-интерфейс и JSON API")
     web.add_argument("--host", default=None, help="Адрес, по умолчанию 127.0.0.1")
     web.add_argument("--port", type=int, default=None, help="Порт, по умолчанию 8080")
+    process = sub.add_parser("process", help="Разметить статьи без рубрики или тональности")
+    process.add_argument("--limit", type=int, default=None, help="Сколько статей взять за запуск")
     return parser
+
+
+def _ml_installed() -> bool:
+    from fast_parser.pipeline.ml_models import ml_available
+
+    return ml_available()

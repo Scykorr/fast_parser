@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from fast_parser.config import AppSettings
 from fast_parser.pipeline.base import ArticleView, ProcessorResult
+from fast_parser.pipeline.classify import CategoryProcessor, SentimentProcessor
 
 
 class CategoryStub:
@@ -37,13 +39,22 @@ PROCESSOR_REGISTRY: dict[str, type] = {
 }
 
 
-def build_processors(names: list[str]) -> list:
+def build_processors(names: list[str], settings: AppSettings | None = None) -> list:
+    if settings is None:
+        from fast_parser.config import load_settings
+
+        settings = load_settings()
+    factories = {
+        "category": lambda: CategoryProcessor(settings),
+        "sentiment": lambda: SentimentProcessor(settings),
+        "fake_score": FakeScoreStub,
+    }
     processors = []
     for name in names:
         try:
-            cls = PROCESSOR_REGISTRY[name]
+            factory = factories[name]
         except KeyError as exc:
-            known = ", ".join(sorted(PROCESSOR_REGISTRY))
+            known = ", ".join(sorted(factories))
             raise KeyError(f"Неизвестный процессор {name!r}. Доступны: {known}") from exc
-        processors.append(cls())
+        processors.append(factory())
     return processors
