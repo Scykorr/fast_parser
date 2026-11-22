@@ -88,9 +88,18 @@ def _write(article: Article, result: ProcessorResult) -> bool:
     if result.fake_score is not None:
         article.fake_score = result.fake_score
     if result.category_confidence is not None:
+        article.category_confidence = result.category_confidence
         extra = dict(article.extra or {})
         extra["category_confidence"] = result.category_confidence
         article.extra = extra
+    if result.category is not None:
+        from sqlalchemy.orm import object_session
+
+        from fast_parser.storage import category_id_for
+
+        bound = object_session(article)
+        if bound is not None:
+            article.category_id = category_id_for(bound, result.category)
     return True
 
 

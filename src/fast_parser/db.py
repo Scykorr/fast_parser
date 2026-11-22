@@ -41,13 +41,31 @@ _SOURCE_COLUMN_UPGRADES = (
     ("region", "VARCHAR(128)"),
     ("region_code", "VARCHAR(8)"),
     ("federal_district", "VARCHAR(64)"),
+    ("nid", "INTEGER"),
+)
+_ARTICLE_COLUMN_UPGRADES = (
+    ("source_nid", "INTEGER"),
+    ("region_id", "INTEGER"),
+    ("district_id", "INTEGER"),
+    ("category_id", "INTEGER"),
+    ("embedding", "BLOB"),
+    ("category_confidence", "FLOAT"),
+    ("fake_label", "VARCHAR(64)"),
+    ("domain", "VARCHAR(255)"),
+    ("text_length", "INTEGER"),
+    ("tags", "JSON"),
 )
 
 
 def init_db(url: str) -> sessionmaker[Session]:
     engine = make_engine(url)
-    Base.metadata.create_all(engine)
-    _upgrade_schema(engine)
+    if engine.dialect.name == "postgresql":
+        from fast_parser.pg_schema import ensure_postgres
+
+        ensure_postgres(engine)
+    else:
+        Base.metadata.create_all(engine)
+        _upgrade_schema(engine)
     return sessionmaker(bind=engine, expire_on_commit=False, future=True)
 
 
@@ -60,6 +78,43 @@ def _upgrade_schema(engine: Engine) -> None:
         for name, ddl in _SOURCE_COLUMN_UPGRADES:
             if name not in present:
                 conn.execute(text(f"ALTER TABLE sources ADD COLUMN {name} {ddl}"))
+        if "articles" in inspector.get_table_names():
+            article_cols = {column["name"] for column in inspector.get_columns("articles")}
+            added_article = False
+            for name, ddl in _ARTICLE_COLUMN_UPGRADES:
+                if name not in article_cols:
+                    conn.execute(text(f"ALTER TABLE articles ADD COLUMN {name} {ddl}"))
+                    added_article = True
+            if added_article:
+                conn.execute(
+                    text(
+                        """
+                        UPDATE articles
+                        SET text_length = length(text)
+                        WHERE text_length IS NULL
+                        """
+                    )
+                )
+                conn.execute(
+                    text(
+                        """
+                        UPDATE articles
+                        SET category_confidence = json_extract(extra, '$.category_confidence')
+                        WHERE category_confidence IS NULL
+                          AND json_extract(extra, '$.category_confidence') IS NOT NULL
+                        """
+                    )
+                )
+                conn.execute(
+                    text(
+                        """
+                        UPDATE articles
+                        SET tags = json_extract(extra, '$.categories')
+                        WHERE tags IS NULL
+                          AND json_type(extra, '$.categories') = 'array'
+                        """
+                    )
+                )
         conn.execute(text("CREATE INDEX IF NOT EXISTS ix_sources_region_code ON sources (region_code)"))
         conn.execute(
             text(

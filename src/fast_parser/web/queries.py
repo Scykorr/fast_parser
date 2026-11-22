@@ -1,38 +1,16 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import date, datetime, time, timedelta, timezone
-from zoneinfo import ZoneInfo
-
-from sqlalchemy import func, or_, select, text
+from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 
 from fast_parser.catalog import FEDERAL_SUBJECT_CODES
 from fast_parser.models import Article, Feed, FeedState, Source
-
-MOSCOW = ZoneInfo("Europe/Moscow")
-
-
-@dataclass
-class ArticleFilters:
-    source_id: str | None = None
-    source_type: str | None = None
-    region_code: str | None = None
-    federal_district: str | None = None
-    date_from: date | None = None
-    date_to: date | None = None
-    text: str | None = None
-    category: str | None = None
-    sentiment: str | None = None
-    fake_score_min: float | None = None
-    fake_score_max: float | None = None
-    limit: int = 50
-    offset: int = 0
+from fast_parser.search_filters import ArticleFilters, apply_article_filters
 
 
 def search_articles(session: Session, filters: ArticleFilters) -> tuple[list[tuple[Article, Source]], int]:
     stmt = select(Article, Source).join(Source, Article.source_id == Source.id)
-    stmt = _apply_filters(session, stmt, filters)
+    stmt = apply_article_filters(session, stmt, filters)
     total = session.scalar(select(func.count()).select_from(stmt.subquery())) or 0
     rows = session.execute(
         stmt.order_by(Article.published_at.desc(), Article.id.desc())
@@ -42,43 +20,40 @@ def search_articles(session: Session, filters: ArticleFilters) -> tuple[list[tup
     return [(row[0], row[1]) for row in rows], int(total)
 
 
-def _apply_filters(session: Session, stmt, filters: ArticleFilters):
-    if filters.source_id:
-        stmt = stmt.where(Source.id == filters.source_id)
-    if filters.source_type:
-        stmt = stmt.where(Source.type == filters.source_type)
-    if filters.region_code:
-        stmt = stmt.where(Source.region_code == filters.region_code)
-    if filters.federal_district:
-        stmt = stmt.where(Source.federal_district == filters.federal_district)
-    if filters.category:
-        stmt = stmt.where(Article.category == filters.category)
-    if filters.sentiment:
-        stmt = stmt.where(Article.sentiment == filters.sentiment)
-    if filters.fake_score_min is not None:
-        stmt = stmt.where(Article.fake_score >= filters.fake_score_min)
-    if filters.fake_score_max is not None:
-        stmt = stmt.where(Article.fake_score <= filters.fake_score_max)
-    if filters.date_from is not None:
-        stmt = stmt.where(Article.published_at >= _day_start(filters.date_from))
-    if filters.date_to is not None:
-        stmt = stmt.where(Article.published_at < _day_start(filters.date_to + timedelta(days=1)))
-    needle = (filters.text or "").strip()
-    if needle:
-        folded = f"%{needle.casefold()}%"
-        dialect = session.get_bind().dialect.name
-        if dialect == "sqlite":
-            title = func.py_lower(Article.title)
-            body = func.py_lower(Article.text)
-        else:
-            title = func.lower(Article.title)
-            body = func.lower(Article.text)
-        stmt = stmt.where(or_(title.like(folded), body.like(folded)))
-    return stmt
-
-
-def _day_start(value: date) -> datetime:
-    return datetime.combine(value, time.min, tzinfo=MOSCOW).astimezone(timezone.utc)
+def snippets(session: Session, rows: list[tuple[Article, Source]], query: str | None) -> dict[int, str]:
+    needle = (query or "").strip()
+    if not needle or not rows:
+        return {}
+    if session.get_bind().dialect.name == "postgresql":
+        found: dict[int, str] = {}
+        for article, _source in rows:
+            headline = session.execute(
+                text(
+                    """
+                    SELECT ts_headline(
+                        'russian',
+                        coalesce(text, ''),
+                        websearch_to_tsquery('russian', :q),
+                        'StartSel=<mark>, StopSel=</mark>, MaxFragments=2, MaxWords=24'
+                    )
+                    FROM articles WHERE id = :id
+                    """
+                ),
+                {"q": needle, "id": article.id},
+            ).scalar()
+            if headline:
+                found[article.id] = headline
+        return found
+    found = {}
+    folded = needle.casefold().strip('"')
+    for article, _source in rows:
+        haystack = f"{article.title}\n{article.text or ''}"
+        at = haystack.casefold().find(folded.split()[0] if folded else "")
+        if at < 0:
+            continue
+        start = max(0, at - 40)
+        found[article.id] = haystack[start : start + 160]
+    return found
 
 
 def filter_choices(session: Session) -> dict:
@@ -291,7 +266,7 @@ def dashboard(session: Session) -> dict:
             .limit(30)
         ).all()
     ]
-    return {
+    report = {
         "articles": int(articles),
         "sources": int(sources),
         "feeds_enabled": int(feeds_enabled),
@@ -302,7 +277,51 @@ def dashboard(session: Session) -> dict:
         "per_sentiment": per_sentiment,
         "category_by_region": category_by_region,
         "sentiment_by_source": sentiment_by_source,
+        "engine": "sql",
     }
+    if dialect == "postgresql":
+        overlaid = _duckdb_overlay(session)
+        if overlaid:
+            report.update(overlaid)
+            report["engine"] = "duckdb"
+    return report
+
+
+def _duckdb_overlay(session: Session) -> dict | None:
+    """Aggregates via DuckDB's Postgres scanner. SQL dashboard stays if the extension is unavailable."""
+    try:
+        import duckdb
+    except ImportError:
+        return None
+    raw = session.get_bind().url.render_as_string(hide_password=False)
+    dsn = raw.replace("postgresql+psycopg", "postgres").replace("postgresql+psycopg2", "postgres")
+    connection = duckdb.connect()
+    try:
+        connection.execute("INSTALL postgres; LOAD postgres;")
+        connection.execute(f"ATTACH '{dsn}' AS pg (TYPE POSTGRES, READ_ONLY)")
+        per_day = [
+            {"key": str(key), "label": str(key), "count": int(count)}
+            for key, count in connection.execute(
+                "SELECT strftime(published_at, '%Y-%m-%d'), count(*) FROM pg.articles WHERE published_at IS NOT NULL GROUP BY 1 ORDER BY 1"
+            ).fetchall()
+        ]
+        per_category = [
+            {"key": str(key), "label": str(key), "count": int(count)}
+            for key, count in connection.execute(
+                "SELECT category, count(*) FROM pg.articles WHERE category IS NOT NULL GROUP BY 1 ORDER BY 2 DESC"
+            ).fetchall()
+        ]
+        per_sentiment = [
+            {"key": str(key), "label": str(key), "count": int(count)}
+            for key, count in connection.execute(
+                "SELECT sentiment, count(*) FROM pg.articles WHERE sentiment IS NOT NULL GROUP BY 1 ORDER BY 2 DESC"
+            ).fetchall()
+        ]
+    except Exception:
+        return None
+    finally:
+        connection.close()
+    return {"per_day": per_day, "per_category": per_category, "per_sentiment": per_sentiment}
 
 
 def _named_counts(rows) -> list[dict]:

@@ -49,6 +49,56 @@ def main(argv: list[str] | None = None) -> int:
             if not _ml_installed():
                 print("  модель тональности не установлена: pip install -e \".[ml]\"")
             return 0
+        if args.command == "search":
+            from fast_parser.search_filters import parse_filters
+            from fast_parser.web.queries import search_articles
+
+            session = open_session(settings)
+            try:
+                filters = parse_filters(_search_raw(args), limit=args.limit)
+                rows, total = search_articles(session, filters)
+            finally:
+                session.close()
+            print(f"Найдено: {total}")
+            for article, source in rows:
+                stamp = article.published_at.date().isoformat() if article.published_at else "—"
+                print(f"{stamp}  {source.name}  {article.title}")
+            return 0
+        if args.command == "archive":
+            from datetime import date as date_cls
+
+            from fast_parser.archive import export_before
+
+            session = open_session(settings)
+            try:
+                written = export_before(
+                    session,
+                    before=date_cls.fromisoformat(args.before),
+                    out_dir=args.out,
+                    drop=args.drop,
+                )
+            finally:
+                session.close()
+            print(f"Файлов: {len(written)}")
+            for path in written:
+                print(f"  {path}")
+            return 0
+        if args.command == "migrate-sqlite":
+            from fast_parser.migrate_sqlite import migrate_sqlite
+
+            session = open_session(settings)
+            try:
+                stats = migrate_sqlite(args.sqlite, session)
+            finally:
+                session.close()
+            print(f"Источники: {stats.sources}, ленты: {stats.feeds}, статьи: {stats.articles}")
+            return 0
+        if args.command == "bench":
+            from fast_parser.bench import measure
+
+            report = measure(rows=args.rows, postgres_url=args.postgres, workdir=args.out)
+            print(report)
+            return 0
         if args.command == "eval":
             from fast_parser.evaluate import format_report, load_labels, score_dataset
 
@@ -188,6 +238,56 @@ def format_stats(stats: StatsSnapshot) -> str:
     return "\n".join(lines)
 
 
+def _search_raw(args) -> dict:
+    return {
+        "q": args.q,
+        "title_q": args.title,
+        "body_q": args.body,
+        "period": args.period,
+        "date_on": args.date_on,
+        "date_from": args.date_from,
+        "date_to": args.date_to,
+        "source_id": args.source or [],
+        "source_id_not": args.source_not or [],
+        "source_type": args.source_type or [],
+        "source_type_not": args.source_type_not or [],
+        "source_status": args.source_status or [],
+        "official": args.official,
+        "region": args.region or [],
+        "region_code": args.region_code or [],
+        "region_code_not": args.region_code_not or [],
+        "federal_district": args.district or [],
+        "federal_district_not": args.district_not or [],
+        "category": args.category or [],
+        "category_not": args.category_not or [],
+        "sentiment": args.sentiment or [],
+        "sentiment_not": args.sentiment_not or [],
+        "channel": args.channel or [],
+        "language": args.language or [],
+        "pipeline_status": args.status or [],
+        "tag": args.tag or [],
+        "tag_not": args.tag_not or [],
+        "author": args.author or [],
+        "domain": args.domain or [],
+        "url": args.url,
+        "weekday": args.weekday or [],
+        "hour": args.hour or [],
+        "sentiment_min": args.sentiment_min,
+        "sentiment_max": args.sentiment_max,
+        "category_confidence_min": args.category_confidence_min,
+        "category_confidence_max": args.category_confidence_max,
+        "fake_score_min": args.fake_min,
+        "fake_score_max": args.fake_max,
+        "fake_label": args.fake_label or [],
+        "has_fulltext": args.fulltext,
+        "text_len_min": args.text_len_min,
+        "text_len_max": args.text_len_max,
+        "min_cluster_sources": args.min_sources,
+        "fuzzy": "true" if args.fuzzy else None,
+        "limit": args.limit,
+    }
+
+
 def _ts(value) -> str:
     if value is None:
         return "—"
@@ -217,6 +317,62 @@ def _parser() -> argparse.ArgumentParser:
     process.add_argument("--all", action="store_true", help="Пересчитать даже уже размеченные статьи")
     evaluate = sub.add_parser("eval", help="Посчитать accuracy и macro-F1 на ручной выборке")
     evaluate.add_argument("--set", type=Path, default=Path("eval/labels.jsonl"), help="Файл jsonl с полями category и sentiment")
+    search = sub.add_parser("search", help="Поиск теми же фильтрами, что и API. Параметр можно повторять, --*-not исключает")
+    search.add_argument("q", nargs="?", default=None, help="Запрос: фразы, OR, -исключить")
+    search.add_argument("--title", help="Слова только в заголовке")
+    search.add_argument("--body", help="Слова только в тексте")
+    search.add_argument("--period", choices=["today", "24h", "7d", "30d", "month", "365d"])
+    search.add_argument("--date-on", choices=["published", "collected"], default="published")
+    search.add_argument("--date-from")
+    search.add_argument("--date-to")
+    search.add_argument("--source", action="append")
+    search.add_argument("--source-not", action="append")
+    search.add_argument("--source-type", action="append")
+    search.add_argument("--source-type-not", action="append")
+    search.add_argument("--source-status", action="append")
+    search.add_argument("--official", choices=["yes", "no"])
+    search.add_argument("--region", action="append")
+    search.add_argument("--region-code", action="append")
+    search.add_argument("--region-code-not", action="append")
+    search.add_argument("--district", action="append")
+    search.add_argument("--district-not", action="append")
+    search.add_argument("--category", action="append")
+    search.add_argument("--category-not", action="append")
+    search.add_argument("--sentiment", action="append")
+    search.add_argument("--sentiment-not", action="append")
+    search.add_argument("--channel", action="append", choices=["rss", "telegram", "vk", "x"])
+    search.add_argument("--language", action="append")
+    search.add_argument("--status", action="append", help="pending или processed")
+    search.add_argument("--tag", action="append")
+    search.add_argument("--tag-not", action="append")
+    search.add_argument("--author", action="append")
+    search.add_argument("--domain", action="append")
+    search.add_argument("--url")
+    search.add_argument("--weekday", action="append", type=int, help="1=понедельник … 7=воскресенье")
+    search.add_argument("--hour", action="append", type=int)
+    search.add_argument("--sentiment-min", type=float)
+    search.add_argument("--sentiment-max", type=float)
+    search.add_argument("--category-confidence-min", type=float)
+    search.add_argument("--category-confidence-max", type=float)
+    search.add_argument("--fake-min", type=float)
+    search.add_argument("--fake-max", type=float)
+    search.add_argument("--fake-label", action="append")
+    search.add_argument("--fulltext", choices=["yes", "no"])
+    search.add_argument("--text-len-min", type=int)
+    search.add_argument("--text-len-max", type=int)
+    search.add_argument("--min-sources", type=int, help="Сколько источников должны повторить тот же текст")
+    search.add_argument("--fuzzy", action="store_true")
+    search.add_argument("--limit", type=int, default=20)
+    archive = sub.add_parser("archive", help="Старые месяцы в Parquet (zstd), на PostgreSQL можно удалить раздел")
+    archive.add_argument("--before", required=True, help="YYYY-MM-DD, не включая эту дату")
+    archive.add_argument("--out", type=Path, default=Path("data/archive"))
+    archive.add_argument("--drop", action="store_true")
+    migrate = sub.add_parser("migrate-sqlite", help="Перенести SQLite-базу в текущий database.url")
+    migrate.add_argument("--sqlite", required=True, help="sqlite:///путь")
+    bench = sub.add_parser("bench", help="Размер и задержка на синтетических статьях")
+    bench.add_argument("--rows", type=int, default=1_000_000)
+    bench.add_argument("--postgres", default="postgresql+psycopg://fast:fast@127.0.0.1:5432/fast_parser_bench")
+    bench.add_argument("--out", type=Path, default=Path("data/bench"))
     return parser
 
 

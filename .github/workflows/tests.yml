@@ -7,6 +7,22 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: fast
+          POSTGRES_PASSWORD: fast
+          POSTGRES_DB: fast_parser_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U fast -d fast_parser_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      TEST_POSTGRES_URL: postgresql+psycopg://fast:fast@127.0.0.1:5432/fast_parser_test
     strategy:
       fail-fast: false
       matrix:

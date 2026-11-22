@@ -1,0 +1,143 @@
+<section class="panel">
+  <h1>Лента</h1>
+  <form class="filters" method="get" action="/" autocomplete="off"
+        hx-get="/" hx-target="#browser" hx-swap="innerHTML" hx-push-url="true" hx-trigger="change, submit">
+    <label>Период
+      <select name="period">
+        <option value="">Свой диапазон</option>
+        {% for preset, label in [("today", "сегодня"), ("24h", "24 часа"), ("7d", "7 дней"), ("30d", "30 дней"), ("month", "этот месяц"), ("365d", "год")] %}
+        <option value="{{ preset }}" {% if filters.period == preset %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>По дате
+      <select name="date_on">
+        <option value="published" {% if filters.date_on != 'collected' %}selected{% endif %}>публикации</option>
+        <option value="collected" {% if filters.date_on == 'collected' %}selected{% endif %}>сбора</option>
+      </select>
+    </label>
+    <label>С даты <input type="date" name="date_from" value="{{ filters.date_from or '' }}"></label>
+    <label>По дату <input type="date" name="date_to" value="{{ filters.date_to or '' }}"></label>
+    <label>Текст <input type="search" name="q" value="{{ filters.text or '' }}" placeholder="фраза, OR, -исключить"></label>
+    <label>Только заголовок <input type="search" name="title_q" value="{{ filters.title_text or '' }}"></label>
+    <label>Только текст <input type="search" name="body_q" value="{{ filters.body_text or '' }}"></label>
+    <label>Опечатки <input type="checkbox" name="fuzzy" value="true" {% if filters.fuzzy %}checked{% endif %}></label>
+    <label>URL содержит <input name="url" value="{{ filters.url_contains or '' }}"></label>
+    <label>Длина от <input type="number" min="0" name="text_len_min" value="{{ filters.text_len_min if filters.text_len_min is not none else '' }}"></label>
+    <label>Длина до <input type="number" min="0" name="text_len_max" value="{{ filters.text_len_max if filters.text_len_max is not none else '' }}"></label>
+    <label>Полный текст
+      <select name="has_fulltext">
+        <option value="">Не важно</option>
+        <option value="true" {% if filters.has_fulltext is sameas true %}selected{% endif %}>есть</option>
+        <option value="false" {% if filters.has_fulltext is sameas false %}selected{% endif %}>нет</option>
+      </select>
+    </label>
+    <label>Уверенность тональности от <input type="number" step="0.01" name="sentiment_min" value="{{ filters.sentiment_min if filters.sentiment_min is not none else '' }}"></label>
+    <label>до <input type="number" step="0.01" name="sentiment_max" value="{{ filters.sentiment_max if filters.sentiment_max is not none else '' }}"></label>
+    <label>Уверенность рубрики от <input type="number" step="0.01" name="category_confidence_min" value="{{ filters.category_confidence_min if filters.category_confidence_min is not none else '' }}"></label>
+    <label>до <input type="number" step="0.01" name="category_confidence_max" value="{{ filters.category_confidence_max if filters.category_confidence_max is not none else '' }}"></label>
+    <label>fake_score от <input type="number" step="0.01" min="0" max="1" name="fake_score_min" value="{{ filters.fake_score_min if filters.fake_score_min is not none else '' }}"></label>
+    <label>до <input type="number" step="0.01" min="0" max="1" name="fake_score_max" value="{{ filters.fake_score_max if filters.fake_score_max is not none else '' }}"></label>
+    <label>Источников в кластере от <input type="number" min="2" name="min_cluster_sources" value="{{ filters.min_cluster_sources if filters.min_cluster_sources is not none else '' }}"></label>
+    <label>Официальный
+      <select name="official">
+        <option value="">Не важно</option>
+        <option value="yes" {% if filters.official is sameas true %}selected{% endif %}>да</option>
+        <option value="no" {% if filters.official is sameas false %}selected{% endif %}>нет</option>
+      </select>
+    </label>
+    <button type="submit">Показать</button>
+    <div class="facets">
+      {% for key, title in [
+        ("category", "Рубрика"),
+        ("sentiment", "Тональность"),
+        ("source_type", "Тип источника"),
+        ("federal_district", "Округ"),
+        ("channel", "Канал"),
+        ("language", "Язык"),
+        ("pipeline_status", "Статус обработки"),
+        ("weekday", "День недели"),
+        ("source_status", "Состояние источника"),
+        ("fake_label", "Метка fake"),
+        ("tag", "Метка ленты"),
+        ("domain", "Домен"),
+        ("region_code", "Регион"),
+        ("source", "Источник")
+      ] %}
+      {% set rows = facets[key] %}
+      {% if rows %}
+      <fieldset class="facet">
+        <legend>{{ title }}</legend>
+        {% for item in rows if item.count or item.included or item.excluded %}
+        <div class="facet-row">
+          <label>
+            <input type="checkbox" name="{{ {
+              'category': 'category',
+              'sentiment': 'sentiment',
+              'source_type': 'source_type',
+              'federal_district': 'federal_district',
+              'channel': 'channel',
+              'language': 'language',
+              'pipeline_status': 'pipeline_status',
+              'weekday': 'weekday',
+              'source_status': 'source_status',
+              'fake_label': 'fake_label',
+              'tag': 'tag',
+              'domain': 'domain',
+              'region_code': 'region_code',
+              'source': 'source_id'
+            }[key] }}" value="{{ item.value }}" {% if item.included %}checked{% endif %}>
+            <span>{{ item.label }}</span>
+            <span class="count">{{ item.count }}</span>
+          </label>
+          {% if key != 'weekday' %}
+          <label class="exclude">
+            <input type="checkbox" name="{{ {
+              'category': 'category_not',
+              'sentiment': 'sentiment_not',
+              'source_type': 'source_type_not',
+              'federal_district': 'federal_district_not',
+              'channel': 'channel_not',
+              'language': 'language_not',
+              'pipeline_status': 'pipeline_status_not',
+              'source_status': 'source_status_not',
+              'fake_label': 'fake_label_not',
+              'tag': 'tag_not',
+              'domain': 'domain_not',
+              'region_code': 'region_code_not',
+              'source': 'source_id_not'
+            }[key] }}" value="{{ item.value }}" {% if item.excluded %}checked{% endif %}>
+            не
+          </label>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </fieldset>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </form>
+  <p class="hint">
+    <a href="/export.csv?{{ request.url.query }}">CSV</a>
+    · <a href="/export.parquet?{{ request.url.query }}">Parquet</a>
+    · <a href="/api/articles?{{ request.url.query }}">JSON</a>
+    · <a href="/api/facets?{{ request.url.query }}">фасеты</a>
+    {% if saved %}
+    · сохранённые:
+    {% for item in saved %}
+      <a href="/?{% for key, value in item.query_json.items() %}{% if value is iterable and value is not string %}{% for piece in value %}{{ key }}={{ piece | urlencode }}&{% endfor %}{% else %}{{ key }}={{ value | urlencode }}&{% endif %}{% endfor %}">{{ item.name }}</a>
+    {% endfor %}
+    {% endif %}
+  </p>
+  <form method="post" action="/searches" class="filters">
+    {% for key, value in request.query_params.multi_items() %}
+    <input type="hidden" name="{{ key }}" value="{{ value }}">
+    {% endfor %}
+    <label>Имя поиска <input name="name" required placeholder="бюджет за неделю"></label>
+    <button type="submit">Сохранить</button>
+  </form>
+  <p class="hint">Галочка слева включает значение, «не» исключает. Адресная строка хранит весь фильтр. Подрубрик у 12 рубрик нет: метки самой ленты фильтруются отдельно.</p>
+</section>
+<div id="feed">
+  {% include "feed_list.html" %}
+</div>

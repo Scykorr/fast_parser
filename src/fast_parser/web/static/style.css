@@ -89,6 +89,38 @@ h2 { font-size: 1.15rem; margin: 1.2rem 0 0.4rem; }
   align-items: end;
 }
 
+.facets {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.7rem;
+}
+
+.facet {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.45rem 0.6rem 0.6rem;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.facet legend { color: var(--muted); font-size: 0.85rem; padding: 0 0.2rem; }
+
+.facet-row { display: flex; gap: 0.4rem; align-items: center; }
+
+.facet label {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--ink);
+  flex: 1;
+}
+
+.facet .count { margin-left: auto; color: var(--muted); }
+
+.facet .exclude { flex: 0; color: var(--muted); }
+
 label { display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.85rem; color: var(--muted); }
 
 input, select {
