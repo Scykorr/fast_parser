@@ -6,7 +6,16 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from fast_parser.catalog import Catalog, SourceSpec, feed_is_collected
-from fast_parser.models import Article, Feed, FeedState, FetchLog, Source
+from fast_parser.models import (
+    Article,
+    CategoryLookup,
+    FederalDistrict,
+    Feed,
+    FeedState,
+    FetchLog,
+    Region,
+    Source,
+)
 from fast_parser.rss.parser import ParsedItem
 from fast_parser.textutil import content_hash
 from fast_parser.timeutil import utcnow
@@ -76,12 +85,18 @@ def sync_catalog(
     skip_source_ids: set[str],
 ) -> None:
     now = utcnow()
+    next_nid = (session.scalar(select(func.max(Source.nid))) or 0) + 1
     for spec in catalog.sources:
         row = session.get(Source, spec.id)
         if row is None:
-            row = Source(id=spec.id, updated_at=now)
+            row = Source(id=spec.id, updated_at=now, nid=next_nid)
+            next_nid += 1
             session.add(row)
+        elif row.nid is None:
+            row.nid = next_nid
+            next_nid += 1
         _apply_source(row, spec, now)
+        _ensure_place(session, spec.region, spec.region_code, spec.federal_district)
         seen: set[str] = set()
         for feed in spec.rss:
             seen.add(feed.url)
@@ -136,6 +151,56 @@ def _apply_source(row: Source, spec: SourceSpec, now) -> None:
     row.telegram_meta = telegram.model_dump(exclude_none=True)
 
 
+def _ensure_place(session: Session, region: str | None, code: str | None, district: str | None) -> tuple[int | None, int | None]:
+    district_id = None
+    if district:
+        row = session.scalar(select(FederalDistrict).where(FederalDistrict.name == district))
+        if row is None:
+            district_id = (session.scalar(select(func.max(FederalDistrict.id))) or 0) + 1
+            row = FederalDistrict(id=district_id, name=district)
+            session.add(row)
+            session.flush()
+        district_id = row.id
+    region_id = None
+    if code:
+        row = session.scalar(select(Region).where(Region.code == code))
+        if row is None:
+            region_id = (session.scalar(select(func.max(Region.id))) or 0) + 1
+            row = Region(id=region_id, code=code, name=region or code, district_id=district_id)
+            session.add(row)
+            session.flush()
+        else:
+            if region and row.name != region:
+                row.name = region
+            if district_id is not None:
+                row.district_id = district_id
+        region_id = row.id
+    return region_id, district_id
+
+
+def category_id_for(session: Session, title: str | None) -> int | None:
+    if not title:
+        return None
+    row = session.scalar(select(CategoryLookup).where(CategoryLookup.title == title))
+    if row is None:
+        new_id = (session.scalar(select(func.max(CategoryLookup.id))) or 0) + 1
+        row = CategoryLookup(id=new_id, title=title)
+        session.add(row)
+        session.flush()
+    return row.id
+
+
+def attach_lookup_ids(session: Session, article: Article) -> None:
+    source = session.get(Source, article.source_id)
+    if source is not None:
+        article.source_nid = source.nid
+        article.region_id, article.district_id = _ensure_place(
+            session, source.region, source.region_code, source.federal_district
+        )
+    if article.category:
+        article.category_id = category_id_for(session, article.category)
+
+
 def enabled_feeds(session: Session) -> list[Feed]:
     return list(session.scalars(select(Feed).where(Feed.enabled.is_(True)).order_by(Feed.id)))
 
@@ -188,6 +253,7 @@ def upsert_article(
             pipeline_status="pending",
             extra={"categories": item.categories} if item.categories else None,
         )
+        attach_lookup_ids(session, article)
         session.add(article)
         session.flush()
         return UpsertResult("new", article)
@@ -229,6 +295,8 @@ def upsert_article(
     existing.sentiment_score = None
     existing.fake_score = None
     existing.extra = {"categories": item.categories} if item.categories else None
+    existing.category_id = None
+    attach_lookup_ids(session, existing)
     session.flush()
     return UpsertResult("updated", existing)
 

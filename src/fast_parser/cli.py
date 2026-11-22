@@ -49,6 +49,66 @@ def main(argv: list[str] | None = None) -> int:
             if not _ml_installed():
                 print("  модель тональности не установлена: pip install -e \".[ml]\"")
             return 0
+        if args.command == "search":
+            from fast_parser.web.queries import ArticleFilters, search_articles
+
+            session = open_session(settings)
+            try:
+                filters = ArticleFilters(
+                    text=args.q,
+                    period=args.period,
+                    source_id=args.source,
+                    category=args.category,
+                    sentiment=args.sentiment,
+                    region_code=args.region,
+                    federal_district=args.district,
+                    language=args.language,
+                    fuzzy=args.fuzzy,
+                    limit=args.limit,
+                )
+                rows, total = search_articles(session, filters)
+            finally:
+                session.close()
+            print(f"Найдено: {total}")
+            for article, source in rows:
+                stamp = article.published_at.date().isoformat() if article.published_at else "—"
+                print(f"{stamp}  {source.name}  {article.title}")
+            return 0
+        if args.command == "archive":
+            from datetime import date as date_cls
+
+            from fast_parser.archive import export_before
+
+            session = open_session(settings)
+            try:
+                written = export_before(
+                    session,
+                    before=date_cls.fromisoformat(args.before),
+                    out_dir=args.out,
+                    drop=args.drop,
+                )
+            finally:
+                session.close()
+            print(f"Файлов: {len(written)}")
+            for path in written:
+                print(f"  {path}")
+            return 0
+        if args.command == "migrate-sqlite":
+            from fast_parser.migrate_sqlite import migrate_sqlite
+
+            session = open_session(settings)
+            try:
+                stats = migrate_sqlite(args.sqlite, session)
+            finally:
+                session.close()
+            print(f"Источники: {stats.sources}, ленты: {stats.feeds}, статьи: {stats.articles}")
+            return 0
+        if args.command == "bench":
+            from fast_parser.bench import measure
+
+            report = measure(rows=args.rows, postgres_url=args.postgres, workdir=args.out)
+            print(report)
+            return 0
         if args.command == "eval":
             from fast_parser.evaluate import format_report, load_labels, score_dataset
 
@@ -217,6 +277,27 @@ def _parser() -> argparse.ArgumentParser:
     process.add_argument("--all", action="store_true", help="Пересчитать даже уже размеченные статьи")
     evaluate = sub.add_parser("eval", help="Посчитать accuracy и macro-F1 на ручной выборке")
     evaluate.add_argument("--set", type=Path, default=Path("eval/labels.jsonl"), help="Файл jsonl с полями category и sentiment")
+    search = sub.add_parser("search", help="Поиск теми же фильтрами, что и API")
+    search.add_argument("q", nargs="?", default=None, help="Запрос: фразы, OR, -исключить")
+    search.add_argument("--period", choices=["today", "7d", "30d", "month", "365d"])
+    search.add_argument("--source")
+    search.add_argument("--category")
+    search.add_argument("--sentiment")
+    search.add_argument("--region")
+    search.add_argument("--district")
+    search.add_argument("--language")
+    search.add_argument("--fuzzy", action="store_true")
+    search.add_argument("--limit", type=int, default=20)
+    archive = sub.add_parser("archive", help="Старые месяцы в Parquet (zstd), на PostgreSQL можно удалить раздел")
+    archive.add_argument("--before", required=True, help="YYYY-MM-DD, не включая эту дату")
+    archive.add_argument("--out", type=Path, default=Path("data/archive"))
+    archive.add_argument("--drop", action="store_true")
+    migrate = sub.add_parser("migrate-sqlite", help="Перенести SQLite-базу в текущий database.url")
+    migrate.add_argument("--sqlite", required=True, help="sqlite:///путь")
+    bench = sub.add_parser("bench", help="Размер и задержка на синтетических статьях")
+    bench.add_argument("--rows", type=int, default=1_000_000)
+    bench.add_argument("--postgres", default="postgresql+psycopg://fast:fast@127.0.0.1:5432/fast_parser_bench")
+    bench.add_argument("--out", type=Path, default=Path("data/bench"))
     return parser
 
 

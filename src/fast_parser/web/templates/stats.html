@@ -3,6 +3,7 @@
 {% block body %}
 <section class="panel">
   <h1>Сводка</h1>
+  <p class="hint">Агрегаты: {% if stats.engine == 'duckdb' %}DuckDB поверх PostgreSQL{% else %}SQL базы{% endif %}.</p>
   <p class="figures">
     <span><strong>{{ stats.articles }}</strong> статей</span>
     <span><strong>{{ stats.sources }}</strong> источников</span>

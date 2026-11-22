@@ -186,6 +186,19 @@ def test_sources_regions_stats_and_pages(tmp_path):
     assert "/api/collect" in schema.json()["paths"]
 
 
+def test_saved_search_and_exports(tmp_path):
+    client = _client(tmp_path)
+    saved = client.post("/searches", data={"name": "бюджет", "q": "бюджет"}, follow_redirects=False)
+    assert saved.status_code == 303
+    page = client.get("/")
+    assert "бюджет" in page.text
+    csv_body = client.get("/export.csv", params={"q": "бюджет"}).content.decode("utf-8")
+    assert "Бюджет Адыгеи" in csv_body
+    parquet = client.get("/export.parquet", params={"q": "бюджет"})
+    assert parquet.status_code == 200
+    assert parquet.content[:4] == b"PAR1"
+
+
 def test_collect_endpoint_runs_without_enabled_feeds(tmp_path):
     client = _client(tmp_path)
     response = client.post("/api/collect")

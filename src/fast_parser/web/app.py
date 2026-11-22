@@ -5,6 +5,7 @@ from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
+from sqlalchemy import select
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -20,6 +21,7 @@ from fast_parser.web.queries import (
     filter_choices,
     region_coverage,
     search_articles,
+    snippets,
     source_statuses,
 )
 from fast_parser.web.schemas import (
@@ -66,28 +68,75 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
         federal_district: str | None = None,
         date_from: date | None = None,
         date_to: date | None = None,
+        period: str | None = None,
         q: str | None = None,
+        fuzzy: bool = False,
         category: str | None = None,
         sentiment: str | None = None,
+        sentiment_min: float | None = None,
         fake_score_min: float | None = None,
         fake_score_max: float | None = None,
+        has_fulltext: str | None = None,
+        language: str | None = None,
         limit: int = Query(default=50, ge=1, le=200),
         offset: int = Query(default=0, ge=0),
     ) -> ArticleFilters:
+        return _filters_from(
+            {
+                "source_id": source_id,
+                "source_type": source_type,
+                "region_code": region_code,
+                "federal_district": federal_district,
+                "date_from": date_from,
+                "date_to": date_to,
+                "period": period,
+                "q": q,
+                "fuzzy": fuzzy,
+                "category": category,
+                "sentiment": sentiment,
+                "sentiment_min": sentiment_min,
+                "fake_score_min": fake_score_min,
+                "fake_score_max": fake_score_max,
+                "has_fulltext": has_fulltext,
+                "language": language,
+                "limit": limit,
+                "offset": offset,
+            }
+        )
+
+    def _filters_from(raw) -> ArticleFilters:
+        def _date(value):
+            if value is None or value == "":
+                return None
+            if isinstance(value, date):
+                return value
+            return date.fromisoformat(str(value))
+
+        def _float(value):
+            if value is None or value == "":
+                return None
+            return float(value)
+
+        fuzzy = raw.get("fuzzy")
         return ArticleFilters(
-            source_id=_blank(source_id),
-            source_type=_blank(source_type),
-            region_code=_blank(region_code),
-            federal_district=_blank(federal_district),
-            date_from=date_from,
-            date_to=date_to,
-            text=_blank(q),
-            category=_blank(category),
-            sentiment=_blank(sentiment),
-            fake_score_min=fake_score_min,
-            fake_score_max=fake_score_max,
-            limit=limit,
-            offset=offset,
+            source_id=_blank(_text(raw.get("source_id"))),
+            source_type=_blank(_text(raw.get("source_type"))),
+            region_code=_blank(_text(raw.get("region_code"))),
+            federal_district=_blank(_text(raw.get("federal_district"))),
+            date_from=_date(raw.get("date_from")),
+            date_to=_date(raw.get("date_to")),
+            period=_blank(_text(raw.get("period"))),
+            text=_blank(_text(raw.get("q"))),
+            fuzzy=bool(fuzzy) if isinstance(fuzzy, bool) else _flag(_text(fuzzy)) is True,
+            category=_blank(_text(raw.get("category"))),
+            sentiment=_blank(_text(raw.get("sentiment"))),
+            sentiment_min=_float(raw.get("sentiment_min")),
+            fake_score_min=_float(raw.get("fake_score_min")),
+            fake_score_max=_float(raw.get("fake_score_max")),
+            has_fulltext=_flag(_text(raw.get("has_fulltext"))),
+            language=_blank(_text(raw.get("language"))),
+            limit=int(raw.get("limit") or 50),
+            offset=int(raw.get("offset") or 0),
         )
 
     @app.get("/api/health")
@@ -144,6 +193,8 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
             "filters": filters,
             "choices": filter_choices(session),
             "articles": rows,
+            "snippets": snippets(session, rows, filters.text),
+            "saved": _saved(session),
             "total": total,
             "version": __version__,
         }
@@ -192,6 +243,49 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
             {"request": request, "stats": dashboard(session), "version": __version__},
         )
 
+    @app.post("/searches")
+    async def save_search(request: Request, session: Session = Depends(db_session)):
+        from fast_parser.models import SavedSearch
+        from fast_parser.timeutil import utcnow
+
+        form = await request.form()
+        name = str(form.get("name") or "").strip()
+        if not name:
+            raise HTTPException(status_code=400, detail="Нужно имя поиска")
+        filters = _filters_from(form)
+        payload = _query_payload(filters)
+        existing = session.scalar(select(SavedSearch).where(SavedSearch.name == name))
+        if existing is None:
+            session.add(SavedSearch(name=name, query_json=payload, created_at=utcnow()))
+        else:
+            existing.query_json = payload
+        session.commit()
+        return RedirectResponse("/", status_code=303)
+
+    @app.get("/export.csv")
+    def export_csv(filters: ArticleFilters = Depends(_filters), session: Session = Depends(db_session)):
+        from fastapi.responses import Response
+
+        filters.limit = 5000
+        filters.offset = 0
+        rows, _total = search_articles(session, filters)
+        body = _csv(rows)
+        return Response(body, media_type="text/csv", headers={"Content-Disposition": "attachment; filename=articles.csv"})
+
+    @app.get("/export.parquet")
+    def export_parquet(filters: ArticleFilters = Depends(_filters), session: Session = Depends(db_session)):
+        from fastapi.responses import Response
+
+        filters.limit = 5000
+        filters.offset = 0
+        rows, _total = search_articles(session, filters)
+        payload = _parquet(rows)
+        return Response(
+            payload,
+            media_type="application/vnd.apache.parquet",
+            headers={"Content-Disposition": "attachment; filename=articles.parquet"},
+        )
+
     @app.post("/collect")
     def collect_page(request: Request):
         result = _collect_result()
@@ -220,6 +314,75 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
         )
 
     return app
+
+
+def _saved(session: Session) -> list:
+    from fast_parser.models import SavedSearch
+
+    return list(session.scalars(select(SavedSearch).order_by(SavedSearch.name)))
+
+
+def _query_payload(filters: ArticleFilters) -> dict:
+    payload = {}
+    for key, value in filters.__dict__.items():
+        if key in {"limit", "offset"} or value in (None, "", False):
+            continue
+        payload[key] = value.isoformat() if hasattr(value, "isoformat") else value
+    return payload
+
+
+def _csv(rows) -> str:
+    import csv
+    import io
+
+    buffer = io.StringIO()
+    writer = csv.writer(buffer)
+    writer.writerow(["id", "source", "title", "published_at", "category", "sentiment", "url"])
+    for article, source in rows:
+        writer.writerow(
+            [
+                article.id,
+                source.id,
+                article.title,
+                article.published_at.isoformat() if article.published_at else "",
+                article.category or "",
+                article.sentiment or "",
+                article.canonical_url,
+            ]
+        )
+    return buffer.getvalue()
+
+
+def _parquet(rows) -> bytes:
+    import duckdb
+
+    connection = duckdb.connect()
+    connection.execute(
+        "CREATE TABLE export_batch (id BIGINT, source_id VARCHAR, title VARCHAR, url VARCHAR, category VARCHAR, sentiment VARCHAR)"
+    )
+    connection.executemany(
+        "INSERT INTO export_batch VALUES (?,?,?,?,?,?)",
+        [(article.id, source.id, article.title, article.canonical_url, article.category, article.sentiment) for article, source in rows],
+    )
+    path = "/tmp/fast-parser-export.parquet"
+    connection.execute(f"COPY export_batch TO '{path}' (FORMAT PARQUET, COMPRESSION ZSTD)")
+    connection.close()
+    return Path(path).read_bytes()
+
+
+def _text(value) -> str | None:
+    if value is None or isinstance(value, (date, bool, int, float)):
+        return None if value is None else str(value)
+    return str(value)
+
+
+def _flag(value: str | None) -> bool | None:
+    text = (value or "").strip().lower()
+    if text in {"1", "true", "yes", "да"}:
+        return True
+    if text in {"0", "false", "no", "нет"}:
+        return False
+    return None
 
 
 def _blank(value: str | None) -> str | None:

@@ -10,6 +10,8 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
+    LargeBinary,
+    SmallInteger,
     String,
     Text,
     TypeDecorator,
@@ -43,10 +45,43 @@ class Base(DeclarativeBase):
     pass
 
 
+class FederalDistrict(Base):
+    __tablename__ = "federal_districts"
+
+    id: Mapped[int] = mapped_column(SmallInteger, primary_key=True)
+    name: Mapped[str] = mapped_column(String(64), unique=True)
+
+
+class Region(Base):
+    __tablename__ = "regions"
+
+    id: Mapped[int] = mapped_column(SmallInteger, primary_key=True)
+    code: Mapped[str] = mapped_column(String(8), unique=True)
+    name: Mapped[str] = mapped_column(String(128))
+    district_id: Mapped[int | None] = mapped_column(SmallInteger, ForeignKey("federal_districts.id"), index=True)
+
+
+class CategoryLookup(Base):
+    __tablename__ = "categories"
+
+    id: Mapped[int] = mapped_column(SmallInteger, primary_key=True)
+    title: Mapped[str] = mapped_column(String(128), unique=True)
+
+
+class SavedSearch(Base):
+    __tablename__ = "saved_searches"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(128), unique=True)
+    query_json: Mapped[dict] = mapped_column(JSON)
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+
 class Source(Base):
     __tablename__ = "sources"
 
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    nid: Mapped[int | None] = mapped_column(Integer, unique=True, index=True)
     name: Mapped[str] = mapped_column(String(255))
     type: Mapped[str] = mapped_column(String(64))
     site: Mapped[str] = mapped_column(String(512))
@@ -138,6 +173,10 @@ class Article(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     source_id: Mapped[str] = mapped_column(ForeignKey("sources.id"), index=True)
+    source_nid: Mapped[int | None] = mapped_column(Integer, index=True)
+    region_id: Mapped[int | None] = mapped_column(SmallInteger, index=True)
+    district_id: Mapped[int | None] = mapped_column(SmallInteger, index=True)
+    category_id: Mapped[int | None] = mapped_column(SmallInteger, index=True)
     feed_id: Mapped[int | None] = mapped_column(ForeignKey("feeds.id"), index=True)
     guid: Mapped[str | None] = mapped_column(String(1024))
     url: Mapped[str] = mapped_column(String(2048))
@@ -158,6 +197,8 @@ class Article(Base):
     content_origin: Mapped[str] = mapped_column(String(32), default="rss")
     pipeline_status: Mapped[str] = mapped_column(String(32), default="pending")
     extra: Mapped[dict | None] = mapped_column(JSON)
+    # Empty until a future pgvector migration. Kept so exports and copies have a slot.
+    embedding: Mapped[bytes | None] = mapped_column(LargeBinary)
 
     source: Mapped["Source"] = relationship(back_populates="articles")
     feed: Mapped["Feed | None"] = relationship(back_populates="articles")

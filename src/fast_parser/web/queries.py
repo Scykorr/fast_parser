@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta, timezone
 from zoneinfo import ZoneInfo
@@ -21,16 +22,22 @@ class ArticleFilters:
     federal_district: str | None = None
     date_from: date | None = None
     date_to: date | None = None
+    period: str | None = None
     text: str | None = None
+    fuzzy: bool = False
     category: str | None = None
     sentiment: str | None = None
+    sentiment_min: float | None = None
     fake_score_min: float | None = None
     fake_score_max: float | None = None
+    has_fulltext: bool | None = None
+    language: str | None = None
     limit: int = 50
     offset: int = 0
 
 
 def search_articles(session: Session, filters: ArticleFilters) -> tuple[list[tuple[Article, Source]], int]:
+    filters = resolve_period(filters)
     stmt = select(Article, Source).join(Source, Article.source_id == Source.id)
     stmt = _apply_filters(session, stmt, filters)
     total = session.scalar(select(func.count()).select_from(stmt.subquery())) or 0
@@ -55,6 +62,14 @@ def _apply_filters(session: Session, stmt, filters: ArticleFilters):
         stmt = stmt.where(Article.category == filters.category)
     if filters.sentiment:
         stmt = stmt.where(Article.sentiment == filters.sentiment)
+    if filters.sentiment_min is not None:
+        stmt = stmt.where(Article.sentiment_score >= filters.sentiment_min)
+    if filters.language:
+        stmt = stmt.where(Article.language == filters.language)
+    if filters.has_fulltext is True:
+        stmt = stmt.where(func.length(Article.text) >= 500)
+    elif filters.has_fulltext is False:
+        stmt = stmt.where(func.length(Article.text) < 500)
     if filters.fake_score_min is not None:
         stmt = stmt.where(Article.fake_score >= filters.fake_score_min)
     if filters.fake_score_max is not None:
@@ -65,16 +80,107 @@ def _apply_filters(session: Session, stmt, filters: ArticleFilters):
         stmt = stmt.where(Article.published_at < _day_start(filters.date_to + timedelta(days=1)))
     needle = (filters.text or "").strip()
     if needle:
-        folded = f"%{needle.casefold()}%"
         dialect = session.get_bind().dialect.name
-        if dialect == "sqlite":
-            title = func.py_lower(Article.title)
-            body = func.py_lower(Article.text)
+        if dialect == "postgresql" and not filters.fuzzy:
+            stmt = stmt.where(
+                text("articles.search_vector @@ websearch_to_tsquery('russian', :q)")
+            ).params(q=needle)
+        elif dialect == "postgresql" and filters.fuzzy:
+            stmt = stmt.where(text("articles.title % :q OR articles.text % :q")).params(q=needle)
         else:
-            title = func.lower(Article.title)
-            body = func.lower(Article.text)
-        stmt = stmt.where(or_(title.like(folded), body.like(folded)))
+            stmt = _sqlite_text_filter(stmt, needle)
     return stmt
+
+
+def _sqlite_text_filter(stmt, query: str):
+    """Approximate websearch_to_tsquery: words, \"phrases\", OR, and -exclude."""
+    groups = _parse_websearch(query)
+    clauses = []
+    for group in groups:
+        parts = []
+        for phrase, negated in group:
+            folded = f"%{phrase.casefold()}%"
+            match = or_(
+                func.py_lower(Article.title).like(folded),
+                func.py_lower(Article.text).like(folded),
+            )
+            parts.append(~match if negated else match)
+        if parts:
+            clause = parts[0]
+            for part in parts[1:]:
+                clause = clause & part
+            clauses.append(clause)
+    if not clauses:
+        return stmt
+    combined = clauses[0]
+    for clause in clauses[1:]:
+        combined = combined | clause
+    return stmt.where(combined)
+
+
+def _parse_websearch(query: str) -> list[list[tuple[str, bool]]]:
+    groups: list[list[tuple[str, bool]]] = [[]]
+    tokens = re.findall(r'"[^"]+"|\S+', query)
+    for token in tokens:
+        if token == "OR":
+            groups.append([])
+            continue
+        negated = token.startswith("-") and len(token) > 1
+        word = token[1:] if negated else token
+        word = word.strip('"').strip()
+        if word:
+            groups[-1].append((word, negated))
+    return [group for group in groups if group]
+
+
+def snippets(session: Session, rows: list[tuple[Article, Source]], query: str | None) -> dict[int, str]:
+    needle = (query or "").strip()
+    if not needle or not rows:
+        return {}
+    if session.get_bind().dialect.name == "postgresql":
+        found: dict[int, str] = {}
+        for article, _source in rows:
+            headline = session.execute(
+                text(
+                    """
+                    SELECT ts_headline(
+                        'russian',
+                        coalesce(text, ''),
+                        websearch_to_tsquery('russian', :q),
+                        'StartSel=<mark>, StopSel=</mark>, MaxFragments=2, MaxWords=24'
+                    )
+                    FROM articles WHERE id = :id
+                    """
+                ),
+                {"q": needle, "id": article.id},
+            ).scalar()
+            if headline:
+                found[article.id] = headline
+        return found
+    found = {}
+    folded = needle.casefold().strip('"')
+    for article, _source in rows:
+        haystack = f"{article.title}\n{article.text or ''}"
+        at = haystack.casefold().find(folded.split()[0] if folded else "")
+        if at < 0:
+            continue
+        start = max(0, at - 40)
+        found[article.id] = haystack[start : start + 160]
+    return found
+
+
+def resolve_period(filters: ArticleFilters) -> ArticleFilters:
+    if not filters.period or filters.date_from or filters.date_to:
+        return filters
+    today = datetime.now(MOSCOW).date()
+    spans = {"today": 0, "7d": 6, "30d": 29, "365d": 364}
+    if filters.period in spans:
+        filters.date_from = today - timedelta(days=spans[filters.period])
+        filters.date_to = today
+    elif filters.period == "month":
+        filters.date_from = today.replace(day=1)
+        filters.date_to = today
+    return filters
 
 
 def _day_start(value: date) -> datetime:
@@ -291,7 +397,7 @@ def dashboard(session: Session) -> dict:
             .limit(30)
         ).all()
     ]
-    return {
+    report = {
         "articles": int(articles),
         "sources": int(sources),
         "feeds_enabled": int(feeds_enabled),
@@ -302,7 +408,51 @@ def dashboard(session: Session) -> dict:
         "per_sentiment": per_sentiment,
         "category_by_region": category_by_region,
         "sentiment_by_source": sentiment_by_source,
+        "engine": "sql",
     }
+    if dialect == "postgresql":
+        overlaid = _duckdb_overlay(session)
+        if overlaid:
+            report.update(overlaid)
+            report["engine"] = "duckdb"
+    return report
+
+
+def _duckdb_overlay(session: Session) -> dict | None:
+    """Aggregates via DuckDB's Postgres scanner. SQL dashboard stays if the extension is unavailable."""
+    try:
+        import duckdb
+    except ImportError:
+        return None
+    raw = session.get_bind().url.render_as_string(hide_password=False)
+    dsn = raw.replace("postgresql+psycopg", "postgres").replace("postgresql+psycopg2", "postgres")
+    connection = duckdb.connect()
+    try:
+        connection.execute("INSTALL postgres; LOAD postgres;")
+        connection.execute(f"ATTACH '{dsn}' AS pg (TYPE POSTGRES, READ_ONLY)")
+        per_day = [
+            {"key": str(key), "label": str(key), "count": int(count)}
+            for key, count in connection.execute(
+                "SELECT strftime(published_at, '%Y-%m-%d'), count(*) FROM pg.articles WHERE published_at IS NOT NULL GROUP BY 1 ORDER BY 1"
+            ).fetchall()
+        ]
+        per_category = [
+            {"key": str(key), "label": str(key), "count": int(count)}
+            for key, count in connection.execute(
+                "SELECT category, count(*) FROM pg.articles WHERE category IS NOT NULL GROUP BY 1 ORDER BY 2 DESC"
+            ).fetchall()
+        ]
+        per_sentiment = [
+            {"key": str(key), "label": str(key), "count": int(count)}
+            for key, count in connection.execute(
+                "SELECT sentiment, count(*) FROM pg.articles WHERE sentiment IS NOT NULL GROUP BY 1 ORDER BY 2 DESC"
+            ).fetchall()
+        ]
+    except Exception:
+        return None
+    finally:
+        connection.close()
+    return {"per_day": per_day, "per_category": per_category, "per_sentiment": per_sentiment}
 
 
 def _named_counts(rows) -> list[dict]:

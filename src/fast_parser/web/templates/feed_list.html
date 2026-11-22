@@ -13,7 +13,8 @@
         {% if article.sentiment %}<span class="badge sentiment-{{ article.sentiment }}">{{ article.sentiment }}</span>{% endif %}
         {% if article.fake_score is not none %} · fake {{ "%.2f"|format(article.fake_score) }}{% endif %}
       </p>
-      {% if article.summary %}<p>{{ article.summary }}</p>{% endif %}
+      {% if snippets is defined and snippets.get(article.id) %}<p>{{ snippets[article.id] }}</p>
+      {% elif article.summary %}<p>{{ article.summary }}</p>{% endif %}
     </li>
     {% endfor %}
   </ul>

@@ -1,0 +1,20 @@
+# Локальный PostgreSQL 16 для fast_parser. Из WSL: docker compose up -d
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: fast
+      POSTGRES_PASSWORD: fast
+      POSTGRES_DB: fast_parser
+    ports:
+      - "5432:5432"
+    volumes:
+      - fast_parser_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fast -d fast_parser"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  fast_parser_pg:
