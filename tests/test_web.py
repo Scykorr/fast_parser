@@ -209,6 +209,36 @@ def test_header_and_russian_sentiment_facet(tmp_path):
     assert "Нейтральные" in page.text
     assert "Отрицательные" in page.text
     assert 'name="sentiment" value="positive"' in page.text
+    assert "Тональность не посчитана" not in page.text
+    assert 'class="pager-link"' in page.text
+    assert 'class="pager-current"' in page.text
+    assert 'class="pager-disabled"' in page.text
+
+
+def test_sentiment_facet_stays_visible_without_labels(tmp_path):
+    from fast_parser.db import init_db
+    from fast_parser.models import Article
+
+    client = _client(tmp_path)
+    factory = init_db(f"sqlite:///{(tmp_path / 'parser.sqlite').as_posix()}")
+    session = factory()
+    for article in session.query(Article):
+        article.sentiment = None
+        article.sentiment_score = None
+    session.commit()
+    session.close()
+    page = client.get("/")
+    assert page.status_code == 200
+    assert 'id="sentiment"' in page.text
+    assert "Положительные" in page.text
+    assert "Нейтральные" in page.text
+    assert "Отрицательные" in page.text
+    assert page.text.count('name="sentiment"') == 3
+    assert page.text.count('class="count">0<') >= 3
+    assert (
+        'Тональность не посчитана: установите pip install -e ".[ml]" и выполните fast-parser process'
+        in page.text
+    )
 
 
 def test_pages_keep_the_region_filter(tmp_path):
@@ -249,6 +279,9 @@ def test_pages_keep_the_region_filter(tmp_path):
     assert "limit=20" in page.text
     assert 'href="/?region_code=01&amp;limit=20#feed"' in page.text
     assert "Предыдущая" in page.text
+    assert 'class="pager-link"' in page.text
+    assert 'class="pager-current" aria-current="page"' in page.text
+    assert 'class="pager-disabled"' in page.text
     assert "Дополнительная" in page.text
     first = client.get("/", params={"region_code": "01", "limit": "20"})
     assert "Метро" not in first.text

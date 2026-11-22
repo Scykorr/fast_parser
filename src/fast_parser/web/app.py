@@ -209,6 +209,9 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
             "pager": _pager(request, filters, total),
             "version": __version__,
         }
+        from fast_parser.sentiment_hint import sentiment_uncomputed
+
+        context["sentiment_missing"] = sentiment_uncomputed(session)
         context["problems"] = _query_problems(request)
         template = "browser.html" if request.headers.get("HX-Request") else "feed.html"
         return _page(request, template, context, session)
