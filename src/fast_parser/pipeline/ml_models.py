@@ -70,6 +70,13 @@ class RubertCategoryEncoder:
         self._model = None
         self._prototypes: dict[tuple[str, ...], object] = {}
 
+    def embed(self, texts: list[str]):
+        """Mean-pooled embeddings. The linear category head trains on these and does not update the encoder."""
+        if not texts:
+            return []
+        tokenizer, model = self._load()
+        return self._embed(texts, tokenizer, model).tolist()
+
     def similarities(self, texts: list[str], prototypes: list[tuple[str, str]]) -> list[dict[str, float]]:
         import torch
 

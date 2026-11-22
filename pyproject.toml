@@ -32,6 +32,7 @@ dev = ["pytest>=8.0"]
 ml = [
     "torch>=2.2",
     "transformers>=4.40",
+    "numpy>=1.26",
 ]
 
 [project.scripts]
@@ -44,7 +45,7 @@ where = ["src"]
 version = { attr = "fast_parser.__version__" }
 
 [tool.setuptools.package-data]
-fast_parser = ["web/templates/*.html", "web/static/*"]
+fast_parser = ["web/templates/*.html", "web/static/*", "pipeline/data/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

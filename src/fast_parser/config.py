@@ -64,12 +64,14 @@ class CategoryModelSettings(BaseModel):
 
     model: str = "cointegrated/rubert-tiny2"
     use_embeddings: bool = True
+    use_head: bool = True
 
 
 class SentimentModelSettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
     model: str = "seara/rubert-tiny2-russian-sentiment"
+    use_head: bool = True
 
 
 class PipelineSettings(BaseModel):

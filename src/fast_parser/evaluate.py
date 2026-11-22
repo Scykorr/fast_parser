@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -35,7 +36,9 @@ def load_labels(path: Path) -> list[dict]:
     return rows
 
 
-def score_dataset(settings: AppSettings, rows: list[dict], *, use_embeddings: bool) -> tuple[ClassMetrics, ClassMetrics | None]:
+def score_dataset(
+    settings: AppSettings, rows: list[dict], *, use_embeddings: bool
+) -> tuple[ClassMetrics, ClassMetrics | None, ClassMetrics | None, ClassMetrics | None]:
     views = [_view(row) for row in rows]
     taxonomy = load_taxonomy(settings.categories_path)
     saved = settings.pipeline.category.use_embeddings
@@ -57,7 +60,29 @@ def score_dataset(settings: AppSettings, rows: list[dict], *, use_embeddings: bo
             [item.sentiment for item in sentiments],
             ["positive", "neutral", "negative"],
         )
-    return category_metrics, sentiment_metrics
+    held_out_category = None
+    held_out_sentiment = None
+    if (
+        use_embeddings
+        and settings.pipeline.category.use_head
+        and ml_available()
+        and "PYTEST_CURRENT_TEST" not in os.environ
+    ):
+        from fast_parser.pipeline.train_heads import category_features, cross_validate, sentiment_features
+
+        features, titles = category_features(rows, settings)
+        accuracy, macro_f1, predicted = cross_validate(features, gold_cat, titles)
+        held_out_category = _metrics("category-cv", gold_cat, predicted, titles)
+        held_out_category.accuracy = accuracy
+        held_out_category.macro_f1 = macro_f1
+        sent_features = sentiment_features(rows, settings)
+        sent_labels = ["positive", "neutral", "negative"]
+        sent_gold = [row["sentiment"] for row in rows]
+        sent_accuracy, sent_f1, sent_predicted = cross_validate(sent_features, sent_gold, sent_labels)
+        held_out_sentiment = _metrics("sentiment-cv", sent_gold, sent_predicted, sent_labels)
+        held_out_sentiment.accuracy = sent_accuracy
+        held_out_sentiment.macro_f1 = sent_f1
+    return category_metrics, sentiment_metrics, held_out_category, held_out_sentiment
 
 
 def _view(row: dict) -> ArticleView:
@@ -96,7 +121,13 @@ def _metrics(name: str, gold: list[str], pred: list[str | None], labels: list[st
     )
 
 
-def format_report(keyword: ClassMetrics, ml_category: ClassMetrics | None, sentiment: ClassMetrics | None) -> str:
+def format_report(
+    keyword: ClassMetrics,
+    ml_category: ClassMetrics | None,
+    sentiment: ClassMetrics | None,
+    held_out_category: ClassMetrics | None = None,
+    held_out_sentiment: ClassMetrics | None = None,
+) -> str:
     lines = [
         "Оценка на ручной выборке",
         f"{'режим':<22}{'покрытие':>10}{'accuracy':>10}{'macro-F1':>10}",
@@ -104,8 +135,22 @@ def format_report(keyword: ClassMetrics, ml_category: ClassMetrics | None, senti
     ]
     if ml_category is not None:
         lines.append(
-            f"{'рубрики, словарь+модель':<22}{_pct(ml_category.covered, ml_category.labelled):>10}"
+            f"{'рубрики, прототипы':<22}{_pct(ml_category.covered, ml_category.labelled):>10}"
             f"{_pct_num(ml_category.accuracy):>10}{_pct_num(ml_category.macro_f1):>10}"
+        )
+    if held_out_category is not None:
+        lines.append(
+            f"{'рубрики, голова, CV':<22}{_pct(held_out_category.covered, held_out_category.labelled):>10}"
+            f"{_pct_num(held_out_category.accuracy):>10}{_pct_num(held_out_category.macro_f1):>10}"
+        )
+        lines.append(
+            "Отложенная оценка: стратифицированные 3 фолда, каждый пример в тесте один раз. "
+            "Веса в поставке обучены на всех 190 уже после этого замера."
+        )
+    if held_out_sentiment is not None:
+        lines.append(
+            f"{'тональность, голова, CV':<22}{_pct(held_out_sentiment.covered, held_out_sentiment.labelled):>10}"
+            f"{_pct_num(held_out_sentiment.accuracy):>10}{_pct_num(held_out_sentiment.macro_f1):>10}"
         )
     if sentiment is not None:
         lines.append(
